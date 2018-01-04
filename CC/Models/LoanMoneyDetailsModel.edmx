@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="LoanMoneyDetailsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="LoanMoneyDetailsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="LoanMoneyDetail">
           <Key>
             <PropertyRef Name="id" />
@@ -13,12 +13,13 @@
           <Property Name="LoanMoneyId" Type="int" />
           <Property Name="pay_date" Type="datetime" />
           <Property Name="pay_sum" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="description" Type="ntext" />
+          <Property Name="money_id" Type="int" />
         </EntityType>
         <EntityContainer Name="LoanMoneyDetailsModelStoreContainer">
           <EntitySet Name="LoanMoneyDetail" EntityType="Self.LoanMoneyDetail" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="LoanMoneyDetailsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -30,6 +31,8 @@
           <Property Name="LoanMoneyId" Type="Int32" />
           <Property Name="pay_date" Type="DateTime" Precision="3" />
           <Property Name="pay_sum" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="money_id" Type="Int32" />
         </EntityType>
         <EntityContainer Name="LoanMoneyDetailsEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="LoanMoneyDetails" EntityType="Self.LoanMoneyDetail" />
@@ -43,6 +46,8 @@
           <EntitySetMapping Name="LoanMoneyDetails">
             <EntityTypeMapping TypeName="LoanMoneyDetailsModel.LoanMoneyDetail">
               <MappingFragment StoreEntitySet="LoanMoneyDetail">
+                <ScalarProperty Name="money_id" ColumnName="money_id" />
+                <ScalarProperty Name="description" ColumnName="description" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="LoanMoneyId" ColumnName="LoanMoneyId" />
                 <ScalarProperty Name="pay_date" ColumnName="pay_date" />

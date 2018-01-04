@@ -1,4 +1,16 @@
-﻿--Sql
+﻿--date 05.01.2018
+--added new column
+alter table LoanMoneyDetail
+add [description] ntext 
+--*********************
+--date 05.01.2018
+--added new column
+alter table LoanMoneyDetail
+add [money_id] int
+
+--done 04.01.2018
+
+--Sql
 --date 31.12.2017
 --create table Loan Money
 create table LoanMoney(

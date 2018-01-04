@@ -18,5 +18,7 @@ namespace CC.Models
         public Nullable<int> LoanMoneyId { get; set; }
         public Nullable<System.DateTime> pay_date { get; set; }
         public Nullable<decimal> pay_sum { get; set; }
+        public string description { get; set; }
+        public Nullable<int> money_id { get; set; }
     }
 }
