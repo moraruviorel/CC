@@ -54,6 +54,9 @@
             column.Caption = "Suma";
         });
 
+        settings.TotalSummary.Add(DevExpress.Data.SummaryItemType.Sum, "amount");
+        settings.Settings.ShowFooter = true;
+
     });
     if (ViewData["EditError"] != null){
         grid.SetEditErrorText((string)ViewData["EditError"]);
