@@ -1,0 +1,55 @@
+﻿@{
+    var grid = Html.DevExpress().GridView(settings => {
+        settings.Name = "LoanMoneyDetails";
+        settings.CallbackRouteValues = new { Controller = "Home", Action = "LoanMoneyDetailsPartial" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Home", Action = "LoanMoneyDetailsPartialAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Home", Action = "LoanMoneyDetailsPartialUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Home", Action = "LoanMoneyDetailsPartialDelete" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
+        settings.SettingsPager.PageSize = CC.Models.Classes.MySession.Current.MySetting.GridRows;
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = true;
+        settings.CommandColumn.ShowDeleteButton = true;
+        settings.CommandColumn.ShowEditButton = true;
+
+        settings.KeyFieldName = "id";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.Off;
+        settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
+        settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
+        settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
+        settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
+
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "LoanMoneyId";
+            column.Visible = false;
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "pay_date";
+            c.Caption = "Data achitării";
+            c.ColumnType = MVCxGridViewColumnType.DateEdit;
+            c.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+        });        
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "pay_sum";
+            c.Caption = "Suma";
+        });
+        settings.TotalSummary.Add(DevExpress.Data.SummaryItemType.Sum, "pay_sum");
+        settings.Settings.ShowFooter = true;
+    });
+    if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()

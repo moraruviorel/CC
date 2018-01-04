@@ -1,0 +1,33 @@
+﻿
+@Html.DevExpress().GetStyleSheets(
+new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+new StyleSheet { ExtensionSuite = ExtensionSuite.Editors }
+)
+@Html.DevExpress().GetScripts(
+new Script { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+new Script { ExtensionSuite = ExtensionSuite.Editors }
+)
+
+@{
+    ViewBag.Title = "WorkerDetail";
+    string workerFullName = ViewBag.Workers;
+}
+
+<h2>@workerFullName</h2>
+
+@Html.DevExpress().PageControl(
+        settings =>
+        {
+            settings.Name = "WorkerCallbacks";
+            settings.CallbackRouteValues = new { Controller = "Worker", Action = "WorkerCallback" };
+            settings.TabAlign = TabAlign.Justify;
+            settings.TabPosition = TabPosition.Top;
+            settings.TabPages.Add("");
+            settings.TabPages.Add("Lucrări efectuate");
+            settings.TabPages.Add("Achitari");
+            settings.TabPages.Add("Specialități");
+            settings.TabPages.Add("Zile lucrate");
+            settings.TabPages.Add("Contracte");
+
+            settings.ClientSideEvents.BeginCallback = "function(s,e){e.customArgs['tabIndex'] = s.GetActiveTabIndex();}";
+        }).GetHtml()

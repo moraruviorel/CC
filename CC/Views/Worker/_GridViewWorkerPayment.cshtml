@@ -1,0 +1,68 @@
+﻿@{
+    var grid = Html.DevExpress().GridView(settings => {
+        settings.Name = "GridView";
+        settings.CallbackRouteValues = new { Controller = "Worker", Action = "GridViewWorkerPayment" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkerPaymentAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkerPaymentUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkerPaymentDelete" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = true;
+        settings.CommandColumn.ShowDeleteButton = true;
+        settings.CommandColumn.ShowEditButton = true;
+
+        settings.KeyFieldName = "id";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.Off;
+        settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
+        settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
+        settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
+        settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
+
+
+        settings.InitNewRow = (s, e) =>
+        {
+            e.NewValues["payment_date"] = Model.CurrentDate;
+            e.NewValues["amount"] = Model.Amount;
+            e.NewValues["work_id"] = Model.WorkId;
+        };
+
+       
+        //
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "work_id";
+            column.Caption = "Lucrare efectuată";
+            column.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "name";
+                p.ValueField = "id";
+                p.ValueType = typeof(int);
+                p.DataSource = Model.WorkerWorkList;
+            });
+        });
+        //settings.Columns.Add("userId");
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "payment_date";
+            column.Caption = "Data achitării";
+            column.ColumnType = MVCxGridViewColumnType.DateEdit;
+            column.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+
+        });
+        settings.Columns.Add(c => { c.FieldName = "amount"; c.Caption = "Suma"; });
+        settings.Columns.Add(c => { c.FieldName = "notice"; c.Caption = "Notițe"; });
+    });
+    if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model.WorkerPayments).GetHtml()

@@ -1,0 +1,33 @@
+﻿@Html.DevExpress().GetStyleSheets(
+new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+new StyleSheet { ExtensionSuite = ExtensionSuite.Editors }
+)
+@Html.DevExpress().GetScripts(
+new Script { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+new Script { ExtensionSuite = ExtensionSuite.Editors }
+)
+
+@Html.DevExpress().PageControl(
+        settings =>
+        {
+            settings.Name = "pcCallbacks";
+            settings.CallbackRouteValues = new { Controller = "Object", Action = "OnCallback" };
+            settings.TabAlign = TabAlign.Justify;
+            settings.TabPosition = TabPosition.Top;
+            settings.TabPages.Add("");
+            settings.TabPages.Add("Lucrări efectuate");
+            settings.TabPages.Add("Materiale utilizate");
+            settings.TabPages.Add("Instrumente utilizate");
+            settings.TabPages.Add("Alte Cheltuieli");
+            settings.TabPages.Add("Achitări");
+            settings.TabPages.Add("Totaluri");
+
+            //settings.TabPages[0].Visible = false;
+
+            settings.ClientSideEvents.BeginCallback = "function(s,e){e.customArgs['tabIndex'] = s.GetActiveTabIndex();}";
+            //settings.TabPages[0].Visible = false;
+        }).GetHtml()
+
+
+
+

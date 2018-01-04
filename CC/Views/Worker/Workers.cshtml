@@ -1,0 +1,20 @@
+﻿@Html.DevExpress().GetStyleSheets(
+new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+new StyleSheet { ExtensionSuite = ExtensionSuite.Editors }
+)
+@Html.DevExpress().GetScripts(
+new Script { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+new Script { ExtensionSuite = ExtensionSuite.Editors }
+)
+
+@{
+    string workerText = CC.Models.Classes.ActionLinkText.Workers;
+    ViewBag.Title = "Workers";
+}
+
+
+<h2> @{ String.Format("{0} {1}", "Lista de", workerText); } </h2>
+
+
+
+@Html.Action("GridViewWorkers")

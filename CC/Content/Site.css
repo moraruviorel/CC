@@ -1,0 +1,85 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.index-icon-row {
+    width: 100%; height: 100px;
+}
+
+.index-icon-row div {
+    width: 33%;
+    float: left;
+}
+
+.index-icon-row span {
+    margin-top: 10px;
+}
+
+.reportAndrei {
+    background: url(../Images/report.png) no-repeat top left;
+    display: block;
+    width: 150px;
+    height: 100px;
+    text-indent: -9999px; 
+}
+
+.settingIcon {
+    background: url(../Images/setting.png) no-repeat top left;
+    display: block;
+    width: 150px;
+    height: 100px;
+    text-indent: -9999px;
+}
+
+.unitsIcon {
+    background: url(../Images/units.png) no-repeat top left;
+    display: block;
+    width: 150px;
+    height: 100px;
+    text-indent: -9999px;
+}
+
+.loanMoneyIcon {
+    background: url(../Images/Money_on_hand.png) no-repeat top left;
+    display: block;
+    width: 150px;
+    height: 100px;
+    text-indent: -9999px;
+}
+
+.materialsIcon {
+    background: url(../Images/materials.png) no-repeat top left;
+    display: block;
+    width: 150px;
+    height: 100px;
+    text-indent: -9999px;
+}
+
+.specialityIcon {
+    background: url(../Images/speciality.PNG) no-repeat top left;
+    display: block;
+    width: 150px;
+    height: 100px;
+    text-indent: -9999px;
+}

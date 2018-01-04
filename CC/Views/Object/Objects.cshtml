@@ -1,0 +1,35 @@
+﻿@Html.DevExpress().GetStyleSheets(
+new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+new StyleSheet { ExtensionSuite = ExtensionSuite.Editors }
+)
+@Html.DevExpress().GetScripts(
+new Script { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+new Script { ExtensionSuite = ExtensionSuite.Editors }
+)
+
+@{
+    ViewBag.Title = "Objects";
+    int parentId = CC.Models.Classes.MySession.Current.ParentId;
+}
+
+<h2>Lista de Obiecte</h2>
+
+@if (parentId > 0)
+{
+<h3>@Html.ActionLink("înapoi", "Objects", "Object", new { objectId = CC.Models.Classes.MySession.Current.ParentId }, null)</h3>
+}
+
+@*@using (Html.BeginForm("ExportTo", "Exporting"))
+{
+    <div class="OptionsBottomMargin">
+        @Html.Partial("ToolbarExport", CC.Models.GridViewExportHelper.ExportFormatsInfo.Keys)
+    </div>
+    <p class="Note">
+        <strong>Note:</strong> If you export grouped data to RTF, be sure to open the resulting file with an editor that fully supports RTF, including tables. For instance, Microsoft WordPad does not support this feature, and thus the file may appear corrupt.
+    </p>
+    @Html.Partial("ExportPartial", Model)
+}*@
+
+
+
+@Html.Action("GridViewObjects")

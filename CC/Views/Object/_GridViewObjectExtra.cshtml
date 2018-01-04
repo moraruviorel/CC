@@ -1,0 +1,77 @@
+﻿@{
+    var grid = Html.DevExpress().GridView(settings => {
+        settings.Name = "GridViewOE";
+        settings.CallbackRouteValues = new { Controller = "Object", Action = "GridViewObjectExtra" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Object", Action = "GridViewObjectExtraAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Object", Action = "GridViewObjectExtraUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Object", Action = "GridViewObjectExtraDelete" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
+        settings.SettingsPager.PageSize = CC.Models.Classes.MySession.Current.MySetting.GridRows;
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = true;
+        settings.CommandColumn.ShowDeleteButton = true;
+        settings.CommandColumn.ShowEditButton = true;
+
+        settings.KeyFieldName = "id";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.Off;
+        settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
+        settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
+        settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
+        settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
+
+        //settings.Columns.Add("id");
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "object_id";
+            c.Caption = "Denumire Obiect";
+            c.Visible = false;
+            c.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "Description";
+                p.ValueField = "Id";
+                p.ValueType = typeof(int);
+                p.DataSource = ViewBag.Objects;
+            });
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "description";
+            c.Caption = "Descrierea";
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "create_date";
+            column.Caption = "Data începerii";
+            column.ColumnType = MVCxGridViewColumnType.DateEdit;
+            column.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+        });        
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "price";
+            c.Caption = "Preț";
+        });
+        settings.TotalSummary.Add(DevExpress.Data.SummaryItemType.Sum, "price");
+        settings.Settings.ShowFooter = true;
+    });
+    if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()
+<br>
+@Html.DevExpress().Button(settings =>
+{
+    settings.Name = "ButtonExtra";
+    settings.UseSubmitBehavior = true;
+    settings.Text = "ExportTo PDF";
+    CC.Models.Classes.MySession.Current.GridReport = grid;
+    settings.RouteValues = new { Controller = "Object", Action = "ExportTo", form = "GridViewExtra" };
+}).GetHtml()

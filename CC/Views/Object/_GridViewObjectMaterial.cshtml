@@ -1,0 +1,93 @@
+﻿@{
+    var grid = Html.DevExpress().GridView(settings => {
+        settings.Name = "GridViewOM";
+        settings.CallbackRouteValues = new { Controller = "Object", Action = "GridViewObjectMaterial" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Object", Action = "GridViewObjectMaterialAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Object", Action = "GridViewObjectMaterialUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Object", Action = "GridViewObjectMaterialDelete" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
+        settings.SettingsPager.PageSize = CC.Models.Classes.MySession.Current.MySetting.GridRows;
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = true;
+        settings.CommandColumn.ShowDeleteButton = true;
+        settings.CommandColumn.ShowEditButton = true;
+
+        settings.KeyFieldName = "id";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.Off;
+        settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
+        settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
+        settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
+        settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "id";
+            column.Visible = false;
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "object_id";
+            c.Caption = "Denumire Obiect";
+            c.Visible = false;
+            c.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "Description";
+                p.ValueField = "Id";
+                p.ValueType = typeof(int);
+                p.DataSource = ViewBag.Objects;
+            });
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "material_id";
+            c.Caption = "Denumire Material";
+            c.Visible = false;
+        });
+        settings.Columns.Add(c=>
+        {
+            c.FieldName = "material_description";
+            c.Caption = "Descriere Material";
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "buyed_date";
+            c.Caption = "Data cumpărării";
+            c.ColumnType = MVCxGridViewColumnType.DateEdit;
+            c.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+        });
+        settings.Columns.Add(c=>
+        {
+            c.FieldName = "quantity";
+            c.Caption = "Cantitatea";
+        });
+        settings.Columns.Add(c=>
+        {
+            c.FieldName = "total_price";
+            c.Caption = "Prețul total";
+        });
+        //settings.Columns.Add("visible");
+        settings.TotalSummary.Add(DevExpress.Data.SummaryItemType.Sum, "total_price");
+        settings.Settings.ShowFooter = true;
+    });
+    if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()
+<br>
+@Html.DevExpress().Button(settings =>
+{
+    settings.Name = "ButtonMaterial";
+    settings.UseSubmitBehavior = true;
+    settings.Text = "ExportTo PDF";
+    CC.Models.Classes.MySession.Current.GridReport = grid;
+    settings.RouteValues = new { Controller = "Object", Action = "ExportTo", form = "GridViewMaterial" };
+}).GetHtml()

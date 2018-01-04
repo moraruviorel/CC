@@ -1,0 +1,17 @@
+﻿--Sql
+--date 31.12.2017
+--create table Loan Money
+create table LoanMoney(
+	id int primary key identity(1,1) not null,
+	person_name nvarchar(50),
+	loan_date datetime,
+	return_date datetime,
+	loan_status bit,
+	loan_sum decimal(18,2),
+	user_id varchar(50)
+)
+--Sql
+--date 31.12.2017
+--add settingStatus column
+alter table Setting
+add SettingStatus int not null default(0)

@@ -1,0 +1,48 @@
+﻿@{
+    var grid = Html.DevExpress().GridView(settings => {
+        settings.Name = "GridViewWorkDays";
+        settings.CallbackRouteValues = new { Controller = "Worker", Action = "WorkDaysPartial" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Worker", Action = "WorkDaysPartialAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Worker", Action = "WorkDaysPartialUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Worker", Action = "WorkDaysPartialDelete" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = true;
+        settings.CommandColumn.ShowDeleteButton = true;
+        settings.CommandColumn.ShowEditButton = true;
+
+        settings.KeyFieldName = "id";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.Off;
+        settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
+        settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
+        settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
+        settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
+
+        //settings.Columns.Add("worker_id");
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "work_date";
+            c.Caption = "Data lucrătoare";
+            c.ColumnType = MVCxGridViewColumnType.DateEdit;
+            c.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+        });
+        settings.Columns.Add(c=>
+        {
+            c.FieldName = "work_hours";
+            c.Caption = "Ore lucrate";
+        });
+    });
+    if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()

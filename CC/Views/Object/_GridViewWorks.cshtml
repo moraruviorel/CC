@@ -1,0 +1,130 @@
+﻿@{    
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.Name = "GridView";
+        settings.CallbackRouteValues = new { Controller = "Worker", Action = "GridViewWorks" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Worker", Action = "GridViewWorksAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Worker", Action = "GridViewWorksUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Worker", Action = "GridViewWorksDelete" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsPager.PageSize = CC.Models.Classes.MySession.Current.MySetting.GridRows;
+        //settings.SettingsPager.Mode = GridViewPagerMode.ShowAllRecords;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = true;
+        settings.CommandColumn.ShowDeleteButton = true;
+        settings.CommandColumn.ShowEditButton = true;
+
+        settings.KeyFieldName = "id";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+        settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.Off;
+        settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
+        settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
+        settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
+        settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "name";
+            c.Caption = "Denumire";
+            c.Width = 250;
+        });
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "worker_id";
+            column.Caption = "Lucrător";
+            column.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "FullName";
+                p.ValueField = "Id";
+                p.ValueType = typeof(int);
+                p.DataSource = ViewBag.Workers;
+            });
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "surface";
+            c.Caption = "Cantitate";
+            c.Width = 40;
+        });
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "unit_id";
+            column.Caption = "Unitate";
+            column.Width = 20;
+            column.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "name";
+                p.ValueField = "Id";
+                p.ValueType = typeof(int);
+                p.DataSource = ViewBag.Unites;
+            });
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "unit_price";
+            c.Caption = "Preț unitate";
+            c.Width = 40;
+        });
+        //
+        var col = settings.Columns.Add("Total");
+        //col.PropertiesEdit.DisplayFormatString = "c"; //pune dolar la început
+        col.UnboundType = DevExpress.Data.UnboundColumnType.Decimal;
+        settings.CustomUnboundColumnData = (sender, e) =>
+        {
+            if (e.Column.FieldName == "Total")
+            {
+                decimal unit_price = CC.Models.Classes.MyConvert.ToDecimal(e.GetListSourceFieldValue("unit_price").ToString());
+                decimal surface = CC.Models.Classes.MyConvert.ToDecimal(e.GetListSourceFieldValue("surface").ToString());
+                e.Value = unit_price * surface;
+            }
+        };
+        //
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "date_start";
+            column.Caption = "Data începerii";
+            column.ColumnType = MVCxGridViewColumnType.DateEdit;
+            column.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+        });
+        //
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "date_end";
+            column.Caption = "Data finisării";
+            column.ColumnType = MVCxGridViewColumnType.DateEdit;
+            column.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+        });
+
+        settings.TotalSummary.Add(DevExpress.Data.SummaryItemType.Sum, "Total");
+        settings.Settings.ShowFooter = true;
+    });
+    if (ViewData["EditError"] != null)
+    {
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+
+
+
+}
+@grid.Bind(Model).GetHtml()
+
+<br />
+@Html.DevExpress().Button(settings =>
+{    
+    settings.Name = "ButtonWorks";
+    settings.UseSubmitBehavior = true;
+    settings.Text = "ExportTo PDF";
+    CC.Models.Classes.MySession.Current.GridReport = grid;
+    settings.RouteValues = new { Controller = "Home", Action = "ExportTo", form = "GridViewWorks" };
+}).GetHtml()

@@ -1,0 +1,56 @@
+﻿@{
+    var grid = Html.DevExpress().GridView(settings => {
+        settings.Name = "GridViewSpeciality";
+        settings.CallbackRouteValues = new { Controller = "Worker", Action = "GridViewWorkerSpecialityPartial" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkerSpecialityPartialAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkerSpecialityPartialUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkerSpecialityPartialDelete" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = true;
+        settings.CommandColumn.ShowDeleteButton = true;
+        settings.CommandColumn.ShowEditButton = true;
+
+        //settings.KeyFieldName = "worker_id";
+        settings.KeyFieldName = "speciality_id";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.Off;
+        settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
+        settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
+        settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
+        settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
+
+        settings.Columns.Add(c=>
+        {
+            c.FieldName = "worker_id";
+            c.Caption = "Lucrător";
+            c.Visible = false;
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "speciality_id";
+            c.Caption = "Specialitate";
+            c.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "name";
+                p.ValueField = "id";
+                p.ValueType = typeof(int);
+                p.DataSource = ViewBag.Specialities;
+            });
+        });
+        settings.Columns.Add(c => { c.FieldName = "worker_level"; c.Caption = "Nivel lucrător"; });
+        //settings.Columns.Add("Speciality");
+    });
+    if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()

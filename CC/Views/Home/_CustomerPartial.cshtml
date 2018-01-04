@@ -1,0 +1,90 @@
+﻿@{
+    var grid = Html.DevExpress().GridView(settings => {
+        settings.Name = "Customer";
+        settings.CallbackRouteValues = new { Controller = "Home", Action = "CustomerPartial" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Home", Action = "CustomerPartialAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Home", Action = "CustomerPartialUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Home", Action = "CustomerPartialDelete" };
+        settings.SettingsPager.PageSize = CC.Models.Classes.MySession.Current.MySetting.GridRows; ;
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = true;
+        settings.CommandColumn.ShowDeleteButton = true;
+        settings.CommandColumn.ShowEditButton = true;
+
+        settings.KeyFieldName = "id";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.Off;
+        settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
+        settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
+        settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
+        settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "first_name";
+            c.Caption = "Prenume";
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "last_name";
+            c.Caption = "Nume";
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "address";
+            c.Caption = "Adresa";
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "birthday";
+            c.Caption = "Data nasterii";
+            c.ColumnType = MVCxGridViewColumnType.DateEdit;
+            c.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "phone";
+            c.Caption = "Telefon";
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "notes";
+            c.Caption = "Notițe";
+        });
+
+        //Detalii
+
+
+        settings.Columns.Add(column =>
+        {
+            column.SetDataItemTemplateContent(delegate (GridViewDataItemTemplateContainer c)
+            {
+                int documentId = (int)DataBinder.Eval(c.DataItem, "Id");
+
+                if (documentId != -1)
+                {
+                    ViewContext.Writer.Write(
+                        Html.ActionLink("Detalii", "CustomerDetail", "Home", new { customerId = (int)DataBinder.Eval(c.DataItem, "Id") }, new { }).ToHtmlString()
+                    );
+                }
+            });
+        });
+
+
+
+
+    });
+    if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()

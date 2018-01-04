@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ExcelentConstructModelObjectMaterial.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ObjectMaterial">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="object_id" Type="int" />
+          <Property Name="material_id" Type="int" />
+          <Property Name="buyed_date" Type="datetime" />
+          <Property Name="quantity" Type="float" />
+          <Property Name="total_price" Type="float" />
+          <Property Name="material_description" Type="nvarchar(max)" />
+          <Property Name="visible" Type="smallint" />
+        </EntityType>
+        <EntityContainer Name="ExcelentConstructModelObjectMaterialStoreContainer">
+          <EntitySet Name="ObjectMaterial" EntityType="Self.ObjectMaterial" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ExcelentConstructModelObjectMaterial" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ObjectMaterial">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="object_id" Type="Int32" />
+          <Property Name="material_id" Type="Int32" />
+          <Property Name="buyed_date" Type="DateTime" Precision="3" />
+          <Property Name="quantity" Type="Double" />
+          <Property Name="total_price" Type="Double" />
+          <Property Name="material_description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="visible" Type="Int16" />
+        </EntityType>
+        <EntityContainer Name="ExcelentConstructObjectMaterial" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ObjectMaterials" EntityType="Self.ObjectMaterial" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ExcelentConstructModelObjectMaterialStoreContainer" CdmEntityContainer="ExcelentConstructObjectMaterial">
+          <EntitySetMapping Name="ObjectMaterials">
+            <EntityTypeMapping TypeName="ExcelentConstructModelObjectMaterial.ObjectMaterial">
+              <MappingFragment StoreEntitySet="ObjectMaterial">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="object_id" ColumnName="object_id" />
+                <ScalarProperty Name="material_id" ColumnName="material_id" />
+                <ScalarProperty Name="buyed_date" ColumnName="buyed_date" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="total_price" ColumnName="total_price" />
+                <ScalarProperty Name="material_description" ColumnName="material_description" />
+                <ScalarProperty Name="visible" ColumnName="visible" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

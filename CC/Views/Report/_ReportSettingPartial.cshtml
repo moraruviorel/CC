@@ -1,0 +1,51 @@
+@{
+    var grid = Html.DevExpress().GridView(settings => {
+        settings.Name = "GridViewReportSetting";
+        settings.CallbackRouteValues = new { Controller = "Report", Action = "ReportSettingPartial" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Report", Action = "ReportSettingPartialAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Report", Action = "ReportSettingPartialUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Report", Action = "ReportSettingPartialDelete" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = CC.Models.Classes.MySession.Current.IsUserAdmin;
+        settings.CommandColumn.ShowDeleteButton = true;
+        settings.CommandColumn.ShowEditButton = true;
+
+        settings.KeyFieldName = "id";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.Off;
+        settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
+        settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
+        settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
+        settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
+
+        settings.Columns.Add(c=>
+        {
+            c.FieldName = "name";
+            c.Caption = "Denumire";
+            c.ReadOnly = !CC.Models.Classes.MySession.Current.IsUserAdmin;
+        });
+        settings.Columns.Add(c=>
+        {
+            c.FieldName = "value";
+            c.Caption = "Valoare";
+            c.ColumnType = MVCxGridViewColumnType.Memo;
+        });
+    });
+    if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()
+
+<br>
+
+@Html.ActionLink("Raport", "AndreiRaport", "Report")

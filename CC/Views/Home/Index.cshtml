@@ -1,0 +1,40 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+
+    bool showReport = CC.Models.Classes.MySession.Current.IsUserAdmin || CC.Models.Classes.MySession.Current.UserGuid == "49b48884-0caa-4708-8e09-dfa9284fb933";
+}
+
+<br><br>
+
+<div class="index-icon-row">
+    <div>
+        <span>Setări</span>
+        @Html.ActionLink("Report", "Setting", new { controller = "Settings" }, new { @class = "settingIcon" })
+    </div>
+    <div>
+        <span><b>Unități măsură</b></span>
+        @Html.ActionLink("Report", "Unit", new { controller = "Home" }, new { @class = "unitsIcon" })
+    </div>
+    <div>
+        <span><b>Specialități</b></span>
+        @Html.ActionLink("Report", "Speciality", new { controller = "Home" }, new { @class = "specialityIcon" })
+    </div>
+</div>
+<div class="index-icon-row">
+    <div>
+        <span><b>Împrumuturi</b></span>
+        @Html.ActionLink("Report", "LoanMoney", new { controller = "Home" }, new { @class = "loanMoneyIcon" })
+    </div>
+    <div>
+        @*<span><b>Materiale</b></span>
+        @Html.ActionLink("Report", "Materials", new { controller = "Home" }, new { @class = "materialsIcon" })*@
+    </div>
+    
+    <div>
+        @*@Html.ActionLink("Report", "SettingReport", new { controller = "Report" }, new { @class = "reportAndrei" })*@
+    </div>
+</div>
+
+
+
+

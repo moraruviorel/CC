@@ -1,0 +1,42 @@
+﻿@Html.DevExpress().GetStyleSheets(
+new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+new StyleSheet { ExtensionSuite = ExtensionSuite.Editors }
+)
+@Html.DevExpress().GetScripts(
+new Script { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+new Script { ExtensionSuite = ExtensionSuite.Editors }
+)
+
+@{
+    ViewBag.Title = "ObjectTotal";
+    double workSum = 0;
+    foreach (var item in ViewBag.Works)
+    {
+        workSum += Convert.ToDouble(item.surface) * Convert.ToDouble(item.unit_price);
+    }
+    double total_sum = ViewBag.ExtraSum + ViewBag.InstrumentSum + ViewBag.MaterialSum + workSum;
+    double material_sum = ViewBag.MaterialSum;
+    double instrumente_sum = ViewBag.InstrumentSum;
+    double extra_sum = ViewBag.ExtraSum;
+
+}
+
+<h2>Cheltuieli Totale</h2>
+<br><br>
+@Html.Label("Lucrări efectuate:", new { style = "width: 200px; font-size: 16px;"}) 
+@Html.TextBox("Work", @workSum.ToString("N2"), new { style = "text-align: right;" }) <br>
+
+@Html.Label("Materiale utilizate:", new { style = "width: 200px; font-size: 16px;" }) 
+@Html.TextBox("MaterialSum", @material_sum.ToString("N2"), new { style = "text-align: right;" }) <br>
+
+@Html.Label("Instrumente utilizate:", new { style = "width: 200px; font-size: 16px;" }) 
+@Html.TextBox("Instrument", @instrumente_sum.ToString("N2"), new { style = "text-align: right;" }) <br>
+
+@Html.Label("Cheltuieli extra:", new { style = "width: 200px; font-size: 16px;" }) 
+@Html.TextBox("Extra", @extra_sum.ToString("N2"), new { style = "text-align: right;" }) <br>
+<hr>
+@Html.Label("Total:", new { style = "width: 200px; font-size: 16px;" })
+@Html.TextBox("Total", @total_sum.ToString("N2"), new { style = "text-align: right;" }) <br>
+
+
+

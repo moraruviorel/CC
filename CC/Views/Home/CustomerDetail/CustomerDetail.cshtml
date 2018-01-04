@@ -1,0 +1,32 @@
+﻿@Html.DevExpress().GetStyleSheets(
+new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+new StyleSheet { ExtensionSuite = ExtensionSuite.Editors }
+)
+@Html.DevExpress().GetScripts(
+new Script { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+new Script { ExtensionSuite = ExtensionSuite.Editors }
+)
+
+@{
+    ViewBag.Title = "CustomerDetail";
+    string customerFullName = ViewBag.Customers;
+}
+
+<h2>@customerFullName</h2>
+
+@Html.DevExpress().PageControl(
+        settings =>
+        {
+            settings.Name = "CustomerCallbacks";
+            settings.CallbackRouteValues = new { Controller = "Home", Action = "CustomerCallback" };
+            settings.TabAlign = TabAlign.Justify;
+            settings.TabPosition = TabPosition.Top;
+            settings.TabPages.Add("");
+            settings.TabPages.Add("Terapie");
+            settings.TabPages.Add("Chirurgie");
+            settings.TabPages.Add("Protezare");
+            
+
+            settings.ClientSideEvents.BeginCallback = "function(s,e){e.customArgs['tabIndex'] = s.GetActiveTabIndex();}";
+        }).GetHtml()
+
