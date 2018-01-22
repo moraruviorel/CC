@@ -2,11 +2,11 @@
     var grid = Html.DevExpress().GridView(settings =>
     {
         settings.Name = "GridView";
-        settings.CallbackRouteValues = new { Controller = "Worker", Action = "GridViewWorks" };
+        settings.CallbackRouteValues = new { Controller = "Object", Action = "GridViewWorks" };
 
-        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Worker", Action = "GridViewWorksAddNew" };
-        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Worker", Action = "GridViewWorksUpdate" };
-        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Worker", Action = "GridViewWorksDelete" };
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Object", Action = "GridViewWorksAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Object", Action = "GridViewWorksUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Object", Action = "GridViewWorksDelete" };
         settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
         settings.SettingsPager.PageSize = CC.Models.Classes.MySession.Current.MySetting.GridRows;
         //settings.SettingsPager.Mode = GridViewPagerMode.ShowAllRecords;
@@ -126,5 +126,5 @@
     settings.UseSubmitBehavior = true;
     settings.Text = "ExportTo PDF";
     CC.Models.Classes.MySession.Current.GridReport = grid;
-    settings.RouteValues = new { Controller = "Home", Action = "ExportTo", form = "GridViewWorks" };
+    settings.RouteValues = new { Controller = "Object", Action = "ExportTo", name = "GridViewWorks" };
 }).GetHtml()

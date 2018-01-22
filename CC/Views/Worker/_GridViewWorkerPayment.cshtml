@@ -1,9 +1,14 @@
-﻿@{
-    var grid = Html.DevExpress().GridView(settings => {
+﻿@*function OnCellClick(visibleIndex, fieldName) {
+    alert(visibleIndex + " " + fieldName);
+}*@
+
+@{
+    var grid = Html.DevExpress().GridView(settings =>
+    {
         settings.Name = "GridView";
         settings.CallbackRouteValues = new { Controller = "Worker", Action = "GridViewWorkerPayment" };
 
-        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkerPaymentAddNew" };
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkerPaymentAddNew", id = "addodata" };
         settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkerPaymentUpdate" };
         settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkerPaymentDelete" };
         settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
@@ -35,7 +40,7 @@
             e.NewValues["work_id"] = Model.WorkId;
         };
 
-       
+
         //
         settings.Columns.Add(column =>
         {
@@ -60,8 +65,17 @@
         });
         settings.Columns.Add(c => { c.FieldName = "amount"; c.Caption = "Suma"; });
         settings.Columns.Add(c => { c.FieldName = "notice"; c.Caption = "Notițe"; });
+
+        //settings.HtmlDataCellPrepared = (sender, e) =>
+        //{
+        //    e.Cell.Attributes.Add(
+        //        "onclick",
+        //        string.Format("OnCellClick('{0}', '{1}');", e.VisibleIndex, e.DataColumn.FieldName)
+        //    );
+        //};
     });
-    if (ViewData["EditError"] != null){
+    if (ViewData["EditError"] != null)
+    {
         grid.SetEditErrorText((string)ViewData["EditError"]);
     }
 }

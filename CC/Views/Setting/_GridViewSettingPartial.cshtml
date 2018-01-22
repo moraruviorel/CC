@@ -1,0 +1,76 @@
+@{
+    var grid = Html.DevExpress().GridView(settings => {
+        settings.Name = "GridViewSetting";
+        settings.CallbackRouteValues = new { Controller = "Setting", Action = "GridViewSettingPartial" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Setting", Action = "GridViewSettingPartialAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Setting", Action = "GridViewSettingPartialUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Setting", Action = "GridViewSettingPartialDelete" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = true;//CC.Models.Classes.MySession.Current.IsUserAdmin;
+        settings.CommandColumn.ShowDeleteButton = true;// CC.Models.Classes.MySession.Current.IsUserAdmin;
+        settings.CommandColumn.ShowEditButton = true;
+
+        settings.KeyFieldName = "ID";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.Off;
+        settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
+        settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
+        settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
+        settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
+
+        //settings.Columns.Add(c=>
+        //{
+        //    c.FieldName = "Name";
+        //    c.Caption = "Denumire";
+        //    if (!CC.Models.Classes.MySession.Current.IsUserAdmin)
+        //        c.ReadOnly = true;
+
+        //});
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "SettingStatus";
+            c.Caption = "Denumire";
+            //c.Visible = CC.Models.Classes.MySession.Current.IsUserAdmin;
+            c.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "Description";
+                p.ValueField = "id";
+                p.ValueType = typeof(string);
+                p.DataSource = Model.SettingStatuses;
+            });
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Value";
+            c.Caption = "Descriere";
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "UserId";
+            c.Caption = "Utilizatori";
+            c.Visible = CC.Models.Classes.MySession.Current.IsUserAdmin;
+            c.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "UserName";
+                p.ValueField = "Id";
+                p.ValueType = typeof(string);
+                p.DataSource = Model.AspNetUsers;
+            });
+        });
+    });
+    if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model.SettingList).GetHtml()

@@ -8,8 +8,10 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using static CC.Models.BusinessLogic.Functions;
-using BLHome = CC.Models.BusinessLogic.Home;
+using BusinessLogic = CC.Models.BusinessLogic;
 using static CC.Models.Classes.Enums;
+using Database = CC.Models.Database;
+using CC.Models.Classes.Account;
 
 namespace CC.Controllers
 {
@@ -55,8 +57,20 @@ namespace CC.Controllers
                     MySession.Current.IsUserAdmin = true;
                 }
 
-                var dbSetting = dbSettings.Settings.AsQueryable().Where(x => x.UserId == MySession.Current.UserGuid);
-                DefaultData.SetSetting(dbSetting);
+                try
+                {
+                    var dbSetting = BusinessLogic.Setting.Setting.GetSettingForCurrentUserList(dbSettings);
+                    BusinessLogic.Setting.Setting.SetSetting(dbSetting);
+                }
+                catch (Exception ex)
+                {
+                    MySession.Current.MySetting = new Models.Classes.Setting.Setting();
+
+                    MySession.Current.MySetting.GridRows = 20;
+                    MySession.Current.MySetting.IsPageLandscape = false;
+                    //throw;
+                }
+                
 
             }           
             return View();
@@ -84,7 +98,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewUnitAddNew(CC.Models.Unit item)
+        public ActionResult GridViewUnitAddNew(Database.Unit item)
         {
             var model = dbUnits.Units;
             if (ModelState.IsValid)
@@ -104,7 +118,7 @@ namespace CC.Controllers
             return PartialView("_GridViewUnit", model.ToList());
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewUnitUpdate(CC.Models.Unit item)
+        public ActionResult GridViewUnitUpdate(Database.Unit item)
         {
             var model = dbUnits.Units;
             if (ModelState.IsValid)
@@ -166,7 +180,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewSpecialityPartialAddNew(CC.Models.Speciality item)
+        public ActionResult GridViewSpecialityPartialAddNew(Database.Speciality item)
         {
             var model = dbSpecialities.Specialities;
             if (ModelState.IsValid)
@@ -188,7 +202,7 @@ namespace CC.Controllers
             return PartialView("_GridViewSpecialityPartial", model1.ToList());
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewSpecialityPartialUpdate(CC.Models.Speciality item)
+        public ActionResult GridViewSpecialityPartialUpdate(Database.Speciality item)
         {
             var model = dbSpecialities.Specialities;
             if (ModelState.IsValid)
@@ -258,7 +272,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult MaterialToBuyGVPAddNew(CC.Models.MaterialToBuy item)
+        public ActionResult MaterialToBuyGVPAddNew(Database.MaterialToBuy item)
         {
             var model = new object[0];
             if (ModelState.IsValid)
@@ -277,7 +291,7 @@ namespace CC.Controllers
             return PartialView("_MaterialToBuyGVP", model);
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult MaterialToBuyGVPUpdate(CC.Models.MaterialToBuy item)
+        public ActionResult MaterialToBuyGVPUpdate(Database.MaterialToBuy item)
         {
             var model = new object[0];
             if (ModelState.IsValid)
@@ -331,7 +345,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewLoanMoneyPartialAddNew(CC.Models.LoanMoney item)
+        public ActionResult GridViewLoanMoneyPartialAddNew(Database.LoanMoney item)
         {
             var model = dbLoanMoney.LoanMoney;//.AsQueryable().Where(x => x.user_id == MySession.Current.UserGuid).ToList();
             if (ModelState.IsValid)
@@ -354,7 +368,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewLoanMoneyPartialUpdate(CC.Models.LoanMoney item)
+        public ActionResult GridViewLoanMoneyPartialUpdate(Database.LoanMoney item)
         {
             var model = dbLoanMoney.LoanMoney;
             if (ModelState.IsValid)
@@ -419,7 +433,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult CustomerPartialAddNew(CC.Models.Customer item)
+        public ActionResult CustomerPartialAddNew(Database.Customer item)
         {
             var model = dbCustomer.Customer;
             if (ModelState.IsValid)
@@ -441,7 +455,7 @@ namespace CC.Controllers
             return PartialView("_CustomerPartial", modelShow.ToList());
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult CustomerPartialUpdate(CC.Models.Customer item)
+        public ActionResult CustomerPartialUpdate(Database.Customer item)
         {
             var model = dbCustomer.Customer;
             if (ModelState.IsValid)
@@ -539,7 +553,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult _GridViewTreatmentPartialAddNew(Treatment item)
+        public ActionResult _GridViewTreatmentPartialAddNew(Database.Treatment item)
         {
             var model = dbTreatment.Treatment;
             if (ModelState.IsValid)
@@ -563,7 +577,7 @@ namespace CC.Controllers
             return PartialView("_GridViewTreatmentPartial", modelToShow.ToList());
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult _GridViewTreatmentPartialUpdate(Treatment item)
+        public ActionResult _GridViewTreatmentPartialUpdate(Database.Treatment item)
         {
             var model = dbTreatment.Treatment;
             if (ModelState.IsValid)
@@ -624,7 +638,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewSurgeryPartialAddNew(Treatment item)
+        public ActionResult GridViewSurgeryPartialAddNew(Database.Treatment item)
         {
             var model = dbTreatment.Treatment;
             if (ModelState.IsValid)
@@ -648,7 +662,7 @@ namespace CC.Controllers
             return PartialView("_GridViewSurgeryPartial", modelToShow.ToList());
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewSurgeryPartialUpdate(CC.Models.Treatment item)
+        public ActionResult GridViewSurgeryPartialUpdate(Database.Treatment item)
         {
             var model = dbTreatment.Treatment;
             if (ModelState.IsValid)
@@ -711,7 +725,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewProsthesisPartialAddNew(Treatment item)
+        public ActionResult GridViewProsthesisPartialAddNew(Database.Treatment item)
         {
             var model = dbTreatment.Treatment;
             if (ModelState.IsValid)
@@ -735,7 +749,7 @@ namespace CC.Controllers
             return PartialView("_GridViewProsthesisPartial", modelToShow.ToList());
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewProsthesisPartialUpdate(Treatment item)
+        public ActionResult GridViewProsthesisPartialUpdate(Database.Treatment item)
         {
             var model = dbTreatment.Treatment;
             if (ModelState.IsValid)
@@ -790,18 +804,18 @@ namespace CC.Controllers
         public ActionResult LoanMoneyDetails(int loanMoneyId)
         {
             MySession.Current.LoanMoneyId = loanMoneyId;
-            ViewBag.PersonName = BLHome.LoanMoney.GetLoanMoneyById(loanMoneyId).person_name;
+            ViewBag.PersonName = BusinessLogic.Home.LoanMoney.GetLoanMoneyById(loanMoneyId).person_name;
             return View();
         }
                         
         [ValidateInput(false)]
         public ActionResult LoanMoneyDetailsPartial()
         {            
-            return PartialView("_LoanMoneyDetailsPartial", BLHome.LoanMoneyDetail.GetLoanMoneyDetails().ToList());
+            return PartialView("_LoanMoneyDetailsPartial", BusinessLogic.Home.LoanMoneyDetail.GetLoanMoneyDetails().ToList());
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult LoanMoneyDetailsPartialAddNew(CC.Models.LoanMoneyDetail item)
+        public ActionResult LoanMoneyDetailsPartialAddNew(Database.LoanMoneyDetail item)
         {
             var model = dbLoanMoneyDetails.LoanMoneyDetails;
             if (ModelState.IsValid)
@@ -819,10 +833,10 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            return PartialView("_LoanMoneyDetailsPartial", BLHome.LoanMoneyDetail.GetLoanMoneyDetails().ToList());
+            return PartialView("_LoanMoneyDetailsPartial", BusinessLogic.Home.LoanMoneyDetail.GetLoanMoneyDetails().ToList());
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult LoanMoneyDetailsPartialUpdate(CC.Models.LoanMoneyDetail item)
+        public ActionResult LoanMoneyDetailsPartialUpdate(Database.LoanMoneyDetail item)
         {
             var model = dbLoanMoneyDetails.LoanMoneyDetails;
             if (ModelState.IsValid)
@@ -843,7 +857,7 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            return PartialView("_LoanMoneyDetailsPartial", BLHome.LoanMoneyDetail.GetLoanMoneyDetails().ToList());
+            return PartialView("_LoanMoneyDetailsPartial", BusinessLogic.Home.LoanMoneyDetail.GetLoanMoneyDetails().ToList());
         }
         [HttpPost, ValidateInput(false)]
         public ActionResult LoanMoneyDetailsPartialDelete(System.Int32 id)
@@ -863,32 +877,32 @@ namespace CC.Controllers
                     ViewData["EditError"] = e.Message;
                 }
             }
-            return PartialView("_LoanMoneyDetailsPartial", BLHome.LoanMoneyDetail.GetLoanMoneyDetails().ToList());
+            return PartialView("_LoanMoneyDetailsPartial", BusinessLogic.Home.LoanMoneyDetail.GetLoanMoneyDetails().ToList());
         }
 
-#endregion
+        #endregion
 
         #region DB
 
-        ExcelentConstructWorks dbWorks = new ExcelentConstructWorks();
+        Database.ExcelentConstructWorks dbWorks = new Database.ExcelentConstructWorks();
 
-        ExcelentConstructSetting dbSettings = new ExcelentConstructSetting();
+        Database.ExcelentConstructSetting dbSettings = new Database.ExcelentConstructSetting();
 
-        ExcelentConstructUnit dbUnits = new ExcelentConstructUnit();
+        Database.ExcelentConstructUnit dbUnits = new Database.ExcelentConstructUnit();
 
-        SpecialityEntities dbSpecialities = new SpecialityEntities();
-        
-        AspNetUser dbAspNetUsers = new AspNetUser();
+        Database.SpecialityEntities dbSpecialities = new Database.SpecialityEntities();
 
-        MaterialToBuyEntities dbMaterialToBuy = new MaterialToBuyEntities();
+        Database.AspNetUser dbAspNetUsers = new Database.AspNetUser();
 
-        CustomerEntities dbCustomer = new CustomerEntities();
+        Database.MaterialToBuyEntities dbMaterialToBuy = new Database.MaterialToBuyEntities();
 
-        TreatmentEntities dbTreatment = new TreatmentEntities();
+        Database.CustomerEntities dbCustomer = new Database.CustomerEntities();
 
-        LoanMoneyEntities dbLoanMoney = new LoanMoneyEntities();
+        Database.TreatmentEntities dbTreatment = new Database.TreatmentEntities();
 
-        LoanMoneyDetailsEntities dbLoanMoneyDetails = new LoanMoneyDetailsEntities();
+        Database.LoanMoneyEntities dbLoanMoney = new Database.LoanMoneyEntities();
+
+        Database.LoanMoneyDetailsEntities dbLoanMoneyDetails = new Database.LoanMoneyDetailsEntities();
 
         #endregion
 

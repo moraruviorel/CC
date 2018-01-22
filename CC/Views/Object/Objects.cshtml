@@ -1,4 +1,6 @@
-﻿@Html.DevExpress().GetStyleSheets(
+﻿@model CC.Models.Classes.Object.ObjectModel
+
+@Html.DevExpress().GetStyleSheets(
 new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
 new StyleSheet { ExtensionSuite = ExtensionSuite.Editors }
 )
@@ -8,11 +10,14 @@ new Script { ExtensionSuite = ExtensionSuite.Editors }
 )
 
 @{
+    //model = new CC.Models.Classes.Object.ObjectModel();
     ViewBag.Title = "Objects";
     int parentId = CC.Models.Classes.MySession.Current.ParentId;
 }
 
 <h2>Lista de Obiecte</h2>
+
+
 
 @if (parentId > 0)
 {

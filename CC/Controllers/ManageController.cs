@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using CC.Models;
+using CC.Models.Classes.Account;
 
 namespace CC.Controllers
 {

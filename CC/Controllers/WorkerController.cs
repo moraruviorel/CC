@@ -5,10 +5,10 @@ using DevExpress.Web.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using static CC.Models.BusinessLogic.Functions;
-using static CC.Models.Classes.Enums;
+using Database = CC.Models.Database;
+using BLWorkers = CC.Models.BusinessLogic.Worker;
 
 namespace CC.Controllers
 {
@@ -71,7 +71,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewWorkersAddNew(Worker item)
+        public ActionResult GridViewWorkersAddNew(Database.Worker item)
         {
             var model = dbWorkers.Workers;
             if (ModelState.IsValid)
@@ -94,7 +94,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewWorkersUpdate(Worker item)
+        public ActionResult GridViewWorkersUpdate(Database.Worker item)
         {
             var model = dbWorkers.Workers;
             if (ModelState.IsValid)
@@ -159,7 +159,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult WorkerContractPartialAddNew(CC.Models.WorkerContractType item)
+        public ActionResult WorkerContractPartialAddNew(Database.WorkerContractType item)
         {
             var model = dbWorkerContract.WorkerContractTypes;
             if (ModelState.IsValid)
@@ -179,7 +179,7 @@ namespace CC.Controllers
             return PartialView("_WorkerContractPartial", model.ToList());
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult WorkerContractPartialUpdate(CC.Models.WorkerContractType item)
+        public ActionResult WorkerContractPartialUpdate(Database.WorkerContractType item)
         {
             var model = dbWorkerContract.WorkerContractTypes;
             if (ModelState.IsValid)
@@ -231,12 +231,14 @@ namespace CC.Controllers
         [ValidateInput(false)]
         public ActionResult GridViewWorkerPayment()
         {
+            var viewModel = GridViewExtension.GetViewModel("GridView");
+
             var model = Models.BusinessLogic.Worker.WorkerPayment.GetWorkerPaymentModel(dbWorks, dbWorkerPayment);
             return PartialView("_GridViewWorkerPayment", model);
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewWorkerPaymentAddNew(CC.Models.WorkerPayment item)
+        public ActionResult GridViewWorkerPaymentAddNew(Database.WorkerPayment item)
         {
             var model = dbWorkerPayment.WorkerPayments;
             if (ModelState.IsValid)
@@ -273,7 +275,7 @@ namespace CC.Controllers
             return PartialView("_GridViewWorkerPayment", modelToShow);
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewWorkerPaymentUpdate(CC.Models.WorkerPayment item)
+        public ActionResult GridViewWorkerPaymentUpdate(Database.WorkerPayment item)
         {
             var model = dbWorkerPayment.WorkerPayments;
             if (ModelState.IsValid)
@@ -332,7 +334,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewWorkerSpecialityPartialAddNew(CC.Models.WorkerSpeciality item)
+        public ActionResult GridViewWorkerSpecialityPartialAddNew(Database.WorkerSpeciality item)
         {
             var model = dbWorkerSpeciality.WorkerSpecialities;
             if (ModelState.IsValid)
@@ -355,7 +357,7 @@ namespace CC.Controllers
             return PartialView("_GridViewWorkerSpecialityPartial", model1.ToList());
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewWorkerSpecialityPartialUpdate(CC.Models.WorkerSpeciality item)
+        public ActionResult GridViewWorkerSpecialityPartialUpdate(Database.WorkerSpeciality item)
         {
             var model = dbWorkerSpeciality.WorkerSpecialities;
             if (ModelState.IsValid)
@@ -410,17 +412,17 @@ namespace CC.Controllers
         [ValidateInput(false)]
         public ActionResult WorkerWorksPartial()
         {
-            ViewBag.Workers = Models.DB.LoadDataBase.GetWorkerList();
+            ViewBag.Workers = BLWorkers.Worker.GetWorkerList(dbWorkers);
             ViewBag.Unites = dbUnits.Units.ToList();
             //
             ViewBag.Objects = dbObjects.Objects.ToList().Where(x => x.UserId == MySession.Current.UserGuid);
-            List<Work> workList = dbWorks.Works.ToList().Where(x => x.worker_id == MySession.Current.WorkerId).ToList();
+            List<Database.Work> workList = dbWorks.Works.ToList().Where(x => x.worker_id == MySession.Current.WorkerId).ToList();
             //                        
             return PartialView("_WorkerWorksPartial", workList);
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult WorkerWorksPartialAddNew(CC.Models.Work item)
+        public ActionResult WorkerWorksPartialAddNew(Database.Work item)
         {
             var model = dbWorks.Works;
             if (ModelState.IsValid)
@@ -440,7 +442,7 @@ namespace CC.Controllers
             return PartialView("_WorkerWorksPartial", model.ToList());
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult WorkerWorksPartialUpdate(CC.Models.Work item)
+        public ActionResult WorkerWorksPartialUpdate(Database.Work item)
         {
             var model = dbWorks.Works;
             if (ModelState.IsValid)
@@ -450,7 +452,7 @@ namespace CC.Controllers
                     if (item.is_paid == 1)
                     {
                         var modelPayments = dbWorkerPayment.WorkerPayments;
-                        WorkerPayment workerPayment = new WorkerPayment();
+                        Database.WorkerPayment workerPayment = new Database.WorkerPayment();
                         //
                         workerPayment.payment_date = DateTime.Now;
                         workerPayment.worker_id = MySession.Current.WorkerId;
@@ -524,7 +526,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult WorkerSalaryContractPartialAddNew(CC.Models.WorkerSalaryContract item)
+        public ActionResult WorkerSalaryContractPartialAddNew(Database.WorkerSalaryContract item)
         {
             var model = dbWorkerSalaryContract.WorkerSalaryContracts;
             if (ModelState.IsValid)
@@ -547,7 +549,7 @@ namespace CC.Controllers
             return PartialView("_WorkerSalaryContractPartial", model1.ToList());
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult WorkerSalaryContractPartialUpdate(WorkerSalaryContract item)
+        public ActionResult WorkerSalaryContractPartialUpdate(Database.WorkerSalaryContract item)
         {
             var model = dbWorkerSalaryContract.WorkerSalaryContracts;
             if (ModelState.IsValid)
@@ -613,7 +615,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult WorkDaysPartialAddNew(CC.Models.WorkDay item)
+        public ActionResult WorkDaysPartialAddNew(Database.WorkDay item)
         {
             var model = dbWorkDay.WorkDays;
             if (ModelState.IsValid)
@@ -636,7 +638,7 @@ namespace CC.Controllers
             return PartialView("_WorkDaysPartial", model1.ToList());
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult WorkDaysPartialUpdate(CC.Models.WorkDay item)
+        public ActionResult WorkDaysPartialUpdate(Database.WorkDay item)
         {
             var model = dbWorkDay.WorkDays;
             if (ModelState.IsValid)
@@ -687,24 +689,24 @@ namespace CC.Controllers
         #endregion
 
 
-        WorkDayEntities dbWorkDay = new WorkDayEntities();
+        Database.WorkDayEntities dbWorkDay = new Database.WorkDayEntities();
 
-        ExcelentConstructWorkers dbWorkers = new ExcelentConstructWorkers();
+        Database.ExcelentConstructWorkers dbWorkers = new Database.ExcelentConstructWorkers();
 
-        WorkerContractEntities dbWorkerContract = new WorkerContractEntities();
+        Database.WorkerContractEntities dbWorkerContract = new Database.WorkerContractEntities();
 
-        ExcelentConstructWorks dbWorks = new ExcelentConstructWorks();
+        Database.ExcelentConstructWorks dbWorks = new Database.ExcelentConstructWorks();
 
-        ECWorkerPayment dbWorkerPayment = new ECWorkerPayment();
+        Database.ECWorkerPayment dbWorkerPayment = new Database.ECWorkerPayment();
 
-        WorkerSpecialityEntities dbWorkerSpeciality = new WorkerSpecialityEntities();
+        Database.WorkerSpecialityEntities dbWorkerSpeciality = new Database.WorkerSpecialityEntities();
 
-        SpecialityEntities dbSpecialities = new SpecialityEntities();
+        Database.SpecialityEntities dbSpecialities = new Database.SpecialityEntities();
 
-        ExcelentConstructUnit dbUnits = new ExcelentConstructUnit();
+        Database.ExcelentConstructUnit dbUnits = new Database.ExcelentConstructUnit();
 
-        WorkerSalaryContractEntities dbWorkerSalaryContract = new WorkerSalaryContractEntities();
+        Database.WorkerSalaryContractEntities dbWorkerSalaryContract = new Database.WorkerSalaryContractEntities();
 
-        ExcelentConstructEntitiesObjects dbObjects = new ExcelentConstructEntitiesObjects();
+        Database.ExcelentConstructEntitiesObjects dbObjects = new Database.ExcelentConstructEntitiesObjects();
     }
 }

@@ -1,8 +1,6 @@
 ﻿using CC.Models.Classes;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace CC.Models.BusinessLogic.Worker
 {
@@ -13,9 +11,9 @@ namespace CC.Models.BusinessLogic.Worker
         {
             double salary = 0.0;
 
-            ExcelentConstructWorkers dbWorkers = new ExcelentConstructWorkers();
-            WorkerSalaryContractEntities dbWorkerSalaryContract = new WorkerSalaryContractEntities();
-            WorkDayEntities workDays = new WorkDayEntities();
+            Database.ExcelentConstructWorkers dbWorkers = new Database.ExcelentConstructWorkers();
+            Database.WorkerSalaryContractEntities dbWorkerSalaryContract = new Database.WorkerSalaryContractEntities();
+            Database.WorkDayEntities workDays = new Database.WorkDayEntities();
             var worker = dbWorkers.Workers.ToList().FirstOrDefault(x => x.Id == workerId);
             var contractTypeId = worker.contract_type_id ?? 0;
 
@@ -42,7 +40,7 @@ namespace CC.Models.BusinessLogic.Worker
                         salary = (workDayList.Sum(x => x.work_hours) ?? 0) * (lastSalaryContract.worker_sum ?? 0.0);
                     break;
                 case (int)Enums.WorkerContractType.Volum:
-                    ExcelentConstructWorks works = new ExcelentConstructWorks();
+                    Database.ExcelentConstructWorks works = new Database.ExcelentConstructWorks();
                     var firstWorkFinished = works.Works.ToList().OrderBy(x => x.date_end).ToList().FirstOrDefault(x => x.worker_id == workerId && x.is_paid == 0);
                     //foreach (var item in workList)
                     //{
@@ -61,16 +59,17 @@ namespace CC.Models.BusinessLogic.Worker
 
         }
 
-        public static Classes.Worker.WorkerPayment GetWorkerPaymentModel(ExcelentConstructWorks dbWorks, ECWorkerPayment dbWorkerPayment)
+        public static Classes.Worker.WorkerPayment GetWorkerPaymentModel(
+            Database.ExcelentConstructWorks dbWorks, 
+            Database.ECWorkerPayment dbWorkerPayment)
         {
             var model = new Classes.Worker.WorkerPayment();
-
-
+            
             model.WorkId = MySession.Current.WorkId;
             model.CurrentDate = DateTime.Today;
             model.Amount = GetSalary(MySession.Current.WorkerId);
-            model.WorkerWorkList = dbWorks.Works.AsQueryable()
-                .Where(x => x.worker_id == MySession.Current.WorkerId && x.is_paid == 0).ToList();
+            model.WorkerWorkList = dbWorks.Works.AsQueryable().Where(x => x.worker_id == MySession.Current.WorkerId).ToList();
+
             model.WorkerPayments = dbWorkerPayment.WorkerPayments.ToList().Where(x => x.worker_id == MySession.Current.WorkerId).ToList();
 
             return model;

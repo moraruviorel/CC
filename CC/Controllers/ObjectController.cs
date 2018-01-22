@@ -5,10 +5,11 @@ using DevExpress.Web.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using static CC.Models.Classes.Enums;
 using static CC.Models.BusinessLogic.Functions;
+using Database = CC.Models.Database;
+using BLObject = CC.Models.BusinessLogic.Object;
+using BLWorker = CC.Models.BusinessLogic.Worker;
 
 namespace CC.Controllers
 {
@@ -46,12 +47,16 @@ namespace CC.Controllers
                     partialView = "ObjectDetail/ObjectPayments";
                     break;
                 case "6":
+                    
                     ViewBag.Works = dbWorks.Works.ToList().Where(x => x.object_id == MySession.Current.ObjectId).ToList();
-                    ViewBag.MaterialSum = dbMaterial.ObjectMaterials.ToList().Where(x => x.object_id == MySession.Current.ObjectId)
-                                                                             .Sum(x => x.total_price);
-                    ViewBag.InstrumentSum = dbInstruments.ObjectInstruments.ToList().Where(x => x.object_id == MySession.Current.ObjectId)
-                                                                                    .Sum(x => x.total_price);
-                    ViewBag.ExtraSum = dbObjectExtras.ObjectExtras.ToList().Where(x => x.object_id == MySession.Current.ObjectId).Sum(x => x.price);
+                    ViewBag.MaterialSum = BLObject.ObjectMaterial.GetObjectMaterialModel(dbObjectMaterial, dbObjects)
+                        .ObjectMaterialList.Sum(x => x.total_price);
+                    ViewBag.InstrumentSum = dbInstruments.ObjectInstruments.ToList()
+                        .Where(x => x.object_id == MySession.Current.ObjectId)                                                                                    
+                        .Sum(x => x.total_price);
+                    ViewBag.ExtraSum = dbObjectExtras.ObjectExtras.ToList()
+                        .Where(x => x.object_id == MySession.Current.ObjectId)
+                        .Sum(x => x.price);
                     partialView = "ObjectDetail/ObjectTotal";
                     break;
             }
@@ -72,13 +77,18 @@ namespace CC.Controllers
                 case "GridViewMaterial":
                     MySession.Current.TabAction = name;
                     list = MySession.Current.GridReport;
-                    var materials = dbMaterial.ObjectMaterials.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
+                    var materials = dbObjectMaterial.ObjectMaterials.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
                     return GridViewExtension.ExportToPdf(CC.Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), materials.ToList());
                 case "GridViewExtra":
                     MySession.Current.TabAction = name;
                     list = MySession.Current.GridReport;
                     var extras = dbObjectExtras.ObjectExtras.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
                     return GridViewExtension.ExportToPdf(CC.Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), extras.ToList());
+                case "GridViewPayment":
+                    MySession.Current.TabAction = name;
+                    list = MySession.Current.GridReport;
+                    var payment = dbObjectPayments.ObjectPayments.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
+                    return GridViewExtension.ExportToPdf(CC.Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), payment.ToList());
                 case "GridViewInstrument":
                     MySession.Current.TabAction = name;
                     list = MySession.Current.GridReport;
@@ -99,27 +109,29 @@ namespace CC.Controllers
             objectId = objectId ?? 0;
             MySession.Current.ObjectId = objectId ?? 0;
 
+            var model = new Models.Classes.Object.ObjectModel();
+
             if (objectId == 0)
             {
                 MySession.Current.ParentId = objectId ?? 0;
             }
             else
                 MySession.Current.ParentId = dbObjects.Objects.ToList().FirstOrDefault(x => x.ID == objectId).Parent_Id ?? 0;
-            return View();
+            return View(model);
         }
 
         [ValidateInput(false)]
         public ActionResult GridViewObjects()
         {
-            var model = Models.DB.LoadDataBase.GetObjectsByParentId();
+            var model = BLObject.Object.GetObjectsByParentId(dbObjects);
             //
-            ViewBag.ObjectsParent = Models.DB.LoadDataBase.GetObjectsById(MySession.Current.ObjectId);
+            ViewBag.ObjectsParent = BLObject.Object.GetObjectsById(MySession.Current.ObjectId);
             //
             return PartialView("_GridViewObjects", model.ToList());
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewObjectsAddNew(CC.Models.Object item)
+        public ActionResult GridViewObjectsAddNew(Database.Object item)
         {
             var model = dbObjects.Objects;
             if (ModelState.IsValid)
@@ -138,12 +150,12 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var modelToShow = Models.DB.LoadDataBase.GetObjectsByParentId();
+            var modelToShow = BLObject.Object.GetObjectsByParentId(dbObjects);
             return PartialView("_GridViewObjects", modelToShow.ToList());
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewObjectsUpdate(CC.Models.Object item)
+        public ActionResult GridViewObjectsUpdate(Database.Object item)
         {
             var model = dbObjects.Objects;
             if (ModelState.IsValid)
@@ -164,7 +176,7 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var modelToShow = Models.DB.LoadDataBase.GetObjectsByParentId();
+            var modelToShow = BLObject.Object.GetObjectsByParentId(dbObjects);
             return PartialView("_GridViewObjects", modelToShow.ToList());
         }
 
@@ -186,7 +198,7 @@ namespace CC.Controllers
                     ViewData["EditError"] = e.Message;
                 }
             }
-            var modelToShow = Models.DB.LoadDataBase.GetObjectsByParentId();
+            var modelToShow = BLObject.Object.GetObjectsByParentId(dbObjects);
             return PartialView("_GridViewObjects", modelToShow.ToList());
         }
 
@@ -209,7 +221,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewObjectPaymentsAddNew(ObjectPayments item)
+        public ActionResult GridViewObjectPaymentsAddNew(Database.ObjectPayments item)
         {
             var model = dbObjectPayments.ObjectPayments;
             if (ModelState.IsValid)
@@ -231,7 +243,7 @@ namespace CC.Controllers
             return PartialView("_GridViewObjectPayments", modelToShow.ToList());
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewObjectPaymentsUpdate(ObjectPayments item)
+        public ActionResult GridViewObjectPaymentsUpdate(Database.ObjectPayments item)
         {
             var model = dbObjectPayments.ObjectPayments;
             if (ModelState.IsValid)
@@ -291,18 +303,18 @@ namespace CC.Controllers
         public ActionResult GridViewWorks()
         {
 
-            ViewBag.Workers = Models.DB.LoadDataBase.GetWorkerList();
+            ViewBag.Workers = BLWorker.Worker.GetWorkerList(dbWorkers);
             ViewBag.Unites = dbUnits.Units.ToList();
             if (MySession.Current.WorksForm == (int)FormName.ObjectForm)
             {
                 //ViewBag.Objects = Models.DB.LoadDataBase.GetObjectsByParentId();
-                List<Work> workList = dbWorks.Works.ToList().Where(x => x.object_id == MySession.Current.ObjectId).ToList();
+                List<Database.Work> workList = dbWorks.Works.ToList().Where(x => x.object_id == MySession.Current.ObjectId).ToList();
                 return PartialView("_GridViewWorks", workList);
             }
             else
             {
                 ViewBag.Objects = dbObjects.Objects.ToList().Where(x => x.UserId == MySession.Current.UserGuid);
-                List<Work> workList = dbWorks.Works.ToList().Where(x => x.worker_id == MySession.Current.WorkerId).ToList();
+                List<Database.Work> workList = dbWorks.Works.ToList().Where(x => x.worker_id == MySession.Current.WorkerId).ToList();
                 return PartialView("_GridViewWorks", workList);
             }
 
@@ -310,7 +322,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewWorksAddNew(CC.Models.Work item)
+        public ActionResult GridViewWorksAddNew(Database.Work item)
         {
             var model = dbWorks.Works;
             if (ModelState.IsValid)
@@ -343,7 +355,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewWorksUpdate(CC.Models.Work item)
+        public ActionResult GridViewWorksUpdate(Database.Work item)
         {
             var model = dbWorks.Works;
             if (ModelState.IsValid)
@@ -403,22 +415,21 @@ namespace CC.Controllers
         [ValidateInput(false)]
         public ActionResult GridViewObjectMaterial()
         {
-            ViewBag.Objects = Models.DB.LoadDataBase.GetObjectsByParentId();
-            var model = dbMaterial.ObjectMaterials.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-            return PartialView("_GridViewObjectMaterial", model.ToList());
+            var model = BLObject.ObjectMaterial.GetObjectMaterialModel(dbObjectMaterial, dbObjects);
+            return PartialView("_GridViewObjectMaterial", model);
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewObjectMaterialAddNew(ObjectMaterial item)
+        public ActionResult GridViewObjectMaterialAddNew(Database.ObjectMaterial item)
         {
-            var model = dbMaterial.ObjectMaterials;
+            var model = dbObjectMaterial.ObjectMaterials;
             if (ModelState.IsValid)
             {
                 try
                 {
                     item.object_id = MySession.Current.ObjectId;
                     model.Add(item);
-                    dbMaterial.SaveChanges();
+                    dbObjectMaterial.SaveChanges();
                 }
                 catch (Exception e)
                 {
@@ -427,14 +438,14 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var modelToShow = dbMaterial.ObjectMaterials.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
+            var modelToShow = dbObjectMaterial.ObjectMaterials.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
             return PartialView("_GridViewObjectMaterial", modelToShow.ToList());
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewObjectMaterialUpdate(ObjectMaterial item)
+        public ActionResult GridViewObjectMaterialUpdate(Database.ObjectMaterial item)
         {
-            var model = dbMaterial.ObjectMaterials;
+            var model = dbObjectMaterial.ObjectMaterials;
             if (ModelState.IsValid)
             {
                 try
@@ -443,7 +454,7 @@ namespace CC.Controllers
                     if (modelItem != null)
                     {
                         this.UpdateModel(modelItem);
-                        dbMaterial.SaveChanges();
+                        dbObjectMaterial.SaveChanges();
                     }
                 }
                 catch (Exception e)
@@ -453,14 +464,14 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var modelToShow = dbMaterial.ObjectMaterials.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
+            var modelToShow = dbObjectMaterial.ObjectMaterials.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
             return PartialView("_GridViewObjectMaterial", modelToShow.ToList());
         }
 
         [HttpPost, ValidateInput(false)]
         public ActionResult GridViewObjectMaterialDelete(System.Int32 id)
         {
-            var model = dbMaterial.ObjectMaterials;
+            var model = dbObjectMaterial.ObjectMaterials;
             if (id >= 0)
             {
                 try
@@ -468,14 +479,14 @@ namespace CC.Controllers
                     var item = model.FirstOrDefault(it => it.id == id);
                     if (item != null)
                         model.Remove(item);
-                    dbMaterial.SaveChanges();
+                    dbObjectMaterial.SaveChanges();
                 }
                 catch (Exception e)
                 {
                     ViewData["EditError"] = e.Message;
                 }
             }
-            var modelToShow = dbMaterial.ObjectMaterials.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
+            var modelToShow = dbObjectMaterial.ObjectMaterials.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
             return PartialView("_GridViewObjectMaterial", modelToShow.ToList());
         }
 
@@ -492,14 +503,14 @@ namespace CC.Controllers
         [ValidateInput(false)]
         public ActionResult GridViewObjectInstrument()
         {
-            ViewBag.Objects = Models.DB.LoadDataBase.GetObjectsByParentId();
-            ViewBag.Workers = Models.DB.LoadDataBase.GetWorkerList();
+            ViewBag.Objects = BLObject.Object.GetObjectsByParentId(dbObjects);
+            ViewBag.Workers = BLWorker.Worker.GetWorkerList(dbWorkers);
             var modelToShow = dbInstruments.ObjectInstruments.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
             return PartialView("_GridViewObjectInstrument", modelToShow.ToList());
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewObjectInstrumentAddNew(CC.Models.ObjectInstrument item)
+        public ActionResult GridViewObjectInstrumentAddNew(Database.ObjectInstrument item)
         {
             var model = dbInstruments.ObjectInstruments;
             if (ModelState.IsValid)
@@ -522,7 +533,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewObjectInstrumentUpdate(CC.Models.ObjectInstrument item)
+        public ActionResult GridViewObjectInstrumentUpdate(Database.ObjectInstrument item)
         {
             var model = dbInstruments.ObjectInstruments;
             if (ModelState.IsValid)
@@ -581,14 +592,14 @@ namespace CC.Controllers
         [ValidateInput(false)]
         public ActionResult GridViewObjectExtra()
         {
-            ViewBag.Objects = Models.DB.LoadDataBase.GetObjectsByParentId();
-            ViewBag.Workers = Models.DB.LoadDataBase.GetWorkerList();
+            ViewBag.Objects = BLObject.Object.GetObjectsByParentId(dbObjects);
+            ViewBag.Workers = BLWorker.Worker.GetWorkerList(dbWorkers);
             var modelToShow = dbObjectExtras.ObjectExtras.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
             return PartialView("_GridViewObjectExtra", modelToShow.ToList());
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewObjectExtraAddNew(ObjectExtra item)
+        public ActionResult GridViewObjectExtraAddNew(Database.ObjectExtra item)
         {
             var model = dbObjectExtras.ObjectExtras;
             if (ModelState.IsValid)
@@ -611,7 +622,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewObjectExtraUpdate(ObjectExtra item)
+        public ActionResult GridViewObjectExtraUpdate(Database.ObjectExtra item)
         {
             var model = dbObjectExtras.ObjectExtras;
             if (ModelState.IsValid)
@@ -662,18 +673,20 @@ namespace CC.Controllers
         #endregion
 
 
-        ExcelentConstructObjectMaterial dbMaterial = new ExcelentConstructObjectMaterial();
+        Database.ExcelentConstructObjectMaterial dbObjectMaterial = new Database.ExcelentConstructObjectMaterial();
 
-        ExcelentConstructObjectInstruments dbInstruments = new ExcelentConstructObjectInstruments();
+        Database.ExcelentConstructObjectInstruments dbInstruments = new Database.ExcelentConstructObjectInstruments();
 
-        ExcelentConstructWorks dbWorks = new ExcelentConstructWorks();
+        Database.ExcelentConstructWorks dbWorks = new Database.ExcelentConstructWorks();
 
-        ExcelentConstructEntitiesObjects dbObjects = new ExcelentConstructEntitiesObjects();
+        Database.ExcelentConstructEntitiesObjects dbObjects = new Database.ExcelentConstructEntitiesObjects();
 
-        ExcelentConstructObjectExtras dbObjectExtras = new ExcelentConstructObjectExtras();
+        Database.ExcelentConstructObjectExtras dbObjectExtras = new Database.ExcelentConstructObjectExtras();
 
-        ExcelentConstructUnit dbUnits = new ExcelentConstructUnit();
+        Database.ExcelentConstructUnit dbUnits = new Database.ExcelentConstructUnit();
 
-        ObjectPaymentEntities dbObjectPayments = new ObjectPaymentEntities();
+        Database.ObjectPaymentEntities dbObjectPayments = new Database.ObjectPaymentEntities();
+
+        Database.ExcelentConstructWorkers dbWorkers = new Database.ExcelentConstructWorkers();
     }
 }

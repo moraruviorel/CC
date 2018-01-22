@@ -1,10 +1,9 @@
 ﻿using DevExpress.Web.Mvc;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using Database = CC.Models.Database;
 
 namespace CC.Controllers
 {
@@ -21,37 +20,37 @@ namespace CC.Controllers
             return View();
         }
 
-        public ActionResult AndreiRaport()
-        {            
-            var report = new XtraReport1();
+        //public ActionResult AndreiRaport()
+        //{            
+        //    var report = new XtraReport1();
 
-            var model = db.ReportSettings.ToList();            
-            foreach (var item in model)
-            {
-                var parameter = new DevExpress.XtraReports.Parameters.Parameter();
-                parameter.Name = item.name;
-                parameter.Value = item.value;
-                report.Parameters.Add(parameter);
-            }
+        //    var model = db.ReportSettings.ToList();            
+        //    foreach (var item in model)
+        //    {
+        //        var parameter = new DevExpress.XtraReports.Parameters.Parameter();
+        //        parameter.Name = item.name;
+        //        parameter.Value = item.value;
+        //        report.Parameters.Add(parameter);
+        //    }
 
-            var stream = new MemoryStream();
-            report.ExportToPdf(stream);
+        //    var stream = new MemoryStream();
+        //    report.ExportToPdf(stream);
 
-            var cd = new System.Net.Mime.ContentDisposition
-            {
-                FileName = DateTime.Today.ToString() + ".pdf",
-                Inline = false,
-            };
-            Response.AppendHeader("Content-Disposition", cd.ToString());
-            return File(stream.GetBuffer(), "application/pdf");
-        }
+        //    var cd = new System.Net.Mime.ContentDisposition
+        //    {
+        //        FileName = DateTime.Today.ToString() + ".pdf",
+        //        Inline = false,
+        //    };
+        //    Response.AppendHeader("Content-Disposition", cd.ToString());
+        //    return File(stream.GetBuffer(), "application/pdf");
+        //}
 
         public ActionResult SettingReport()
         {
             return View();
         }
 
-        CC.Models.ReportSettingEntities db = new CC.Models.ReportSettingEntities();
+        Database.ReportSettingEntities db = new Database.ReportSettingEntities();
 
         [ValidateInput(false)]
         public ActionResult ReportSettingPartial()
@@ -61,7 +60,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult ReportSettingPartialAddNew(CC.Models.ReportSetting item)
+        public ActionResult ReportSettingPartialAddNew(Database.ReportSetting item)
         {
             var model = db.ReportSettings;
             if (ModelState.IsValid)
@@ -81,7 +80,7 @@ namespace CC.Controllers
             return PartialView("_ReportSettingPartial", model.ToList());
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult ReportSettingPartialUpdate(CC.Models.ReportSetting item)
+        public ActionResult ReportSettingPartialUpdate(Database.ReportSetting item)
         {
             var model = db.ReportSettings;
             if (ModelState.IsValid)

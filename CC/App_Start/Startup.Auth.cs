@@ -6,6 +6,7 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
 using CC.Models;
+using CC.Models.Classes.Account;
 
 namespace CC
 {

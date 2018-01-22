@@ -1,7 +1,7 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 
-    bool showReport = CC.Models.Classes.MySession.Current.IsUserAdmin || CC.Models.Classes.MySession.Current.UserGuid == "49b48884-0caa-4708-8e09-dfa9284fb933";
+    //bool showReport = CC.Models.Classes.MySession.Current.IsUserAdmin || CC.Models.Classes.MySession.Current.UserGuid == "49b48884-0caa-4708-8e09-dfa9284fb933";
 }
 
 <br><br>
@@ -9,7 +9,7 @@
 <div class="index-icon-row">
     <div>
         <span>Setări</span>
-        @Html.ActionLink("Report", "Setting", new { controller = "Settings" }, new { @class = "settingIcon" })
+        @Html.ActionLink("Report", "Setting", new { controller = "Setting" }, new { @class = "settingIcon" })
     </div>
     <div>
         <span><b>Unități măsură</b></span>

@@ -14,5 +14,20 @@ namespace CC.Models.Classes
             else
                 return Convert.ToDecimal(_value);
         }
+
+        public static DateTime? ToDateTime(string _value)
+        {
+            if (string.IsNullOrWhiteSpace(_value))
+            {
+                return null;
+            }
+            else
+            {
+                return DateTime.ParseExact(_value, "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            }
+
+        }
+
+       
     }
 }

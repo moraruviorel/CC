@@ -1,12 +1,12 @@
-﻿using CC.Models.Enums;
+﻿using CC.Models.Database;
+using CC.Models.Enums;
 using DevExpress.Web.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
+using CC.Models.Classes.Setting;
 
 namespace CC.Models.Classes
-{   
+{
     public class MySession
     {
         // Private constructor (use MySession.Current to access the current instance).
@@ -54,7 +54,7 @@ namespace CC.Models.Classes
 
 		public int WorkId { get; set; }
 
-        public Setting MySetting { get; set; }
+        public Setting.Setting MySetting { get; set; }
 
         public int LoanMoneyId { get; set; }
 

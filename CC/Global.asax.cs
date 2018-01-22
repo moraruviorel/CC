@@ -1,4 +1,5 @@
 using CC.Models;
+using CC.Models.Classes.Account;
 using DevExpress.Web.Mvc;
 using log4net;
 using Microsoft.AspNet.Identity;

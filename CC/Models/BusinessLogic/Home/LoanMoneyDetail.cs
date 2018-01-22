@@ -9,16 +9,15 @@ namespace CC.Models.BusinessLogic.Home
     public class LoanMoneyDetail
     {
 
-        public static IQueryable<Models.LoanMoneyDetail> GetLoanMoneyDetails()
+        public static List<Database.LoanMoneyDetail> GetLoanMoneyDetails()
         {
-            LoanMoneyDetailsEntities dbLoanMoneyDetails = new LoanMoneyDetailsEntities();
+            Database.LoanMoneyDetailsEntities dbLoanMoneyDetails = new Database.LoanMoneyDetailsEntities();
 
             var model = dbLoanMoneyDetails.LoanMoneyDetails.AsQueryable()
-                .Where(x => x.LoanMoneyId == MySession.Current.LoanMoneyId);
+                .Where(x => x.LoanMoneyId == MySession.Current.LoanMoneyId).ToList();
 
             return model;
         }
 
-        //public static Models.LoanMoney
     }
 }

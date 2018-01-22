@@ -1,4 +1,4 @@
-﻿using CC.Models;
+﻿using CC.Models.Classes.Account;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin;
@@ -54,7 +54,7 @@ namespace CC
             // creating Creating Manager role     
             if (!roleManager.RoleExists("Manager"))
             {
-                var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
+                var role = new IdentityRole();
                 role.Name = "Manager";
                 roleManager.Create(role);
 

@@ -1,4 +1,12 @@
-﻿--date 05.01.2018
+﻿--data 22.01.2018
+--insert data
+delete from SettingStatuses where id = 3
+set IDENTITY_INSERT SettingStatuses on
+insert into SettingStatuses(id, Name, [Description]) values(3, 'StartDate', 'data inceput')
+insert into SettingStatuses(id, Name, [Description]) values(4, 'EndDate', 'data sfirsit')
+set IDENTITY_INSERT SettingStatuses off
+
+--date 05.01.2018
 --added new column
 alter table LoanMoneyDetail
 add [description] ntext 

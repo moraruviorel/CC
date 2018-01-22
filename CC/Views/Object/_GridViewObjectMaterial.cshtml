@@ -27,6 +27,13 @@
         settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
         settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
 
+        //Grid Filter Row
+        //settings.Settings.ShowFilterBar = GridViewStatusBarMode.Visible;
+        //settings.Settings.ShowHeaderFilterButton = true;
+        //settings.SettingsBehavior.FilterRowMode = DevExpress.Web.GridViewFilterRowMode.OnClick;
+
+
+
         settings.Columns.Add(column =>
         {
             column.FieldName = "id";
@@ -42,7 +49,7 @@
                 p.TextField = "Description";
                 p.ValueField = "Id";
                 p.ValueType = typeof(int);
-                p.DataSource = ViewBag.Objects;
+                p.DataSource = Model.ObjectList;
             });
         });
         settings.Columns.Add(c =>
@@ -81,7 +88,7 @@
         grid.SetEditErrorText((string)ViewData["EditError"]);
     }
 }
-@grid.Bind(Model).GetHtml()
+@grid.Bind(Model.ObjectMaterialList).GetHtml()
 <br>
 @Html.DevExpress().Button(settings =>
 {
@@ -89,5 +96,5 @@
     settings.UseSubmitBehavior = true;
     settings.Text = "ExportTo PDF";
     CC.Models.Classes.MySession.Current.GridReport = grid;
-    settings.RouteValues = new { Controller = "Object", Action = "ExportTo", form = "GridViewMaterial" };
+    settings.RouteValues = new { Controller = "Object", Action = "ExportTo", name = "GridViewMaterial" };
 }).GetHtml()

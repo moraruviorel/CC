@@ -112,5 +112,5 @@
     settings.UseSubmitBehavior = true;
     settings.Text = "ExportTo PDF";
     CC.Models.Classes.MySession.Current.GridReport = grid;
-    settings.RouteValues = new { Controller = "Object", Action = "ExportTo", form = "GridViewInstrument" };
+    settings.RouteValues = new { Controller = "Object", Action = "ExportTo", name = "GridViewInstrument" };
 }).GetHtml()

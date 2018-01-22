@@ -13,10 +13,10 @@ namespace CC.Models.Classes.Worker
 
         public double Amount { get; set; }
 
-        public List<Work> WorkerWorkList { get; set; }
+        public List<Database.Work> WorkerWorkList { get; set; }
 
         //public List<Models.Worker> Workers { get; set; }
 
-        public List<CC.Models.WorkerPayment> WorkerPayments { get; set; }
+        public List<Database.WorkerPayment> WorkerPayments { get; set; }
     }
 }

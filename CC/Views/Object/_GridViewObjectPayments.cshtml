@@ -1,5 +1,6 @@
 ﻿@{
-    var grid = Html.DevExpress().GridView(settings => {
+    var grid = Html.DevExpress().GridView(settings =>
+    {
         settings.Name = "GridView";
         settings.CallbackRouteValues = new { Controller = "Object", Action = "GridViewObjectPayments" };
 
@@ -41,15 +42,16 @@
             column.Caption = "Data achitării";
             column.ColumnType = MVCxGridViewColumnType.DateEdit;
             column.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
-            //column.Visible = false;
-        });
+    //column.Visible = false;
+});
         settings.Columns.Add(column =>
         {
             column.FieldName = "notice";
             column.Caption = "Notițe";
 
         });
-        settings.Columns.Add(column => {
+        settings.Columns.Add(column =>
+        {
             column.FieldName = "amount";
             column.Caption = "Suma";
         });
@@ -58,8 +60,18 @@
         settings.Settings.ShowFooter = true;
 
     });
-    if (ViewData["EditError"] != null){
+    if (ViewData["EditError"] != null)
+    {
         grid.SetEditErrorText((string)ViewData["EditError"]);
     }
 }
 @grid.Bind(Model).GetHtml()
+<br>
+@Html.DevExpress().Button(settings =>
+{
+    settings.Name = "ButtonPayment";
+    settings.UseSubmitBehavior = true;
+    settings.Text = "ExportTo PDF";
+    CC.Models.Classes.MySession.Current.GridReport = grid;
+    settings.RouteValues = new { Controller = "Object", Action = "ExportTo", name = "GridViewPayment" };
+}).GetHtml()

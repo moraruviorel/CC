@@ -1,5 +1,7 @@
-﻿@{   
-    var grid = Html.DevExpress().GridView(settings => {
+﻿@{
+    
+    var grid = Html.DevExpress().GridView(settings =>
+    {
         settings.Name = "GridView1";
         settings.CallbackRouteValues = new { Controller = "Object", Action = "GridViewObjects" };
 
@@ -28,19 +30,19 @@
         settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
         settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
 
-        settings.Columns.Add(c=>
+        settings.Columns.Add(c =>
         {
             c.FieldName = "Location";
             c.Caption = "Localitatea";
             c.ColumnType = MVCxGridViewColumnType.TextBox;
         });
-        settings.Columns.Add(c=>
+        settings.Columns.Add(c =>
         {
             c.FieldName = "Address";
             c.Caption = "Adresa";
             c.ColumnType = MVCxGridViewColumnType.TextBox;
         });
-        settings.Columns.Add(c=>
+        settings.Columns.Add(c =>
         {
             c.FieldName = "Description";
             c.Caption = "Descrierea";
@@ -98,8 +100,9 @@
 
 
     });
-    if (ViewData["EditError"] != null){
+    if (ViewData["EditError"] != null)
+    {
         grid.SetEditErrorText((string)ViewData["EditError"]);
     }
-} 
+}
 @grid.Bind(Model).GetHtml()

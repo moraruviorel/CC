@@ -1,11 +1,10 @@
-﻿using CC.Models;
+﻿using CC.Models.Classes.Account;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using Database = CC.Models.Database;
 
 namespace CC.Controllers
 {

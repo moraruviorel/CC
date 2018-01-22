@@ -5,9 +5,11 @@ using System.Web;
 
 namespace CC.Models.Enums
 {
-    public enum SettingStatuses
+    public enum SettingStatus
     {        
         GridRows = 1,
-        IsPageLandscape = 2
+        IsPageLandscape = 2,
+        StartDate = 3,
+        EndDate = 4
     }
 }
