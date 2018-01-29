@@ -1,0 +1,74 @@
+@{
+    var grid = Html.DevExpress().GridView(settings => {
+        settings.Name = "GridViewFilter";
+        settings.CallbackRouteValues = new { Controller = "Home", Action = "GridViewFilterPartial" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Home", Action = "GridViewFilterPartialAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Home", Action = "GridViewFilterPartialUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Home", Action = "GridViewFilterPartialDelete" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = true;
+        settings.CommandColumn.ShowDeleteButton = true;
+        settings.CommandColumn.ShowEditButton = true;
+
+        settings.KeyFieldName = "id";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.Off;
+        settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
+        settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
+        settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
+        settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
+
+        //settings.Columns.Add("id");
+        //settings.Columns.Add("controller_id");
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "table_name_id";
+            c.Caption = "Nume tabel";
+            c.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "Name";
+                p.ValueField = "Id";
+                p.ValueType = typeof(int);
+                p.DataSource = Model.TableList;
+            });
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "column_name";
+            c.Caption = "Coloana Filtrata";
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "operation_id";
+            c.Caption = "Operatie";
+            c.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "math_operation";
+                p.ValueField = "Id";
+                p.ValueType = typeof(int);
+                p.DataSource = Model.OperationList;
+            });
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "compare_value";
+            c.Caption = "Valoarea";
+        });
+        
+    });
+    if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model.FilterList).GetHtml()

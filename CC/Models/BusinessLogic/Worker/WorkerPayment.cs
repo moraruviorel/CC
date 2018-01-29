@@ -40,7 +40,7 @@ namespace CC.Models.BusinessLogic.Worker
                         salary = (workDayList.Sum(x => x.work_hours) ?? 0) * (lastSalaryContract.worker_sum ?? 0.0);
                     break;
                 case (int)Enums.WorkerContractType.Volum:
-                    Database.ExcelentConstructWorks works = new Database.ExcelentConstructWorks();
+                    Database.WorksEntities works = new Database.WorksEntities();
                     var firstWorkFinished = works.Works.ToList().OrderBy(x => x.date_end).ToList().FirstOrDefault(x => x.worker_id == workerId && x.is_paid == 0);
                     //foreach (var item in workList)
                     //{
@@ -60,7 +60,7 @@ namespace CC.Models.BusinessLogic.Worker
         }
 
         public static Classes.Worker.WorkerPayment GetWorkerPaymentModel(
-            Database.ExcelentConstructWorks dbWorks, 
+            Database.WorksEntities dbWorks, 
             Database.ECWorkerPayment dbWorkerPayment)
         {
             var model = new Classes.Worker.WorkerPayment();

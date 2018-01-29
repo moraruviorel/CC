@@ -42,7 +42,7 @@
                 p.TextField = "Description";
                 p.ValueField = "Id";
                 p.ValueType = typeof(int);
-                p.DataSource = ViewBag.Objects;
+                p.DataSource = Model.ObjectList;
             });
         });
         settings.Columns.Add(c =>
@@ -104,7 +104,7 @@
         grid.SetEditErrorText((string)ViewData["EditError"]);
     }
 }
-@grid.Bind(Model).GetHtml()
+@grid.Bind(Model.ObjectInstrumentList).GetHtml()
 <br>
 @Html.DevExpress().Button(settings =>
 {

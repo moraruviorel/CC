@@ -46,17 +46,13 @@ namespace CC.Controllers
                 case "5":
                     partialView = "ObjectDetail/ObjectPayments";
                     break;
-                case "6":
-                    
-                    ViewBag.Works = dbWorks.Works.ToList().Where(x => x.object_id == MySession.Current.ObjectId).ToList();
-                    ViewBag.MaterialSum = BLObject.ObjectMaterial.GetObjectMaterialModel(dbObjectMaterial, dbObjects)
+                case "6":                    
+                    ViewBag.Works = BLObject.ObjectWorks.GetObjectWorkModel().ObjectWorksList;
+                    ViewBag.MaterialSum = BLObject.ObjectMaterial.GetObjectMaterialModel()
                         .ObjectMaterialList.Sum(x => x.total_price);
-                    ViewBag.InstrumentSum = dbInstruments.ObjectInstruments.ToList()
-                        .Where(x => x.object_id == MySession.Current.ObjectId)                                                                                    
-                        .Sum(x => x.total_price);
-                    ViewBag.ExtraSum = dbObjectExtras.ObjectExtras.ToList()
-                        .Where(x => x.object_id == MySession.Current.ObjectId)
-                        .Sum(x => x.price);
+                    ViewBag.InstrumentSum = BLObject.ObjectInstrument.GetObjectInstrumentModel()
+                        .ObjectInstrumentList.Sum(x => x.total_price);                        
+                    ViewBag.ExtraSum = BLObject.ObjectExtra.GetObjectExtraModel().ObjectExtraList.Sum(x => x.price);
                     partialView = "ObjectDetail/ObjectTotal";
                     break;
             }
@@ -72,18 +68,19 @@ namespace CC.Controllers
                     MySession.Current.TabAction = name;
                     MySession.Current.Units = dbUnits.Units.ToList();
                     var list = MySession.Current.GridReport;
-                    var modelToShow = dbWorks.Works.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-                    return GridViewExtension.ExportToPdf(CC.Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), modelToShow.ToList());
+                    return GridViewExtension.ExportToPdf(
+                        CC.Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), 
+                        BLObject.ObjectWorks.GetObjectWorkModel().ObjectWorksList.ToList());
                 case "GridViewMaterial":
                     MySession.Current.TabAction = name;
                     list = MySession.Current.GridReport;
-                    var materials = dbObjectMaterial.ObjectMaterials.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-                    return GridViewExtension.ExportToPdf(CC.Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), materials.ToList());
+                    var materials = BLObject.ObjectMaterial.GetObjectMaterialModel().ObjectMaterialList;
+                    return GridViewExtension.ExportToPdf(Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), materials);
                 case "GridViewExtra":
                     MySession.Current.TabAction = name;
                     list = MySession.Current.GridReport;
-                    var extras = dbObjectExtras.ObjectExtras.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-                    return GridViewExtension.ExportToPdf(CC.Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), extras.ToList());
+                    var extras = BLObject.ObjectExtra.GetObjectExtraModel().ObjectExtraList;
+                    return GridViewExtension.ExportToPdf(CC.Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), extras);
                 case "GridViewPayment":
                     MySession.Current.TabAction = name;
                     list = MySession.Current.GridReport;
@@ -92,10 +89,10 @@ namespace CC.Controllers
                 case "GridViewInstrument":
                     MySession.Current.TabAction = name;
                     list = MySession.Current.GridReport;
-                    var instruments = dbInstruments.ObjectInstruments.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-                    return GridViewExtension.ExportToPdf(CC.Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), instruments.ToList());
+                    var instruments = BLObject.ObjectInstrument.GetObjectInstrumentModel();
+                    return GridViewExtension.ExportToPdf(CC.Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), instruments);
                 default:
-                    modelToShow = dbWorks.Works.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
+                    var modelToShow = dbWorks.Works.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
                     return GridViewExtension.ExportToPdf(CC.Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), modelToShow.ToList());
             }
 
@@ -123,7 +120,7 @@ namespace CC.Controllers
         [ValidateInput(false)]
         public ActionResult GridViewObjects()
         {
-            var model = BLObject.Object.GetObjectsByParentId(dbObjects);
+            var model = BLObject.Object.GetObjectsByParentId();
             //
             ViewBag.ObjectsParent = BLObject.Object.GetObjectsById(MySession.Current.ObjectId);
             //
@@ -150,7 +147,7 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var modelToShow = BLObject.Object.GetObjectsByParentId(dbObjects);
+            var modelToShow = BLObject.Object.GetObjectsByParentId();
             return PartialView("_GridViewObjects", modelToShow.ToList());
         }
 
@@ -176,7 +173,7 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var modelToShow = BLObject.Object.GetObjectsByParentId(dbObjects);
+            var modelToShow = BLObject.Object.GetObjectsByParentId();
             return PartialView("_GridViewObjects", modelToShow.ToList());
         }
 
@@ -198,7 +195,7 @@ namespace CC.Controllers
                     ViewData["EditError"] = e.Message;
                 }
             }
-            var modelToShow = BLObject.Object.GetObjectsByParentId(dbObjects);
+            var modelToShow = BLObject.Object.GetObjectsByParentId();
             return PartialView("_GridViewObjects", modelToShow.ToList());
         }
 
@@ -301,24 +298,15 @@ namespace CC.Controllers
 
         [ValidateInput(false)]
         public ActionResult GridViewWorks()
-        {
-
-            ViewBag.Workers = BLWorker.Worker.GetWorkerList(dbWorkers);
-            ViewBag.Unites = dbUnits.Units.ToList();
+        {            
             if (MySession.Current.WorksForm == (int)FormName.ObjectForm)
-            {
-                //ViewBag.Objects = Models.DB.LoadDataBase.GetObjectsByParentId();
-                List<Database.Work> workList = dbWorks.Works.ToList().Where(x => x.object_id == MySession.Current.ObjectId).ToList();
-                return PartialView("_GridViewWorks", workList);
+            {                
+                return PartialView("_GridViewWorks", BLObject.ObjectWorks.GetObjectWorkModel());
             }
             else
             {
-                ViewBag.Objects = dbObjects.Objects.ToList().Where(x => x.UserId == MySession.Current.UserGuid);
-                List<Database.Work> workList = dbWorks.Works.ToList().Where(x => x.worker_id == MySession.Current.WorkerId).ToList();
-                return PartialView("_GridViewWorks", workList);
+                return PartialView("_GridViewWorks", BLObject.ObjectWorks.GetObjectWorkModel());
             }
-
-
         }
 
         [HttpPost, ValidateInput(false)]
@@ -350,8 +338,7 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var modelToShow = dbWorks.Works.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-            return PartialView("_GridViewWorks", modelToShow.ToList());
+            return PartialView("_GridViewWorks", BLObject.ObjectWorks.GetObjectWorkModel());
         }
 
         [HttpPost, ValidateInput(false)]
@@ -376,8 +363,8 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var modelToShow = dbWorks.Works.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-            return PartialView("_GridViewWorks", modelToShow.ToList());
+            
+            return PartialView("_GridViewWorks", BLObject.ObjectWorks.GetObjectWorkModel());
         }
 
         [HttpPost, ValidateInput(false)]
@@ -398,8 +385,8 @@ namespace CC.Controllers
                     ViewData["EditError"] = e.Message;
                 }
             }
-            var modelToShow = dbWorks.Works.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-            return PartialView("_GridViewWorks", modelToShow.ToList());
+            
+            return PartialView("_GridViewWorks", BLObject.ObjectWorks.GetObjectWorkModel());
         }
 
         #endregion
@@ -415,7 +402,7 @@ namespace CC.Controllers
         [ValidateInput(false)]
         public ActionResult GridViewObjectMaterial()
         {
-            var model = BLObject.ObjectMaterial.GetObjectMaterialModel(dbObjectMaterial, dbObjects);
+            var model = BLObject.ObjectMaterial.GetObjectMaterialModel();
             return PartialView("_GridViewObjectMaterial", model);
         }
 
@@ -438,8 +425,8 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var modelToShow = dbObjectMaterial.ObjectMaterials.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-            return PartialView("_GridViewObjectMaterial", modelToShow.ToList());
+
+            return PartialView("_GridViewObjectMaterial", BLObject.ObjectMaterial.GetObjectMaterialModel());
         }
 
         [HttpPost, ValidateInput(false)]
@@ -464,8 +451,8 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var modelToShow = dbObjectMaterial.ObjectMaterials.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-            return PartialView("_GridViewObjectMaterial", modelToShow.ToList());
+            
+            return PartialView("_GridViewObjectMaterial", BLObject.ObjectMaterial.GetObjectMaterialModel());
         }
 
         [HttpPost, ValidateInput(false)]
@@ -486,8 +473,8 @@ namespace CC.Controllers
                     ViewData["EditError"] = e.Message;
                 }
             }
-            var modelToShow = dbObjectMaterial.ObjectMaterials.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-            return PartialView("_GridViewObjectMaterial", modelToShow.ToList());
+
+            return PartialView("_GridViewObjectMaterial", BLObject.ObjectMaterial.GetObjectMaterialModel());
         }
 
         #endregion
@@ -502,11 +489,8 @@ namespace CC.Controllers
 
         [ValidateInput(false)]
         public ActionResult GridViewObjectInstrument()
-        {
-            ViewBag.Objects = BLObject.Object.GetObjectsByParentId(dbObjects);
-            ViewBag.Workers = BLWorker.Worker.GetWorkerList(dbWorkers);
-            var modelToShow = dbInstruments.ObjectInstruments.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-            return PartialView("_GridViewObjectInstrument", modelToShow.ToList());
+        {            
+            return PartialView("_GridViewObjectInstrument", BLObject.ObjectInstrument.GetObjectInstrumentModel());
         }
 
         [HttpPost, ValidateInput(false)]
@@ -528,8 +512,8 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var modelToShow = dbInstruments.ObjectInstruments.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-            return PartialView("_GridViewObjectInstrument", modelToShow.ToList());
+            
+            return PartialView("_GridViewObjectInstrument", BLObject.ObjectInstrument.GetObjectInstrumentModel());
         }
 
         [HttpPost, ValidateInput(false)]
@@ -554,8 +538,8 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var modelToShow = dbInstruments.ObjectInstruments.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-            return PartialView("_GridViewObjectInstrument", modelToShow.ToList());
+            
+            return PartialView("_GridViewObjectInstrument", BLObject.ObjectInstrument.GetObjectInstrumentModel());
         }
 
         [HttpPost, ValidateInput(false)]
@@ -576,8 +560,8 @@ namespace CC.Controllers
                     ViewData["EditError"] = e.Message;
                 }
             }
-            var modelToShow = dbInstruments.ObjectInstruments.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-            return PartialView("_GridViewObjectInstrument", modelToShow.ToList());
+            
+            return PartialView("_GridViewObjectInstrument", BLObject.ObjectInstrument.GetObjectInstrumentModel());
         }
 
         #endregion
@@ -591,11 +575,8 @@ namespace CC.Controllers
 
         [ValidateInput(false)]
         public ActionResult GridViewObjectExtra()
-        {
-            ViewBag.Objects = BLObject.Object.GetObjectsByParentId(dbObjects);
-            ViewBag.Workers = BLWorker.Worker.GetWorkerList(dbWorkers);
-            var modelToShow = dbObjectExtras.ObjectExtras.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-            return PartialView("_GridViewObjectExtra", modelToShow.ToList());
+        {            
+            return PartialView("_GridViewObjectExtra", BLObject.ObjectExtra.GetObjectExtraModel());
         }
 
         [HttpPost, ValidateInput(false)]
@@ -617,8 +598,8 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var modelToShow = dbObjectExtras.ObjectExtras.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-            return PartialView("_GridViewObjectExtra", modelToShow.ToList());
+            
+            return PartialView("_GridViewObjectExtra", BLObject.ObjectExtra.GetObjectExtraModel());
         }
 
         [HttpPost, ValidateInput(false)]
@@ -643,8 +624,8 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var modelToShow = dbObjectExtras.ObjectExtras.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-            return PartialView("_GridViewObjectExtra", modelToShow.ToList());
+            
+            return PartialView("_GridViewObjectExtra", BLObject.ObjectExtra.GetObjectExtraModel());
         }
 
         [HttpPost, ValidateInput(false)]
@@ -666,8 +647,8 @@ namespace CC.Controllers
 
                 }
             }
-            var modelToShow = dbObjectExtras.ObjectExtras.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-            return PartialView("_GridViewObjectExtra", modelToShow.ToList());
+            
+            return PartialView("_GridViewObjectExtra", BLObject.ObjectExtra.GetObjectExtraModel());
         }
 
         #endregion
@@ -677,7 +658,7 @@ namespace CC.Controllers
 
         Database.ExcelentConstructObjectInstruments dbInstruments = new Database.ExcelentConstructObjectInstruments();
 
-        Database.ExcelentConstructWorks dbWorks = new Database.ExcelentConstructWorks();
+        Database.WorksEntities dbWorks = new Database.WorksEntities();
 
         Database.ExcelentConstructEntitiesObjects dbObjects = new Database.ExcelentConstructEntitiesObjects();
 

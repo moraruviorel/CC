@@ -1,4 +1,5 @@
-﻿using CC.Models;
+﻿using DevExpress.Web.Mvc;
+using CC.Models;
 using CC.Models.Classes;
 using CC.Models.Enums;
 using CC.Models.BusinessLogic;
@@ -23,6 +24,7 @@ namespace CC.Controllers
         {
             
             MySession.Current.IsUserAdmin = false;
+
             //var res = UserManager.GetRoles(user.GetUserId());
             if (User.Identity.IsAuthenticated)
             {
@@ -72,7 +74,8 @@ namespace CC.Controllers
                 }
                 
 
-            }           
+            }     
+            
             return View();
         }
 
@@ -882,9 +885,95 @@ namespace CC.Controllers
 
         #endregion
 
+        #region Filter
+
+        [AuthorizeRoles(UserRole.Admin, UserRole.Manager)]
+        public ActionResult Filter()
+        {
+            return View();
+        }
+
+        [ValidateInput(false)]
+        public ActionResult GridViewFilterPartial()
+        {            
+            return PartialView("_GridViewFilterPartial", BusinessLogic.Home.Filter.GetFilterModel());
+        }
+
+        [HttpPost, ValidateInput(false)]
+        public ActionResult GridViewFilterPartialAddNew(CC.Models.Database.Filter item)
+        {
+            var model = dbFilter.Filters;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    item.user_id = MySession.Current.UserGuid;
+                    model.Add(item);
+                    dbFilter.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    ViewData["EditError"] = e.Message;
+                }
+            }
+            else
+                ViewData["EditError"] = "Please, correct all errors.";
+            return PartialView("_GridViewFilterPartial", BusinessLogic.Home.Filter.GetFilterModel());
+        }
+
+        [HttpPost, ValidateInput(false)]
+        public ActionResult GridViewFilterPartialUpdate(CC.Models.Database.Filter item)
+        {
+            var model = dbFilter.Filters;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var modelItem = model.FirstOrDefault(it => it.id == item.id);
+                    if (modelItem != null)
+                    {
+                        this.UpdateModel(modelItem);
+                        dbFilter.SaveChanges();
+                    }
+                }
+                catch (Exception e)
+                {
+                    ViewData["EditError"] = e.Message;
+                }
+            }
+            else
+                ViewData["EditError"] = "Please, correct all errors.";
+            
+            return PartialView("_GridViewFilterPartial", BusinessLogic.Home.Filter.GetFilterModel());
+        }
+
+        [HttpPost, ValidateInput(false)]
+        public ActionResult GridViewFilterPartialDelete(System.Int32 id)
+        {
+            var model = dbFilter.Filters;
+            if (id >= 0)
+            {
+                try
+                {
+                    var item = model.FirstOrDefault(it => it.id == id);
+                    if (item != null)
+                        model.Remove(item);
+                    dbFilter.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    ViewData["EditError"] = e.Message;
+                }
+            }
+           
+            return PartialView("_GridViewFilterPartial", BusinessLogic.Home.Filter.GetFilterModel());
+        }
+
+        #endregion
+
         #region DB
 
-        Database.ExcelentConstructWorks dbWorks = new Database.ExcelentConstructWorks();
+        Database.WorksEntities dbWorks = new Database.WorksEntities();
 
         Database.ExcelentConstructSetting dbSettings = new Database.ExcelentConstructSetting();
 
@@ -904,7 +993,13 @@ namespace CC.Controllers
 
         Database.LoanMoneyDetailsEntities dbLoanMoneyDetails = new Database.LoanMoneyDetailsEntities();
 
+        Database.FiltersEntities dbFilter = new Database.FiltersEntities();
+
         #endregion
 
+
+
+
+        
     }
 }

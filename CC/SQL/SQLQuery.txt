@@ -1,5 +1,37 @@
-﻿--data 22.01.2018
+﻿--data 23.01.2018
+--create table
+create table Filters(
+	id int primary key identity(1,1),
+	controller_id int,
+	operation_id int,
+	user_id nvarchar(128),
+	table_name_id int,
+	column_name nvarchar(50),
+	compare_value nvarchar(50)
+)
+
+create table Controllers(
+	id int primary key identity(1,1),
+	name nvarchar(50),
+	[description] nvarchar(100)
+)
+
+create table Operations(
+	id int primary key identity(1,1),
+	name nvarchar(50),
+	math_operation nvarchar(10)
+)
+--data 23.01.2018
+--inserted data
+
+insert into Controllers(name, [description]) values('Object', 'Filtru pentru comparimentul obiecte')
+insert into Operations(name, math_operation) values('Equal', '=')
+insert into Operations(name, math_operation) values('Bigger', '>')
+insert into Operations(name, math_operation) values('Smaller', '<')
+
+--data 22.01.2018
 --insert data
+--executed
 delete from SettingStatuses where id = 3
 set IDENTITY_INSERT SettingStatuses on
 insert into SettingStatuses(id, Name, [Description]) values(3, 'StartDate', 'data inceput')

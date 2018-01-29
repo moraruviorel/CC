@@ -15,11 +15,11 @@ namespace CC.Models.BusinessLogic.Worker
             return dbWorkers.Workers.AsQueryable().Where(x => x.Id == workerId);
         }
 
-        public static List<Database.Worker> GetWorkerList(Database.ExcelentConstructWorkers dbWorkers)
+        public static List<Database.Worker> GetWorkerList()
         {
             var user_id = MySession.Current.UserGuid;
             //
-            return dbWorkers.Workers.ToList().Where(x => x.UserId == user_id).ToList();
+            return new Database.ExcelentConstructWorkers().Workers.ToList().Where(x => x.UserId == user_id).ToList();
         }
     }
 }

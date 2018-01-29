@@ -83,3 +83,11 @@ textarea {
     height: 100px;
     text-indent: -9999px;
 }
+
+.filtersIcon {
+    background: url(../Images/filter.png) no-repeat top left;
+    display: block;
+    width: 150px;
+    height: 100px;
+    text-indent: -9999px;
+}

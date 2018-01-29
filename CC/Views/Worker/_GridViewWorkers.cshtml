@@ -3,7 +3,7 @@
         settings.Name = "GridView";
         settings.CallbackRouteValues = new { Controller = "Worker", Action = "GridViewWorkers" };
 
-        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkersAddNew", Id = "TEst" };
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkersAddNew" };
         settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkersUpdate" };
         settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkersDelete" };
         settings.SettingsPager.PageSize = CC.Models.Classes.MySession.Current.MySetting.GridRows;

@@ -412,7 +412,7 @@ namespace CC.Controllers
         [ValidateInput(false)]
         public ActionResult WorkerWorksPartial()
         {
-            ViewBag.Workers = BLWorkers.Worker.GetWorkerList(dbWorkers);
+            ViewBag.Workers = BLWorkers.Worker.GetWorkerList();
             ViewBag.Unites = dbUnits.Units.ToList();
             //
             ViewBag.Objects = dbObjects.Objects.ToList().Where(x => x.UserId == MySession.Current.UserGuid);
@@ -695,7 +695,7 @@ namespace CC.Controllers
 
         Database.WorkerContractEntities dbWorkerContract = new Database.WorkerContractEntities();
 
-        Database.ExcelentConstructWorks dbWorks = new Database.ExcelentConstructWorks();
+        Database.WorksEntities dbWorks = new Database.WorksEntities();
 
         Database.ECWorkerPayment dbWorkerPayment = new Database.ECWorkerPayment();
 

@@ -45,7 +45,7 @@
                 p.TextField = "FullName";
                 p.ValueField = "Id";
                 p.ValueType = typeof(int);
-                p.DataSource = ViewBag.Workers;
+                p.DataSource = Model.WorkerList;
             });
         });
 
@@ -66,7 +66,7 @@
                 p.TextField = "name";
                 p.ValueField = "Id";
                 p.ValueType = typeof(int);
-                p.DataSource = ViewBag.Unites;
+                p.DataSource = Model.UnitList;
             });
         });
 
@@ -117,7 +117,7 @@
 
 
 }
-@grid.Bind(Model).GetHtml()
+@grid.Bind(Model.ObjectWorksList).GetHtml()
 
 <br />
 @Html.DevExpress().Button(settings =>

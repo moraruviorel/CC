@@ -8,11 +8,12 @@ namespace CC.Models.BusinessLogic.Object
 {
     public class Object
     {
-        public static List<Database.Object> GetObjectsByParentId(Database.ExcelentConstructEntitiesObjects db1)
+        public static List<Database.Object> GetObjectsByParentId()
         {
             var user_id = MySession.Current.UserGuid;
             var parent_id = MySession.Current.ObjectId;
-            return db1.Objects.Where(x => x.UserId == user_id && x.Parent_Id == parent_id).ToList();
+            return new Database.ExcelentConstructEntitiesObjects().Objects
+                .Where(x => x.UserId == user_id && x.Parent_Id == parent_id).ToList();
         }
 
         public static List<Database.Object> GetObjectsByParentId(int parentId)

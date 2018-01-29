@@ -13,10 +13,10 @@ namespace CC.Models.Database
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class WorksEntities : DbContext
+    public partial class FiltersEntities : DbContext
     {
-        public WorksEntities()
-            : base("name=WorksEntities")
+        public FiltersEntities()
+            : base("name=FiltersEntities")
         {
         }
     
@@ -25,6 +25,6 @@ namespace CC.Models.Database
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Work> Works { get; set; }
+        public virtual DbSet<Filter> Filters { get; set; }
     }
 }

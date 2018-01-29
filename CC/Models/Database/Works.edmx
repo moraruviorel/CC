@@ -4,20 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="ExcelentConstructModelWorks.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="Worker">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="first_name" Type="varchar" MaxLength="50" />
-          <Property Name="last_name" Type="varchar" MaxLength="50" />
-          <Property Name="address" Type="varchar" MaxLength="150" />
-          <Property Name="phone_number" Type="varchar" MaxLength="15" />
-          <Property Name="visible" Type="smallint" />
-          <Property Name="user_id" Type="int" Nullable="false" />
-          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
-        </EntityType>
+      <Schema Namespace="WorksModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Works">
           <Key>
             <PropertyRef Name="id" />
@@ -34,14 +21,14 @@
           <Property Name="visible" Type="smallint" Nullable="false" />
           <Property Name="unit_id" Type="int" />
         </EntityType>
-        <EntityContainer Name="ExcelentConstructModelWorksStoreContainer">
-          <EntitySet Name="Worker" EntityType="Self.Worker" Schema="dbo" store:Type="Tables" />
+        <EntityContainer Name="WorksModelStoreContainer">
           <EntitySet Name="Works" EntityType="Self.Works" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="ExcelentConstructModelWorks" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="WorksModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="Work">
           <Key>
             <PropertyRef Name="id" />
@@ -58,33 +45,18 @@
           <Property Name="visible" Type="Int16" Nullable="false" />
           <Property Name="unit_id" Type="Int32" />
         </EntityType>
-        <EntityContainer Name="ExcelentConstructWorks" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="WorksEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Works" EntityType="Self.Work" />
-          <EntitySet Name="Workers" EntityType="ExcelentConstructModelWorks.Worker" />
         </EntityContainer>
-        <EntityType Name="Worker">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="first_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="last_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="address" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
-          <Property Name="phone_number" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="visible" Type="Int16" />
-          <Property Name="user_id" Type="Int32" Nullable="false" />
-          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="ExcelentConstructModelWorksStoreContainer" CdmEntityContainer="ExcelentConstructWorks">
+        <EntityContainerMapping StorageEntityContainer="WorksModelStoreContainer" CdmEntityContainer="WorksEntities">
           <EntitySetMapping Name="Works">
-            <EntityTypeMapping TypeName="ExcelentConstructModelWorks.Work">
+            <EntityTypeMapping TypeName="WorksModel.Work">
               <MappingFragment StoreEntitySet="Works">
-                <ScalarProperty Name="unit_id" ColumnName="unit_id" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="object_id" ColumnName="object_id" />
                 <ScalarProperty Name="worker_id" ColumnName="worker_id" />
@@ -95,20 +67,7 @@
                 <ScalarProperty Name="date_end" ColumnName="date_end" />
                 <ScalarProperty Name="is_paid" ColumnName="is_paid" />
                 <ScalarProperty Name="visible" ColumnName="visible" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Workers">
-            <EntityTypeMapping TypeName="ExcelentConstructModelWorks.Worker">
-              <MappingFragment StoreEntitySet="Worker">
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="user_id" ColumnName="user_id" />
-                <ScalarProperty Name="visible" ColumnName="visible" />
-                <ScalarProperty Name="phone_number" ColumnName="phone_number" />
-                <ScalarProperty Name="address" ColumnName="address" />
-                <ScalarProperty Name="last_name" ColumnName="last_name" />
-                <ScalarProperty Name="first_name" ColumnName="first_name" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="unit_id" ColumnName="unit_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
