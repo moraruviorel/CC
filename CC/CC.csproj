@@ -460,7 +460,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Works.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\DB\LoadDataBase.cs" />
     <Compile Include="Models\Enums\Controllers.cs" />
     <Compile Include="Models\Enums\FilterTableName.cs" />
     <Compile Include="Models\Enums\LoanMoney.cs" />
@@ -469,7 +468,6 @@
     <Compile Include="Models\Enums\SettingStatuses.cs" />
     <Compile Include="Models\Enums\UserRole.cs" />
     <Compile Include="Models\Enums\WorkerContractType.cs" />
-    <Compile Include="Models\ExportData\CreateReport.cs" />
     <Compile Include="Models\ExportData\ExportDataGridView.cs" />
     <Compile Include="Models\Database\LoanMoney.cs">
       <DependentUpon>LoanMoneyModel.tt</DependentUpon>
@@ -1397,7 +1395,7 @@
     <Content Include="Views\Object\_GridViewObjects.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
     <Content Include="Views\Role\Index.cshtml" />
-    <Content Include="Views\Object\ObjectDetail.cshtml" />
+    <Content Include="Views\Object\ObjectDetailValidation.cshtml" />
     <Content Include="Views\Object\_GridViewWorks.cshtml" />
     <Content Include="Views\Object\ObjectDetail\ObjectMaterials.cshtml" />
     <Content Include="Views\Object\_GridViewObjectMaterial.cshtml" />

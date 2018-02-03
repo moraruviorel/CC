@@ -19,6 +19,11 @@ namespace CC.Controllers
         {
             MySession.Current.WorksForm = (int)FormName.ObjectForm;
             MySession.Current.ObjectId = objectId;
+            return RedirectToAction("ObjectDetailValidation");
+        }
+
+        public ActionResult ObjectDetailValidation()
+        {            
             return View();
         }
 

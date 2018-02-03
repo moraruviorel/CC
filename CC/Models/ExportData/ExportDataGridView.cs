@@ -55,8 +55,8 @@ namespace CC.Models.ExportDataGridView
                     settings.CustomUnboundColumnData = (sender, e) => {
                         if (e.Column.FieldName == "Total")
                         {
-                            decimal price = (decimal)e.GetListSourceFieldValue("unit_price");
-                            decimal surface = Convert.ToDecimal(e.GetListSourceFieldValue("surface"));
+                            decimal price = MyConvert.ToDecimal(e.GetListSourceFieldValue("unit_price").ToString());
+                            decimal surface = MyConvert.ToDecimal(e.GetListSourceFieldValue("surface").ToString());
                             e.Value = price * surface;
                         }
                     };                    

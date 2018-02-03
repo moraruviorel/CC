@@ -22,7 +22,6 @@ namespace CC.Controllers
                 
         public ActionResult Index()
         {
-            
             MySession.Current.IsUserAdmin = false;
 
             //var res = UserManager.GetRoles(user.GetUserId());

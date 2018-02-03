@@ -9,12 +9,16 @@ new Script { ExtensionSuite = ExtensionSuite.Editors }
 
 @{
     ViewBag.Title = "ObjectTotal";
-    double workSum = 0;
+    decimal workSum = 0;
     foreach (var item in ViewBag.Works)
     {
-        workSum += Convert.ToDouble(item.surface) * Convert.ToDouble(item.unit_price);
+        //workSum += Convert.ToDouble(item.surface) * Convert.ToDouble(item.unit_price);
+        decimal surface = CC.Models.Classes.MyConvert.ToDecimal(item.surface);
+        decimal unit_price = CC.Models.Classes.MyConvert.ToDecimal(Convert.ToString(item.unit_price));
+
+        workSum += surface * unit_price;
     }
-    double total_sum = ViewBag.ExtraSum + ViewBag.InstrumentSum + ViewBag.MaterialSum + workSum;
+    double total_sum = ViewBag.ExtraSum + ViewBag.InstrumentSum + ViewBag.MaterialSum + Convert.ToDouble(workSum);
     double material_sum = ViewBag.MaterialSum;
     double instrumente_sum = ViewBag.InstrumentSum;
     double extra_sum = ViewBag.ExtraSum;
