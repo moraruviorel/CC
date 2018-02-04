@@ -31,19 +31,18 @@ namespace CC.Models.BusinessLogic.Setting
                 MySession.Current.MySetting.GridRows =
                     short.Parse(dbSetting.FirstOrDefault(x => x.SettingStatus == (int)Enums.SettingStatus.GridRows)?.Value);
                 MySession.Current.MySetting.IsPageLandscape = dbSetting
-                    .FirstOrDefault(x => x.SettingStatus == (int)Enums.SettingStatus.IsPageLandscape)?.Value == "true" ? true : false;
-                MySession.Current.MySetting.StartDate = MyConvert.ToDateTime(
-                    dbSetting.FirstOrDefault(x => x.SettingStatus == (int)Enums.SettingStatus.StartDate)?.Value);
-                MySession.Current.MySetting.EndDate = MyConvert.ToDateTime(
-                    dbSetting.FirstOrDefault(x => x.SettingStatus == (int)Enums.SettingStatus.EndDate)?.Value);
+                    .FirstOrDefault(x => x.SettingStatus == (int)Enums.SettingStatus.IsPageLandscape)
+                    ?.Value.ToLower() == "da" ? true : false;
+                MySession.Current.MySetting.ShowWorkerPrice = dbSetting
+                    .FirstOrDefault(x => x.SettingStatus == (int)Enums.SettingStatus.ShowWorkerPrice)
+                    ?.Value.ToLower() == "da" ? true : false;
+                
             }
             catch (Exception ex)
             {
                 MySession.Current.MySetting.GridRows = 20;
                 MySession.Current.MySetting.IsPageLandscape = false;
-                MySession.Current.MySetting.StartDate = null;
-                MySession.Current.MySetting.EndDate = null;
-                // throw ex;
+                MySession.Current.MySetting.ShowWorkerPrice = true;
             }
 
 

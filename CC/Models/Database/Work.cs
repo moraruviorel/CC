@@ -25,5 +25,7 @@ namespace CC.Models.Database
         public short is_paid { get; set; }
         public short visible { get; set; }
         public Nullable<int> unit_id { get; set; }
+        public Nullable<decimal> surface_work { get; set; }
+        public Nullable<decimal> unit_price_worker { get; set; }
     }
 }

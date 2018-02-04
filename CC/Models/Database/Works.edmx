@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="WorksModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="WorksModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Works">
           <Key>
             <PropertyRef Name="id" />
@@ -20,12 +20,13 @@
           <Property Name="is_paid" Type="smallint" Nullable="false" />
           <Property Name="visible" Type="smallint" Nullable="false" />
           <Property Name="unit_id" Type="int" />
+          <Property Name="surface_work" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="unit_price_worker" Type="numeric" Precision="15" Scale="2" />
         </EntityType>
         <EntityContainer Name="WorksModelStoreContainer">
           <EntitySet Name="Works" EntityType="Self.Works" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="WorksModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -44,6 +45,8 @@
           <Property Name="is_paid" Type="Int16" Nullable="false" />
           <Property Name="visible" Type="Int16" Nullable="false" />
           <Property Name="unit_id" Type="Int32" />
+          <Property Name="surface_work" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="unit_price_worker" Type="Decimal" Precision="15" Scale="2" />
         </EntityType>
         <EntityContainer Name="WorksEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Works" EntityType="Self.Work" />
@@ -57,6 +60,8 @@
           <EntitySetMapping Name="Works">
             <EntityTypeMapping TypeName="WorksModel.Work">
               <MappingFragment StoreEntitySet="Works">
+                <ScalarProperty Name="unit_price_worker" ColumnName="unit_price_worker" />
+                <ScalarProperty Name="surface_work" ColumnName="surface_work" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="object_id" ColumnName="object_id" />
                 <ScalarProperty Name="worker_id" ColumnName="worker_id" />

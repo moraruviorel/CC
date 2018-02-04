@@ -10,8 +10,11 @@ namespace CC.Models.Classes
     {
         public static decimal ToDecimal(string _value)
         {
-            if (_value.Contains(","))
+            if (!string.IsNullOrEmpty(_value) && _value.Contains(","))
                 _value = _value.Replace(",", ".");
+            if (_value == string.Empty)
+                _value = null;
+            //_value = _value == string.Empty ? null : _value;
 
             return Convert.ToDecimal(_value, new CultureInfo("en-US"));
         }

@@ -9,7 +9,6 @@ namespace CC.Models.Enums
     {        
         GridRows = 1,
         IsPageLandscape = 2,
-        StartDate = 3,
-        EndDate = 4
+        ShowWorkerPrice = 3
     }
 }

@@ -70,23 +70,46 @@
             });
         });
 
+        //pret unitate pentru lucrator
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "unit_price_worker";
+            c.Caption = "P/U lucrator";
+            c.Visible = CC.Models.Classes.MySession.Current.MySetting.ShowWorkerPrice;
+            c.Width = 40;
+        });
+        //totalurile in dependenta de pretul unitate pentru Lucrator
+        if (CC.Models.Classes.MySession.Current.MySetting.ShowWorkerPrice)
+        {
+            var col_luc = settings.Columns.Add("Total Lucrator");
+            col_luc.UnboundType = DevExpress.Data.UnboundColumnType.Decimal;
+        }
+        //pret unitate pentru client
         settings.Columns.Add(c =>
         {
             c.FieldName = "unit_price";
-            c.Caption = "Preț unitate";
+            c.Caption = "P/U client";            
             c.Width = 40;
         });
-        //
-        var col = settings.Columns.Add("Total");
+        //totalurile in dependenta de pretul unitate pentru client
+        var col = settings.Columns.Add("Total Client");
         //col.PropertiesEdit.DisplayFormatString = "c"; //pune dolar la început
         col.UnboundType = DevExpress.Data.UnboundColumnType.Decimal;
+
+        //aceasta parte de cod se execut a o singur a data si trebuie completata concomitent pentru ambele coloane
         settings.CustomUnboundColumnData = (sender, e) =>
         {
-            if (e.Column.FieldName == "Total")
+            decimal surface = CC.Models.Classes.MyConvert.ToDecimal(e.GetListSourceFieldValue("surface")?.ToString());
+
+            if (e.Column.FieldName == "Total Client")
             {
-                decimal unit_price = CC.Models.Classes.MyConvert.ToDecimal(e.GetListSourceFieldValue("unit_price").ToString());
-                decimal surface = CC.Models.Classes.MyConvert.ToDecimal(e.GetListSourceFieldValue("surface").ToString());
+                decimal unit_price = CC.Models.Classes.MyConvert.ToDecimal(e.GetListSourceFieldValue("unit_price")?.ToString());
                 e.Value = unit_price * surface;
+            }
+            if (CC.Models.Classes.MySession.Current.MySetting.ShowWorkerPrice && e.Column.FieldName == "Total Lucrator")
+            {
+                decimal unit_price1 = CC.Models.Classes.MyConvert.ToDecimal(e.GetListSourceFieldValue("unit_price_worker")?.ToString());
+                e.Value = unit_price1 * surface;
             }
         };
         //

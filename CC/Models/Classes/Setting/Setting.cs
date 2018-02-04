@@ -11,8 +11,8 @@ namespace CC.Models.Classes.Setting
 
         public bool IsPageLandscape { get; set; }
 
-        public DateTime? StartDate { get; set; }
+        public bool ShowWorkerPrice { get; set; }
 
-        public DateTime? EndDate { get; set; }
+        //public DateTime? EndDate { get; set; }
     }
 }
