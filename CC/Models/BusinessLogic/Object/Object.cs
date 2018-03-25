@@ -1,4 +1,5 @@
 ﻿using CC.Models.Classes;
+using CC.Models.Classes.Object;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,17 @@ namespace CC.Models.BusinessLogic.Object
             return db4.Objects.Where(x => x.UserId == user_id && x.ID == objectId).ToList();
         }
 
+
+        public static ObjectModel GetObjectModel()
+        {
+            var objectModel = new ObjectModel();
+
+            objectModel.ObjectList = GetObjectsByParentId();
+            objectModel.UserPermissionObject = User.UserPermissions.GetUserPermissionByModuleType(Enums.ModuleTypes.Objects);
+            objectModel.ObjectParentList = GetObjectsById(MySession.Current.ObjectId);
+
+            return objectModel;
+        }
         
     }
 }

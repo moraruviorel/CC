@@ -1,4 +1,8 @@
-﻿@model CC.Models.Classes.Object.ObjectModel
+﻿@using CC.Models.BusinessLogic.Home
+@using CC.Models.Classes
+@using CC.Models.Enums
+
+@model CC.Models.Classes.Object.ObjectModel
 
 @Html.DevExpress().GetStyleSheets(
 new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
@@ -10,31 +14,18 @@ new Script { ExtensionSuite = ExtensionSuite.Editors }
 )
 
 @{
-    //model = new CC.Models.Classes.Object.ObjectModel();
     ViewBag.Title = "Objects";
-    int parentId = CC.Models.Classes.MySession.Current.ParentId;
+    int parentId = MySession.Current.ParentId;
 }
 
 <h2>Lista de Obiecte</h2>
 
-
-
 @if (parentId > 0)
 {
-<h3>@Html.ActionLink("înapoi", "Objects", "Object", new { objectId = CC.Models.Classes.MySession.Current.ParentId }, null)</h3>
+    <h3>@Html.ActionLink(
+            TranslateWord.GetWord("back", MySession.Current.Language), 
+            ModuleTypes.Objects.ToString(), 
+            Controllers.Object.ToString(), new { objectId = MySession.Current.ParentId }, null)</h3>
 }
-
-@*@using (Html.BeginForm("ExportTo", "Exporting"))
-{
-    <div class="OptionsBottomMargin">
-        @Html.Partial("ToolbarExport", CC.Models.GridViewExportHelper.ExportFormatsInfo.Keys)
-    </div>
-    <p class="Note">
-        <strong>Note:</strong> If you export grouped data to RTF, be sure to open the resulting file with an editor that fully supports RTF, including tables. For instance, Microsoft WordPad does not support this feature, and thus the file may appear corrupt.
-    </p>
-    @Html.Partial("ExportPartial", Model)
-}*@
-
-
 
 @Html.Action("GridViewObjects")

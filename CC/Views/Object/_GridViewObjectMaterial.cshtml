@@ -31,9 +31,7 @@
         //settings.Settings.ShowFilterBar = GridViewStatusBarMode.Visible;
         //settings.Settings.ShowHeaderFilterButton = true;
         //settings.SettingsBehavior.FilterRowMode = DevExpress.Web.GridViewFilterRowMode.OnClick;
-
-
-
+        
         settings.Columns.Add(column =>
         {
             column.FieldName = "id";
@@ -76,13 +74,40 @@
             c.FieldName = "quantity";
             c.Caption = "Cantitatea";
         });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "unit_id";
+            column.Caption = "Unitate";
+            column.Width = 20;
+            column.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "name";
+                p.ValueField = "Id";
+                p.ValueType = typeof(int);
+                p.DataSource = Model.UnitList;
+            });
+        });
         settings.Columns.Add(c=>
         {
-            c.FieldName = "total_price";
-            c.Caption = "Prețul total";
+            c.FieldName = "unit_price";
+            c.Caption = "Preț Unit.";
         });
-        //settings.Columns.Add("visible");
-        settings.TotalSummary.Add(DevExpress.Data.SummaryItemType.Sum, "total_price");
+        //adaugarea si completarea coloanei suma totală
+        var col = settings.Columns.Add("Preț Total");
+        col.UnboundType = DevExpress.Data.UnboundColumnType.Decimal;
+        settings.CustomUnboundColumnData = (sender, e) =>
+        {
+            decimal surface = CC.Models.Classes.MyConvert.ToDecimal(e.GetListSourceFieldValue("quantity")?.ToString());
+
+            if (e.Column.FieldName == "Preț Total")
+            {
+                decimal unitPrice = CC.Models.Classes.MyConvert.ToDecimal(e.GetListSourceFieldValue("unit_price")?.ToString());
+                e.Value = unitPrice * surface;
+            }
+            
+        };
+        //calcularea totală a materialelor
+        settings.TotalSummary.Add(DevExpress.Data.SummaryItemType.Sum, "Preț Total");
         settings.Settings.ShowFooter = true;
     });
     if (ViewData["EditError"] != null){

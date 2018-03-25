@@ -1,12 +1,10 @@
-﻿using CC.Models;
-using CC.Models.Classes;
+﻿using CC.Models.Classes;
 using CC.Models.Enums;
-using DevExpress.Web.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using static CC.Models.BusinessLogic.Functions;
+using CC.Models.BusinessLogic.Role;
 using Database = CC.Models.Database;
 using BLWorkers = CC.Models.BusinessLogic.Worker;
 
@@ -19,9 +17,35 @@ namespace CC.Controllers
         {
             MySession.Current.WorksForm = (int)FormName.WorkerForm;
             MySession.Current.WorkerId = workerId;
-            var worker = dbWorkers.Workers.ToList().FirstOrDefault(x => x.Id == workerId);
-            ViewBag.Workers = worker.first_name + " " + worker.last_name;
+            var worker = _dbWorkers.Workers.ToList().FirstOrDefault(x => x.Id == workerId);
+            ViewBag.Workers = worker?.first_name + " " + worker?.last_name;
             return View();
+        }
+
+        public ActionResult WorkersActionResult()
+        {
+            return View();
+        }
+
+        public ActionResult WorkersTabControl()
+        {
+            object test = Request.Params["tabIndex"];
+            string partialView = "Objects";
+            switch (test.ToString())
+            {
+                case "0":
+                    partialView = "_WorkWorksPartial";
+                    break;
+                case "1":
+                    partialView = "Workers";
+                    break;
+                case "2":
+                    partialView = "WorkersGroups";
+                    break;
+               
+            }
+
+            return PartialView(partialView);
         }
 
         public ActionResult WorkerCallback()
@@ -55,7 +79,7 @@ namespace CC.Controllers
 
         #region Workers
 
-        [AuthorizeRoles(UserRole.Admin, UserRole.Manager)]
+        [AuthorizeRoles.AuthorizeRolesAttribute(UserRoleType.Admin, UserRoleType.Manager)]
         public ActionResult Workers()
         {
             return View();
@@ -64,39 +88,36 @@ namespace CC.Controllers
         [ValidateInput(false)]
         public ActionResult GridViewWorkers()
         {
-            ViewBag.ContractTypes = dbWorkerContract.WorkerContractTypes.ToList();
-
-            var model = dbWorkers.Workers.ToList()?.Where(x => x.UserId == MySession.Current.UserGuid);
-            return PartialView("_GridViewWorkers", model.ToList());
+            return PartialView("_GridViewWorkers", BLWorkers.Worker.GetWorkerModel());
         }
 
         [HttpPost, ValidateInput(false)]
         public ActionResult GridViewWorkersAddNew(Database.Worker item)
         {
-            var model = dbWorkers.Workers;
+            var model = _dbWorkers.Workers;
             if (ModelState.IsValid)
             {
                 try
                 {
                     item.UserId = MySession.Current.UserGuid;
                     model.Add(item);
-                    dbWorkers.SaveChanges();
+                    _dbWorkers.SaveChanges();
                 }
-                catch (System.Exception e)
+                catch (Exception e)
                 {
                     ViewData["EditError"] = e.Message;
                 }
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var modelShow = dbWorkers.Workers.ToList().Where(x => x.UserId == MySession.Current.UserGuid);
-            return PartialView("_GridViewWorkers", modelShow.ToList());
+            
+            return PartialView("_GridViewWorkers", BLWorkers.Worker.GetWorkerModel());
         }
 
         [HttpPost, ValidateInput(false)]
         public ActionResult GridViewWorkersUpdate(Database.Worker item)
         {
-            var model = dbWorkers.Workers;
+            var model = _dbWorkers.Workers;
             if (ModelState.IsValid)
             {
                 try
@@ -104,8 +125,8 @@ namespace CC.Controllers
                     var modelItem = model.FirstOrDefault(it => it.Id == item.Id);
                     if (modelItem != null)
                     {
-                        this.UpdateModel(modelItem);
-                        dbWorkers.SaveChanges();
+                        UpdateModel(modelItem);
+                        _dbWorkers.SaveChanges();
                     }
                 }
                 catch (Exception e)
@@ -115,37 +136,37 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var modelShow = dbWorkers.Workers.ToList().Where(x => x.UserId == MySession.Current.UserGuid);
-            return PartialView("_GridViewWorkers", modelShow.ToList());
+           
+            return PartialView("_GridViewWorkers", BLWorkers.Worker.GetWorkerModel());
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewWorkersDelete(System.Int32 Id)
+        public ActionResult GridViewWorkersDelete(Int32 id)
         {
-            var model = dbWorkers.Workers;
-            if (Id >= 0)
+            var model = _dbWorkers.Workers;
+            if (id >= 0)
             {
                 try
                 {
-                    var item = model.FirstOrDefault(it => it.Id == Id);
+                    var item = model.FirstOrDefault(it => it.Id == id);
                     if (item != null)
                         model.Remove(item);
-                    dbWorkers.SaveChanges();
+                    _dbWorkers.SaveChanges();
                 }
                 catch (Exception e)
                 {
                     ViewData["EditError"] = e.Message;
                 }
             }
-            var modelShow = dbWorkers.Workers.ToList().Where(x => x.UserId == MySession.Current.UserGuid);
-            return PartialView("_GridViewWorkers", modelShow.ToList());
+            
+            return PartialView("_GridViewWorkers", BLWorkers.Worker.GetWorkerModel());
         }
 
-#endregion
+        #endregion
 
         #region WorkerContract
 
-        [AuthorizeRoles(UserRole.Admin, UserRole.Manager)]
+        [AuthorizeRoles.AuthorizeRolesAttribute(UserRoleType.Admin, UserRoleType.Manager)]
         public ActionResult WorkerContract()
         {
             return View();
@@ -154,20 +175,20 @@ namespace CC.Controllers
         [ValidateInput(false)]
         public ActionResult WorkerContractPartial()
         {
-            var model = dbWorkerContract.WorkerContractTypes.Where(x => x.user_id == MySession.Current.UserGuid);
+            var model = DbWorkerContract.WorkerContractTypes.Where(x => x.user_id == MySession.Current.UserGuid);
             return PartialView("_WorkerContractPartial", model.ToList());
         }
 
         [HttpPost, ValidateInput(false)]
         public ActionResult WorkerContractPartialAddNew(Database.WorkerContractType item)
         {
-            var model = dbWorkerContract.WorkerContractTypes;
+            var model = DbWorkerContract.WorkerContractTypes;
             if (ModelState.IsValid)
             {
                 try
                 {
                     model.Add(item);
-                    dbWorkerContract.SaveChanges();
+                    DbWorkerContract.SaveChanges();
                 }
                 catch (Exception e)
                 {
@@ -181,7 +202,7 @@ namespace CC.Controllers
         [HttpPost, ValidateInput(false)]
         public ActionResult WorkerContractPartialUpdate(Database.WorkerContractType item)
         {
-            var model = dbWorkerContract.WorkerContractTypes;
+            var model = DbWorkerContract.WorkerContractTypes;
             if (ModelState.IsValid)
             {
                 try
@@ -189,8 +210,8 @@ namespace CC.Controllers
                     var modelItem = model.FirstOrDefault(it => it.id == item.id);
                     if (modelItem != null)
                     {
-                        this.UpdateModel(modelItem);
-                        dbWorkerContract.SaveChanges();
+                        UpdateModel(modelItem);
+                        DbWorkerContract.SaveChanges();
                     }
                 }
                 catch (Exception e)
@@ -203,9 +224,9 @@ namespace CC.Controllers
             return PartialView("_WorkerContractPartial", model.ToList());
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult WorkerContractPartialDelete(System.Int32 id)
+        public ActionResult WorkerContractPartialDelete(Int32 id)
         {
-            var model = dbWorkerContract.WorkerContractTypes;
+            var model = DbWorkerContract.WorkerContractTypes;
             if (id >= 0)
             {
                 try
@@ -213,7 +234,7 @@ namespace CC.Controllers
                     var item = model.FirstOrDefault(it => it.id == id);
                     if (item != null)
                         model.Remove(item);
-                    dbWorkerContract.SaveChanges();
+                    DbWorkerContract.SaveChanges();
                 }
                 catch (Exception e)
                 {
@@ -231,47 +252,65 @@ namespace CC.Controllers
         [ValidateInput(false)]
         public ActionResult GridViewWorkerPayment()
         {
-            var viewModel = GridViewExtension.GetViewModel("GridView");
-
-            var model = Models.BusinessLogic.Worker.WorkerPayment.GetWorkerPaymentModel(dbWorks, dbWorkerPayment);
-            return PartialView("_GridViewWorkerPayment", model);
+            return PartialView("_GridViewWorkerPayment", BLWorkers.WorkerPayment.GetWorkerPaymentModel(dbWorks, dbWorkerPayment));
         }
 
         [HttpPost, ValidateInput(false)]
         public ActionResult GridViewWorkerPaymentAddNew(Database.WorkerPayment item)
         {
             var model = dbWorkerPayment.WorkerPayments;
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && item.amount > 0)
             {
                 try
                 {
-                    var salary = Models.BusinessLogic.Worker.WorkerPayment.GetSalary(MySession.Current.WorkerId);
-                    if ((double)item.amount == salary)
-                    {
-                        var works = dbWorks.Works;
-                        var work = dbWorks.Works.ToList().FirstOrDefault(x => x.id == MySession.Current.WorkId);
-
-                        if (work != null && work.is_paid == 0)
-                        {
-                            work.is_paid = 1;
-                            this.UpdateModel(work);
-                            dbWorks.SaveChanges();
-                        }
-                    }
                     item.worker_id = MySession.Current.WorkerId;
                     item.userId = MySession.Current.UserGuid;
+                    item.is_advance_excluded = false;
+
+                    var salary = BLWorkers.WorkerPayment.GetSalary(item.worker_id);
+                    if (Convert.ToDecimal(item.amount) == Convert.ToDecimal(salary))
+                    {
+                        var works = dbWorks.Works.ToList()
+                            .Where(x => (x.worker_id == item.worker_id 
+                                         || BLWorkers.WorkersGroupDetail.GetWorkerGroupIds(item.worker_id).Contains(x.workers_group_id ?? 0)) 
+                                        && x.is_paid == 0)
+                            .ToList();
+                        if(works.Count > 0)
+                        {
+                            works.ToList().ForEach(x => x.is_paid = 1);
+                            UpdateModel(works);
+                            dbWorks.SaveChanges();
+                        }
+
+                        var payments = dbWorkerPayment.WorkerPayments.ToList().Where(x => 
+                                           x.worker_id == item.worker_id
+                                        && x.payment_type == (int) PaymentTypes.advance 
+                                        && x.is_advance_excluded == false).ToList();
+                        if (payments.Count > 0)
+                        {
+                            payments.ToList().ForEach(c => c.is_advance_excluded = true);
+                            UpdateModel(payments);
+                            dbWorkerPayment.SaveChanges();
+                        }
+                        
+                        var notice = string.Concat("lucrări: ", String.Join(",", works.Select(x => x.date_end)));
+                        notice = string.Concat(notice, " avansuri: ", String.Join(",", payments.Select(x => x.payment_date)));
+
+                        item.notice = notice.Replace("12:00:00 AM", "");
+                    }
+
                     model.Add(item);
                     dbWorkerPayment.SaveChanges();
                 }
                 catch (Exception e)
-                {
+                { 
                     ViewData["EditError"] = e.Message;
                 }
             }
             else
-                ViewData["EditError"] = "Please, correct all errors.";
+                ViewData["EditError"] = "Corectați toate erorile, suma trebuie sa fie mai mare decit 0";
 
-            var modelToShow = Models.BusinessLogic.Worker.WorkerPayment.GetWorkerPaymentModel(dbWorks, dbWorkerPayment);
+            var modelToShow = BLWorkers.WorkerPayment.GetWorkerPaymentModel(dbWorks, dbWorkerPayment);
             return PartialView("_GridViewWorkerPayment", modelToShow);
         }
         [HttpPost, ValidateInput(false)]
@@ -285,7 +324,7 @@ namespace CC.Controllers
                     var modelItem = model.FirstOrDefault(it => it.id == item.id);
                     if (modelItem != null)
                     {
-                        this.UpdateModel(modelItem);
+                        UpdateModel(modelItem);
                         dbWorkerPayment.SaveChanges();
                     }
                 }
@@ -301,7 +340,7 @@ namespace CC.Controllers
             return PartialView("_GridViewWorkerPayment", modelToShow);
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewWorkerPaymentDelete(System.Int32 id)
+        public ActionResult GridViewWorkerPaymentDelete(Int32 id)
         {
             var model = dbWorkerPayment.WorkerPayments;
             if (id >= 0)
@@ -367,7 +406,7 @@ namespace CC.Controllers
                     var modelItem = model.FirstOrDefault(it => it.worker_id == item.worker_id);
                     if (modelItem != null)
                     {
-                        this.UpdateModel(modelItem);
+                        UpdateModel(modelItem);
                         dbWorkerSpeciality.SaveChanges();
                     }
                 }
@@ -383,14 +422,14 @@ namespace CC.Controllers
             return PartialView("_GridViewWorkerSpecialityPartial", model1.ToList());
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewWorkerSpecialityPartialDelete(System.Int32 speciality_id)
+        public ActionResult GridViewWorkerSpecialityPartialDelete(Int32 specialityId)
         {
             var model = dbWorkerSpeciality.WorkerSpecialities;
-            if (speciality_id >= 0)
+            if (specialityId >= 0)
             {
                 try
                 {
-                    var item = model.ToList().FirstOrDefault(it => it.speciality_id == speciality_id && it.worker_id == MySession.Current.WorkerId);
+                    var item = model.ToList().FirstOrDefault(it => it.speciality_id == specialityId && it.worker_id == MySession.Current.WorkerId);
                     if (item != null)
                         model.Remove(item);
                     dbWorkerSpeciality.SaveChanges();
@@ -412,13 +451,7 @@ namespace CC.Controllers
         [ValidateInput(false)]
         public ActionResult WorkerWorksPartial()
         {
-            ViewBag.Workers = BLWorkers.Worker.GetWorkerList();
-            ViewBag.Unites = dbUnits.Units.ToList();
-            //
-            ViewBag.Objects = dbObjects.Objects.ToList().Where(x => x.UserId == MySession.Current.UserGuid);
-            List<Database.Work> workList = dbWorks.Works.ToList().Where(x => x.worker_id == MySession.Current.WorkerId).ToList();
-            //                        
-            return PartialView("_WorkerWorksPartial", workList);
+            return PartialView("_WorkerWorksPartial", BLWorkers.Works.GetWorkerWorksModel());
         }
 
         [HttpPost, ValidateInput(false)]
@@ -439,7 +472,7 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            return PartialView("_WorkerWorksPartial", model.ToList());
+            return PartialView("_WorkerWorksPartial", BLWorkers.Works.GetWorkerWorksModel());
         }
         [HttpPost, ValidateInput(false)]
         public ActionResult WorkerWorksPartialUpdate(Database.Work item)
@@ -452,13 +485,15 @@ namespace CC.Controllers
                     if (item.is_paid == 1)
                     {
                         var modelPayments = dbWorkerPayment.WorkerPayments;
-                        Database.WorkerPayment workerPayment = new Database.WorkerPayment();
-                        //
-                        workerPayment.payment_date = DateTime.Now;
-                        workerPayment.worker_id = MySession.Current.WorkerId;
-                        workerPayment.work_id = item.id;
-                        workerPayment.amount = Convert.ToDouble(item.unit_price) * Convert.ToDouble(item.surface);
-                        workerPayment.userId = MySession.Current.UserGuid;
+                        Database.WorkerPayment workerPayment = new Database.WorkerPayment
+                        {
+                            //
+                            payment_date = DateTime.Now,
+                            worker_id = MySession.Current.WorkerId,
+                            work_id = item.id,
+                            amount = Convert.ToDecimal(item.unit_price_worker) * Convert.ToDecimal(item.surface_work),
+                            userId = MySession.Current.UserGuid
+                        };
                         modelPayments.Add(workerPayment);
                         dbWorkerPayment.SaveChanges();
                     }
@@ -474,7 +509,7 @@ namespace CC.Controllers
                     var modelItem = model.FirstOrDefault(it => it.id == item.id);
                     if (modelItem != null)
                     {
-                        this.UpdateModel(modelItem);
+                        UpdateModel(modelItem);
                         dbWorks.SaveChanges();
                     }
                 }
@@ -485,11 +520,11 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var model1 = dbWorks.Works.ToList().Where(x => x.worker_id == MySession.Current.WorkerId);
-            return PartialView("_WorkerWorksPartial", model1.ToList());
+            
+            return PartialView("_WorkerWorksPartial", BLWorkers.Works.GetWorkerWorksModel());
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult WorkerWorksPartialDelete(System.Int32 id)
+        public ActionResult WorkerWorksPartialDelete(Int32 id)
         {
             var model = dbWorks.Works;
             if (id >= 0)
@@ -506,7 +541,7 @@ namespace CC.Controllers
                     ViewData["EditError"] = e.Message;
                 }
             }
-            return PartialView("_WorkerWorksPartial", model.ToList());
+            return PartialView("_WorkerWorksPartial", BLWorkers.Works.GetWorkerWorksModel());
         }
 
         #endregion
@@ -521,8 +556,8 @@ namespace CC.Controllers
         [ValidateInput(false)]
         public ActionResult WorkerSalaryContractPartial()
         {
-            var model = dbWorkerSalaryContract.WorkerSalaryContracts.ToArray().Where(x => x.worker_id == MySession.Current.WorkerId);
-            return PartialView("_WorkerSalaryContractPartial", model.ToList());
+            return PartialView("_WorkerSalaryContractPartial",
+                BLWorkers.WorkerSalaryContract.GetWorkerSalaryContractModel(MySession.Current.WorkerId));
         }
 
         [HttpPost, ValidateInput(false)]
@@ -544,9 +579,9 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-
-            var model1 = dbWorkerSalaryContract.WorkerSalaryContracts.ToArray().Where(x => x.worker_id == MySession.Current.WorkerId);
-            return PartialView("_WorkerSalaryContractPartial", model1.ToList());
+            
+            return PartialView("_WorkerSalaryContractPartial",
+                BLWorkers.WorkerSalaryContract.GetWorkerSalaryContractModel(MySession.Current.WorkerId));
         }
         [HttpPost, ValidateInput(false)]
         public ActionResult WorkerSalaryContractPartialUpdate(Database.WorkerSalaryContract item)
@@ -559,7 +594,7 @@ namespace CC.Controllers
                     var modelItem = model.FirstOrDefault(it => it.id == item.id);
                     if (modelItem != null)
                     {
-                        this.UpdateModel(modelItem);
+                        UpdateModel(modelItem);
                         dbWorkerSalaryContract.SaveChanges();
                     }
                 }
@@ -571,11 +606,11 @@ namespace CC.Controllers
             else
                 ViewData["EditError"] = "Please, correct all errors.";
 
-            var model1 = dbWorkerSalaryContract.WorkerSalaryContracts.ToArray().Where(x => x.worker_id == MySession.Current.WorkerId);
-            return PartialView("_WorkerSalaryContractPartial", model1.ToList());
+            return PartialView("_WorkerSalaryContractPartial",
+                BLWorkers.WorkerSalaryContract.GetWorkerSalaryContractModel(MySession.Current.WorkerId));
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult WorkerSalaryContractPartialDelete(System.Int32 id)
+        public ActionResult WorkerSalaryContractPartialDelete(Int32 id)
         {
             var model = dbWorkerSalaryContract.WorkerSalaryContracts;
             if (id >= 0)
@@ -593,8 +628,8 @@ namespace CC.Controllers
                 }
             }
 
-            var model1 = dbWorkerSalaryContract.WorkerSalaryContracts.ToArray().Where(x => x.worker_id == MySession.Current.WorkerId);
-            return PartialView("_WorkerSalaryContractPartial", model1.ToList());
+            return PartialView("_WorkerSalaryContractPartial",
+                BLWorkers.WorkerSalaryContract.GetWorkerSalaryContractModel(MySession.Current.WorkerId));
         }
 
 
@@ -610,21 +645,20 @@ namespace CC.Controllers
         [ValidateInput(false)]
         public ActionResult WorkDaysPartial()
         {
-            var model = dbWorkDay.WorkDays.ToList().Where(x => x.worker_id == MySession.Current.WorkerId);
-            return PartialView("_WorkDaysPartial", model.ToList());
+            return PartialView("_WorkDaysPartial", BLWorkers.WorkDays.GetWorkDaysModel());
         }
 
         [HttpPost, ValidateInput(false)]
         public ActionResult WorkDaysPartialAddNew(Database.WorkDay item)
         {
-            var model = dbWorkDay.WorkDays;
+            var model = _dbWorkDay.WorkDays;
             if (ModelState.IsValid)
             {
                 try
                 {
                     item.worker_id = MySession.Current.WorkerId;
                     model.Add(item);
-                    dbWorkDay.SaveChanges();
+                    _dbWorkDay.SaveChanges();
                 }
                 catch (Exception e)
                 {
@@ -633,14 +667,13 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-
-            var model1 = dbWorkDay.WorkDays.ToList().Where(x => x.worker_id == MySession.Current.WorkerId);
-            return PartialView("_WorkDaysPartial", model1.ToList());
+            
+            return PartialView("_WorkDaysPartial", BLWorkers.WorkDays.GetWorkDaysModel());
         }
         [HttpPost, ValidateInput(false)]
         public ActionResult WorkDaysPartialUpdate(Database.WorkDay item)
         {
-            var model = dbWorkDay.WorkDays;
+            var model = _dbWorkDay.WorkDays;
             if (ModelState.IsValid)
             {
                 try
@@ -648,8 +681,8 @@ namespace CC.Controllers
                     var modelItem = model.FirstOrDefault(it => it.id == item.id);
                     if (modelItem != null)
                     {
-                        this.UpdateModel(modelItem);
-                        dbWorkDay.SaveChanges();
+                        UpdateModel(modelItem);
+                        _dbWorkDay.SaveChanges();
                     }
                 }
                 catch (Exception e)
@@ -659,14 +692,13 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-
-            var model1 = dbWorkDay.WorkDays.ToList().Where(x => x.worker_id == MySession.Current.WorkerId);
-            return PartialView("_WorkDaysPartial", model1.ToList());
+            
+            return PartialView("_WorkDaysPartial", BLWorkers.WorkDays.GetWorkDaysModel());
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult WorkDaysPartialDelete(System.Int32 id)
+        public ActionResult WorkDaysPartialDelete(Int32 id)
         {
-            var model = dbWorkDay.WorkDays;
+            var model = _dbWorkDay.WorkDays;
             if (id >= 0)
             {
                 try
@@ -674,30 +706,199 @@ namespace CC.Controllers
                     var item = model.FirstOrDefault(it => it.id == id);
                     if (item != null)
                         model.Remove(item);
-                    dbWorkDay.SaveChanges();
+                    _dbWorkDay.SaveChanges();
                 }
                 catch (Exception e)
                 {
                     ViewData["EditError"] = e.Message;
                 }
             }
-
-            var model1 = dbWorkDay.WorkDays.ToList().Where(x => x.worker_id == MySession.Current.WorkerId);
-            return PartialView("_WorkDaysPartial", model1.ToList());
+            
+            return PartialView("_WorkDaysPartial", BLWorkers.WorkDays.GetWorkDaysModel());
         }
 
         #endregion
 
+        #region Worker Group
 
-        Database.WorkDayEntities dbWorkDay = new Database.WorkDayEntities();
+        public ActionResult WorkersGroups()
+        {
+            return View();
+        }
 
-        Database.ExcelentConstructWorkers dbWorkers = new Database.ExcelentConstructWorkers();
+        [ValidateInput(false)]
+        public ActionResult GridViewWorkerGroupPartial()
+        {
+            return PartialView("_GridViewWorkerGroupPartial", BLWorkers.WorkersGroups.GetWorkersGroupsModel());
+        }
 
-        Database.WorkerContractEntities dbWorkerContract = new Database.WorkerContractEntities();
+        [HttpPost, ValidateInput(false)]
+        public ActionResult GridViewWorkerGroupPartialAddNew(Database.WorkersGroup item)
+        {
+            var model = dbWorkersGroups.WorkersGroups;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    item.user_id = MySession.Current.UserGuid;
+
+                    model.Add(item);
+                    dbWorkersGroups.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    ViewData["EditError"] = e.Message;
+                }
+            }
+            else
+                ViewData["EditError"] = "Please, correct all errors.";
+
+            return PartialView("_GridViewWorkerGroupPartial", BLWorkers.WorkersGroups.GetWorkersGroupsModel());
+        }
+        [HttpPost, ValidateInput(false)]
+        public ActionResult GridViewWorkerGroupPartialUpdate(Database.WorkersGroup item)
+        {
+            var model = dbWorkersGroups.WorkersGroups;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var modelItem = model.FirstOrDefault(it => it.id == item.id);
+                    if (modelItem != null)
+                    {
+                        UpdateModel(modelItem);
+                        dbWorkersGroups.SaveChanges();
+                    }
+                }
+                catch (Exception e)
+                {
+                    ViewData["EditError"] = e.Message;
+                }
+            }
+            else
+                ViewData["EditError"] = "Please, correct all errors.";
+            return PartialView("_GridViewWorkerGroupPartial", BLWorkers.WorkersGroups.GetWorkersGroupsModel());
+        }
+        [HttpPost, ValidateInput(false)]
+        public ActionResult GridViewWorkerGroupPartialDelete(Int32 id)
+        {
+            var model = dbWorkersGroups.WorkersGroups;
+            if (id >= 0)
+            {
+                try
+                {
+                    var item = model.FirstOrDefault(it => it.id == id);
+                    if (item != null)
+                        model.Remove(item);
+                    dbWorkersGroups.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    ViewData["EditError"] = e.Message;
+                }
+            }
+            return PartialView("_GridViewWorkerGroupPartial", BLWorkers.WorkersGroups.GetWorkersGroupsModel());
+        }
+
+        #endregion
+
+        #region WorkersGroupDetail
+
+        public ActionResult WorkersGroupDetail(int? workersGroupId)
+        {
+            TempData["workerGroupId"] = workersGroupId;
+            return View();
+        }
+
+        [ValidateInput(false)]
+        public ActionResult GridViewWorkersGroupDetail()
+        {
+            int wgId = (int)TempData["workerGroupId"];
+            return PartialView("_GridViewWorkersGroupDetail", BLWorkers.WorkersGroupDetail.GetWorkersGroupDetailModel(wgId));
+        }
+
+        [HttpPost, ValidateInput(false)]
+        public ActionResult GridViewWorkersGroupDetailAddNew(Database.WorkersGroupDetail item)
+        {
+            var model = dbWorkersGroupDetail.WorkersGroupDetails;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    model.Add(item);
+                    dbWorkersGroupDetail.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    ViewData["EditError"] = e.Message;
+                }
+            }
+            else
+                ViewData["EditError"] = "Please, correct all errors.";
+            return PartialView("_GridViewWorkersGroupDetail", BLWorkers.WorkersGroupDetail.GetWorkersGroupDetailModel((int)TempData["workerGroupId"]));
+        }
+        [HttpPost, ValidateInput(false)]
+        public ActionResult GridViewWorkersGroupDetailUpdate(Database.WorkersGroupDetail item)
+        {
+            var model = dbWorkersGroupDetail.WorkersGroupDetails;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var modelItem = model.FirstOrDefault(it => it.workers_groups_id == item.workers_groups_id);
+                    if (modelItem != null)
+                    {
+                        UpdateModel(modelItem);
+                        dbWorkersGroupDetail.SaveChanges();
+                    }
+                }
+                catch (Exception e)
+                {
+                    ViewData["EditError"] = e.Message;
+                }
+            }
+            else
+                ViewData["EditError"] = "Please, correct all errors.";
+            return PartialView("_GridViewWorkersGroupDetail", 
+                BLWorkers.WorkersGroupDetail.GetWorkersGroupDetailModel((int)TempData["workerGroupId"]));
+        }
+        [HttpPost, ValidateInput(false)]
+        public ActionResult GridViewWorkersGroupDetailDelete(Int32 workersGroupsId)
+        {
+            var model = dbWorkersGroupDetail.WorkersGroupDetails;
+            if (workersGroupsId >= 0)
+            {
+                try
+                {
+                    var item = model.FirstOrDefault(it => it.workers_groups_id == workersGroupsId);
+                    if (item != null)
+                        model.Remove(item);
+                    dbWorkersGroupDetail.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    ViewData["EditError"] = e.Message;
+                }
+            }
+            return PartialView("_GridViewWorkersGroupDetail", 
+                BLWorkers.WorkersGroupDetail.GetWorkersGroupDetailModel((int)TempData["workerGroupId"]));
+        }
+
+
+        #endregion
+
+        
+        Database.WorkersGroupDetailEntities dbWorkersGroupDetail = new Database.WorkersGroupDetailEntities();
+
+        private readonly Database.WorkDayEntities _dbWorkDay = new Database.WorkDayEntities();
+
+        private readonly Database.ExcelentConstructWorkers _dbWorkers = new Database.ExcelentConstructWorkers();
+
+        private Database.WorkerContractEntities _dbWorkerContract = new Database.WorkerContractEntities();
 
         Database.WorksEntities dbWorks = new Database.WorksEntities();
 
-        Database.ECWorkerPayment dbWorkerPayment = new Database.ECWorkerPayment();
+        Database.WorkerPaymentsEntities dbWorkerPayment = new Database.WorkerPaymentsEntities();
 
         Database.WorkerSpecialityEntities dbWorkerSpeciality = new Database.WorkerSpecialityEntities();
 
@@ -708,5 +909,10 @@ namespace CC.Controllers
         Database.WorkerSalaryContractEntities dbWorkerSalaryContract = new Database.WorkerSalaryContractEntities();
 
         Database.ExcelentConstructEntitiesObjects dbObjects = new Database.ExcelentConstructEntitiesObjects();
+
+        public Database.WorkerContractEntities DbWorkerContract { get => _dbWorkerContract; set => _dbWorkerContract = value; }
+
+        Database.WorkersGroupsEntities dbWorkersGroups = new Database.WorkersGroupsEntities();
+
     }
 }

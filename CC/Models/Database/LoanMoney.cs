@@ -32,6 +32,10 @@ public partial class LoanMoney
 
     public Nullable<bool> loan_status { get; set; }
 
+    public string description { get; set; }
+
+    public int currency_id { get; set; }
+
 }
 
 }

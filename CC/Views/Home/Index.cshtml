@@ -1,42 +1,52 @@
-﻿@{
-    ViewBag.Title = "Home Page";
-
-    //bool showReport = CC.Models.Classes.MySession.Current.IsUserAdmin || CC.Models.Classes.MySession.Current.UserGuid == "49b48884-0caa-4708-8e09-dfa9284fb933";
-}
+﻿@model CC.Models.Classes.Home.IndexModel
 
 <br><br>
-
 <div class="index-icon-row">
     <div>
-        <span>Setări</span>
-        @Html.ActionLink("Report", "Setting", new { controller = "Setting" }, new { @class = "settingIcon" })
+        @if (Model.SettingsCanView)
+        {
+            <span><b>Setări</b></span>
+            @Html.ActionLink("Report", "Setting", new { controller = "Setting" }, new { @class = "settingIcon" })
+        }
     </div>
     <div>
-        <span><b>Unități măsură</b></span>
-        @Html.ActionLink("Report", "Unit", new { controller = "Home" }, new { @class = "unitsIcon" })
+        @if (Model.UnitiesCanView)
+        {
+            <span><b>Unități măsură</b></span>
+            @Html.ActionLink("Report", "Unit", new { controller = "Home" }, new { @class = "unitsIcon", Model.UnitiesCanView })
+        }
     </div>
     <div>
-        <span><b>Specialități</b></span>
-        @Html.ActionLink("Report", "Speciality", new { controller = "Home" }, new { @class = "specialityIcon" })
+        @if (Model.SpecialitiesCanView)
+        {
+            <span><b>Specialități</b></span>
+            @Html.ActionLink("Report", "Speciality", new { controller = "Home" }, new { @class = "specialityIcon" })
+        }
     </div>
 </div>
 <div class="index-icon-row">
     <div>
-        <span><b>Împrumuturi</b></span>
-        @Html.ActionLink("Report", "LoanMoney", new { controller = "Home" }, new { @class = "loanMoneyIcon" })
+        @if (Model.LoanMoneyCanView)
+        {
+            <span><b>Împrumuturi</b></span>
+            @Html.ActionLink("Report", "LoanMoney", new { controller = "Home" }, new { @class = "loanMoneyIcon" })
+        }
     </div>
     <div>
-        @*<span><b>Materiale</b></span>
-        @Html.ActionLink("Report", "Materials", new { controller = "Home" }, new { @class = "materialsIcon" })*@
-        <span><b>Filtre</b></span>
-        @Html.ActionLink("Report", "Filter", new { controller = "Home" }, new { @class = "filtersIcon" })
+        @if (Model.FiltersCanView)
+        {
+            <span><b>Filtre</b></span>
+            @Html.ActionLink("Report", "Filter", new { controller = "Home" }, new { @class = "filtersIcon" })
+        }
     </div>
-    
+
     <div>
-        @*@Html.ActionLink("Report", "SettingReport", new { controller = "Report" }, new { @class = "reportAndrei" })*@
+        @if (Model.UsersCanView)
+        {
+            <span><b>Utilizatori</b></span>
+            @Html.ActionLink("Utilizatori", "Users", new { controller = "Users" }, new { @class = "usersIcon" })
+        }
     </div>
 </div>
-
-
 
 

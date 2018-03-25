@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using CC.Models;
 using CC.Models.Classes;
+using CC.Models.Classes.Worker;
 
 namespace CC.Models.BusinessLogic.Worker
 {
@@ -17,9 +15,21 @@ namespace CC.Models.BusinessLogic.Worker
 
         public static List<Database.Worker> GetWorkerList()
         {
-            var user_id = MySession.Current.UserGuid;
+            var userId = MySession.Current.UserGuid;
             //
-            return new Database.ExcelentConstructWorkers().Workers.ToList().Where(x => x.UserId == user_id).ToList();
+            return new Database.ExcelentConstructWorkers().Workers.ToList().Where(x => x.UserId == userId).ToList();
+        }
+
+        public static WorkerModel GetWorkerModel()
+        {
+            var workerModel = new WorkerModel
+            {
+                WorkerList = GetWorkerList(),
+                UserPermission = User.UserPermissions.GetUserPermissionByModuleType(Enums.ModuleTypes.Workers),
+                WorkerContractList = WorkerContract.GetWorkerContractTypes().WorkerContractList
+            };
+
+            return workerModel;
         }
     }
 }

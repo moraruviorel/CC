@@ -1,4 +1,131 @@
-﻿--data 23.01.2018
+﻿create table Currencies
+(
+	id int primary key not null identity(1,1),
+	name varchar(5),
+	description varchar(100)
+)
+
+insert into currencies values('MDL', 'Leu Moldovenesc')
+insert into currencies values('EUR', 'Euro')
+insert into currencies values('USD', 'Dolar American')
+
+alter table LoanMoney
+add currency_id int not null default(1)
+
+alter table workerpayments
+add tmpAmount numeric(15,2)
+
+update WorkerPayments
+set tmpAmount = amount
+
+alter table WorkerPayments
+drop column amount
+
+alter table workerpayments
+add amount numeric(15,2)
+
+update WorkerPayments
+set amount = tmpAmount
+
+alter table workersalarycontract
+add contract_type_id int not null default(0)
+
+alter table Workdays
+add is_paid bit default(0)
+
+alter table WorkDays
+add worked_hours numeric(15,2)
+
+update WorkDays
+set worked_hours = work_hours
+
+ALTER TABLE WorkDays
+DROP COLUMN work_hours;
+
+update works 
+set surface = REPLACE(surface, ',', '.')
+
+update works
+set surface_work = cast(surface as numeric(15,2))
+
+alter table Works
+add workers_group_id int
+
+create table WorkersGroups(
+	id int not null identity(1,1) primary key,
+	[description] nvarchar(100),
+	create_date datetime,
+	user_id nvarchar(128)
+)
+
+create table WorkersGroupDetail(
+	workers_groups_id int,
+	worker_id int,
+	work_part int,
+	primary key(workers_groups_id, worker_id)
+)
+
+--11.03.2018
+update ObjectMaterial
+set unit_price = total_price / quantity
+where quantity > 0
+
+alter table ObjectMaterial
+add unit_id int
+
+alter table ObjectMaterial
+add unit_price numeric(15,2)
+
+--09.03.2018
+create table PaymentTypes
+(
+	id int not null primary key identity(1,1),
+	Name varchar(50),
+	[Description] varchar(100)
+)
+
+alter table workerpayments 
+add payment_type int
+
+
+alter table dbo.WorkerPayments
+add is_advance_excluded bit default(0)
+
+insert into PaymentTypes values('salary', 'salariul')
+insert into PaymentTypes values('advance', 'avans')
+
+alter table dbo.LoanMoney
+add [Description] nvarchar(200)
+
+drop table Controllers
+drop table Modules
+drop table ModuleAccess
+
+create table [Permissions](
+	id int primary key identity(1,1),
+	name nvarchar(50),
+	[description] nvarchar(100)
+)
+
+create table UserPermissions(
+	id int primary key identity(1,1),
+	module_name nvarchar(50) not null,
+	item_id int,
+	can_view bit,
+	can_add bit,
+	can_edit bit,
+	can_delete bit,
+	user_id uniqueidentifier not null
+)
+
+create Table TranslateWords(
+	word nvarchar(200) primary key not null,
+	ro nvarchar(200),
+	ru nvarchar(200),
+	en nvarchar(200)
+)
+
+--data 23.01.2018
 --create table
 create table Filters(
 	id int primary key identity(1,1),

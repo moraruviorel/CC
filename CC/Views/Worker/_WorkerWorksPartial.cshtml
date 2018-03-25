@@ -48,13 +48,13 @@
                     p.TextField = "Address";
                     p.ValueField = "Id";
                     p.ValueType = typeof(int);
-                    p.DataSource = ViewBag.Objects;
+                    p.DataSource = ViewBag.ObjectList;
                 });
             });
 
             settings.Columns.Add(c =>
             {
-                c.FieldName = "surface";
+                c.FieldName = "surface_work";
                 c.Caption = "Cantitate";
                 c.Width = 40;
             });
@@ -69,7 +69,7 @@
                     p.TextField = "name";
                     p.ValueField = "Id";
                     p.ValueType = typeof(int);
-                    p.DataSource = ViewBag.Unites;
+                    p.DataSource = ViewBag.UniteList;
                 });
             });
 
@@ -87,9 +87,9 @@
             {
             if (e.Column.FieldName == "Total")
             {
-                decimal unit_price = CC.Models.Classes.MyConvert.ToDecimal(Convert.ToString(e.GetListSourceFieldValue("unit_price_worker")));
-                decimal surface = CC.Models.Classes.MyConvert.ToDecimal(Convert.ToString(e.GetListSourceFieldValue("surface")));
-                e.Value = unit_price * surface;
+                decimal unitPrice = CC.Models.Classes.MyConvert.ToDecimal(Convert.ToString(e.GetListSourceFieldValue("unit_price_worker")));
+                decimal surface = CC.Models.Classes.MyConvert.ToDecimal(Convert.ToString(e.GetListSourceFieldValue("surface_work")));
+                e.Value = unitPrice * surface;
             }
         };
         //
@@ -115,4 +115,4 @@
         grid.SetEditErrorText((string)ViewData["EditError"]);
     }
 }
-@grid.Bind(Model).GetHtml()
+@grid.Bind(Model.WorksList).GetHtml()

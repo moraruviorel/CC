@@ -11,7 +11,7 @@ namespace CC.Models.Classes
             get {
                 switch (MySession.Current.UserRole)
                 {
-                    case Models.Enums.UserRole.Dentistry:
+                    case Models.Enums.UserRoleType.Dentistry:
                         return "Clienți";
                     default: return "Lucratori";
                 }

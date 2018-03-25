@@ -13,7 +13,7 @@ new Script { ExtensionSuite = ExtensionSuite.Editors }
     foreach (var item in ViewBag.Works)
     {
         //workSum += Convert.ToDouble(item.surface) * Convert.ToDouble(item.unit_price);
-        decimal surface = CC.Models.Classes.MyConvert.ToDecimal(item.surface);
+        decimal surface = CC.Models.Classes.MyConvert.ToDecimal(item.surface_work);
         decimal unit_price = CC.Models.Classes.MyConvert.ToDecimal(Convert.ToString(item.unit_price));
 
         workSum += surface * unit_price;

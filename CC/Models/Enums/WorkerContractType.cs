@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.ComponentModel;
 
 namespace CC.Models.Enums
 {
     public enum WorkerContractType
     {
-        
-        Lunar = 1,
-
-        Volum = 2,
-
-        Ore = 3,
-
-        Zi = 4,       
-
+        [Description("Lunar")]
+        ByMonth = 1,
+        [Description("Volum")]
+        ByWork = 2,
+        [Description("Ore")]
+        ByHours = 3,
+        [Description("Zi")]
+        ByDay = 4,
     }
 }

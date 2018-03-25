@@ -169,6 +169,7 @@
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
@@ -276,14 +277,32 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\BusinessLogic\Home\Filter.cs" />
+    <Compile Include="Models\BusinessLogic\Home\Index.cs" />
+    <Compile Include="Models\BusinessLogic\Home\TranslateWord.cs" />
+    <Compile Include="Models\BusinessLogic\Home\Unit.cs" />
     <Compile Include="Models\BusinessLogic\Object\Object.cs" />
     <Compile Include="Models\BusinessLogic\Object\ObjectExtra.cs" />
     <Compile Include="Models\BusinessLogic\Object\ObjectInstrument.cs" />
     <Compile Include="Models\BusinessLogic\Object\ObjectMaterial.cs" />
     <Compile Include="Models\BusinessLogic\Object\ObjectWorks.cs" />
+    <Compile Include="Models\BusinessLogic\Role\AuthorizeRoles.cs" />
     <Compile Include="Models\BusinessLogic\Setting\Setting.cs" />
+    <Compile Include="Models\BusinessLogic\User\AspNetUser.cs" />
+    <Compile Include="Models\BusinessLogic\User\UserPermissions.cs" />
+    <Compile Include="Models\BusinessLogic\User\UserRole.cs" />
+    <Compile Include="Models\BusinessLogic\Worker\WorkDays.cs" />
+    <Compile Include="Models\BusinessLogic\Worker\WorkerContract.cs" />
+    <Compile Include="Models\BusinessLogic\Worker\WorkerSalaryContract.cs" />
+    <Compile Include="Models\BusinessLogic\Worker\WorkersGroupDetail.cs" />
+    <Compile Include="Models\BusinessLogic\Worker\WorkersGroups.cs" />
+    <Compile Include="Models\BusinessLogic\Worker\Works.cs" />
     <Compile Include="Models\Classes\Account\AccountViewModels.cs" />
+    <Compile Include="Models\Classes\Common.cs" />
     <Compile Include="Models\Classes\Home\FilterModel.cs" />
+    <Compile Include="Models\Classes\Home\IndexModel.cs" />
+    <Compile Include="Models\Classes\Home\LoanMoneyModel.cs" />
+    <Compile Include="Models\Classes\Home\TranslateWordModel.cs" />
+    <Compile Include="Models\Classes\Home\UnitModel.cs" />
     <Compile Include="Models\Classes\MyConvert.cs" />
     <Compile Include="Models\Classes\Object\ObjectExtraModel.cs" />
     <Compile Include="Models\Classes\Object\ObjectInstrumentModel.cs" />
@@ -292,7 +311,18 @@
     <Compile Include="Models\Classes\Object\ObjectWorksModel.cs" />
     <Compile Include="Models\Classes\Setting\Setting.cs" />
     <Compile Include="Models\Classes\Setting\SettingModel.cs" />
-    <Compile Include="Models\Classes\Worker\Worker.cs" />
+    <Compile Include="Models\Classes\Users\AspNetUserModel.cs" />
+    <Compile Include="Models\Classes\Users\UserPermissionsModel.cs" />
+    <Compile Include="Models\Classes\Worker\WorkDaysModel.cs" />
+    <Compile Include="Models\Classes\Worker\WorkerContractModel.cs" />
+    <Compile Include="Models\Classes\Worker\WorkerModel.cs" />
+    <Compile Include="Models\Classes\Worker\WorkerSalaryContractModel.cs" />
+    <Compile Include="Models\Classes\Worker\WorkersGroupDetailModel.cs" />
+    <Compile Include="Models\Classes\Worker\WorkersGroupsModel.cs" />
+    <Compile Include="Models\Classes\Worker\WorkerWorksModel.cs" />
+    <Compile Include="Models\Database\AspNetRole.cs">
+      <DependentUpon>AspNetUsersModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Database\AspNetUser.cs">
       <DependentUpon>AspNetUsersModel.tt</DependentUpon>
     </Compile>
@@ -316,10 +346,27 @@
     <Compile Include="Models\BusinessLogic\Worker\WorkerPayment.cs" />
     <Compile Include="Models\BusinessLogic\Worker\Worker.cs" />
     <Compile Include="Models\Classes\ActionLinkText.cs" />
-    <Compile Include="Models\Classes\Enums.cs" />
     <Compile Include="Models\Classes\HomeDetails\LoanMoneyModel.cs" />
     <Compile Include="Models\Classes\MySession.cs" />
     <Compile Include="Models\Classes\Worker\WorkerPayment.cs" />
+    <Compile Include="Models\Database\Currencies.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Currencies.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Database\Currencies.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Currencies.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Database\Currencies.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Currencies.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Database\Currency.cs">
+      <DependentUpon>Currencies.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Database\Customer.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -417,6 +464,24 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Speciality.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Database\TranslateWord.cs">
+      <DependentUpon>TranslateWords.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Database\TranslateWords.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TranslateWords.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Database\TranslateWords.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TranslateWords.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Database\TranslateWords.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TranslateWords.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Models\Database\Treatment1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -427,18 +492,70 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Unit.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Database\UserPermission.cs">
+      <DependentUpon>UserPermissions.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Database\UserPermissions.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UserPermissions.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Database\UserPermissions.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UserPermissions.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Database\UserPermissions.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UserPermissions.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Models\Database\Work.cs">
       <DependentUpon>Works.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Database\WorkerPayment1.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>WorkerPayment.tt</DependentUpon>
+    <Compile Include="Models\Database\WorkerPayment.cs">
+      <DependentUpon>WorkerPayments.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Database\WorkerSalaryContract1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>WorkerSalaryContract.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Database\WorkersGroup.cs">
+      <DependentUpon>WorkersGroups.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Database\WorkersGroupDetail.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WorkersGroupDetail.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Database\WorkersGroupDetail.cs">
+      <DependentUpon>WorkersGroupDetail.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Database\WorkersGroupDetail.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WorkersGroupDetail.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Database\WorkersGroupDetail1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WorkersGroupDetail.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Database\WorkersGroups.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WorkersGroups.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Database\WorkersGroups.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WorkersGroups.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Database\WorkersGroups.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WorkersGroups.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\Database\WorkerSpeciality1.cs">
       <AutoGen>True</AutoGen>
@@ -460,13 +577,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Works.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Enums\ActionResultTypes.cs" />
     <Compile Include="Models\Enums\Controllers.cs" />
+    <Compile Include="Models\Enums\ModuleTypes.cs" />
     <Compile Include="Models\Enums\FilterTableName.cs" />
     <Compile Include="Models\Enums\LoanMoney.cs" />
     <Compile Include="Models\Enums\FormName.cs" />
     <Compile Include="Models\Enums\Operations.cs" />
+    <Compile Include="Models\Enums\PaymentTypes.cs" />
     <Compile Include="Models\Enums\SettingStatuses.cs" />
-    <Compile Include="Models\Enums\UserRole.cs" />
+    <Compile Include="Models\Enums\TreatmentType.cs" />
+    <Compile Include="Models\Enums\UserRoleType.cs" />
     <Compile Include="Models\Enums\WorkerContractType.cs" />
     <Compile Include="Models\ExportData\ExportDataGridView.cs" />
     <Compile Include="Models\Database\LoanMoney.cs">
@@ -505,7 +626,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>LoanMoneyModel.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\BusinessLogic\Functions.cs" />
     <Compile Include="Models\Classes\Account\IdentityModels.cs" />
     <Compile Include="Models\Classes\Account\ManageViewModels.cs" />
     <Compile Include="Models\Database\MaterialToBuy.Context.cs">
@@ -728,19 +848,6 @@
     <Compile Include="Models\Database\WorkerContractType.cs">
       <DependentUpon>WorkerContract.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Database\WorkerPayment.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>WorkerPayment.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Database\WorkerPayment.cs">
-      <DependentUpon>WorkerPayment.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Database\WorkerPayment.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>WorkerPayment.edmx</DependentUpon>
-    </Compile>
     <Compile Include="Models\Database\Workers.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -782,6 +889,21 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>WorkerSpeciality.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Database\WorkerPayments.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WorkerPayments.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Database\WorkerPayments.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WorkerPayments.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Database\WorkerPayments.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WorkerPayments.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -814,6 +936,7 @@
     <Content Include="Images\setting.png" />
     <Content Include="Images\speciality.PNG" />
     <Content Include="Images\units.png" />
+    <Content Include="Images\users.png" />
     <Content Include="Models\Database\AspNetUsersModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>AspNetUsersModel.edmx</DependentUpon>
@@ -823,6 +946,16 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>AspNetUsersModel.edmx</DependentUpon>
       <LastGenOutput>AspNetUsersModel.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\Database\Currencies.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Currencies.edmx</DependentUpon>
+      <LastGenOutput>Currencies.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\Database\Currencies.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Currencies.edmx</DependentUpon>
+      <LastGenOutput>Currencies.cs</LastGenOutput>
     </Content>
     <Content Include="Models\Database\Customer.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -974,6 +1107,16 @@
       <DependentUpon>Speciality.edmx</DependentUpon>
       <LastGenOutput>Speciality1.cs</LastGenOutput>
     </Content>
+    <Content Include="Models\Database\TranslateWords.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>TranslateWords.edmx</DependentUpon>
+      <LastGenOutput>TranslateWords.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\Database\TranslateWords.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>TranslateWords.edmx</DependentUpon>
+      <LastGenOutput>TranslateWords.cs</LastGenOutput>
+    </Content>
     <Content Include="Models\Database\Treatment.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Treatment.edmx</DependentUpon>
@@ -993,6 +1136,16 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Unit.edmx</DependentUpon>
       <LastGenOutput>Unit1.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\Database\UserPermissions.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>UserPermissions.edmx</DependentUpon>
+      <LastGenOutput>UserPermissions.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\Database\UserPermissions.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>UserPermissions.edmx</DependentUpon>
+      <LastGenOutput>UserPermissions.cs</LastGenOutput>
     </Content>
     <Content Include="Models\Database\Users.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -1024,16 +1177,6 @@
       <DependentUpon>WorkerContract.edmx</DependentUpon>
       <LastGenOutput>WorkerContract.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\Database\WorkerPayment.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>WorkerPayment.edmx</DependentUpon>
-      <LastGenOutput>WorkerPayment.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\Database\WorkerPayment.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>WorkerPayment.edmx</DependentUpon>
-      <LastGenOutput>WorkerPayment1.cs</LastGenOutput>
-    </Content>
     <Content Include="Models\Database\Workers.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Workers.edmx</DependentUpon>
@@ -1054,6 +1197,26 @@
       <DependentUpon>WorkerSalaryContract.edmx</DependentUpon>
       <LastGenOutput>WorkerSalaryContract1.cs</LastGenOutput>
     </Content>
+    <Content Include="Models\Database\WorkersGroupDetail.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>WorkersGroupDetail.edmx</DependentUpon>
+      <LastGenOutput>WorkersGroupDetail.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\Database\WorkersGroupDetail.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>WorkersGroupDetail.edmx</DependentUpon>
+      <LastGenOutput>WorkersGroupDetail1.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\Database\WorkersGroups.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>WorkersGroups.edmx</DependentUpon>
+      <LastGenOutput>WorkersGroups.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\Database\WorkersGroups.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>WorkersGroups.edmx</DependentUpon>
+      <LastGenOutput>WorkersGroups.cs</LastGenOutput>
+    </Content>
     <Content Include="Models\Database\WorkerSpeciality.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>WorkerSpeciality.edmx</DependentUpon>
@@ -1073,6 +1236,16 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Works.edmx</DependentUpon>
       <LastGenOutput>Works.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\Database\WorkerPayments.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>WorkerPayments.edmx</DependentUpon>
+      <LastGenOutput>WorkerPayments.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\Database\WorkerPayments.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>WorkerPayments.edmx</DependentUpon>
+      <LastGenOutput>WorkerPayments.cs</LastGenOutput>
     </Content>
     <Content Include="Scripts\ai.0.22.19-build00125.js" />
     <Content Include="Scripts\ai.0.22.19-build00125.min.js" />
@@ -1134,13 +1307,6 @@
     </EntityDeploy>
     <Content Include="Models\Database\Unit.edmx.diagram">
       <DependentUpon>Unit.edmx</DependentUpon>
-    </Content>
-    <EntityDeploy Include="Models\Database\WorkerPayment.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>WorkerPayment.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\Database\WorkerPayment.edmx.diagram">
-      <DependentUpon>WorkerPayment.edmx</DependentUpon>
     </Content>
     <EntityDeploy Include="Models\Database\WorkerSpeciality.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
@@ -1272,6 +1438,48 @@
     </EntityDeploy>
     <Content Include="Models\Database\Works.edmx.diagram">
       <DependentUpon>Works.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Models\Database\UserPermissions.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>UserPermissions.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\Database\UserPermissions.edmx.diagram">
+      <DependentUpon>UserPermissions.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Models\Database\TranslateWords.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>TranslateWords.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\Database\TranslateWords.edmx.diagram">
+      <DependentUpon>TranslateWords.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Models\Database\WorkersGroups.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>WorkersGroups.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\Database\WorkersGroups.edmx.diagram">
+      <DependentUpon>WorkersGroups.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Models\Database\WorkersGroupDetail.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>WorkersGroupDetail.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\Database\WorkersGroupDetail.edmx.diagram">
+      <DependentUpon>WorkersGroupDetail.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Models\Database\WorkerPayments.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>WorkerPayments.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\Database\WorkerPayments.edmx.diagram">
+      <DependentUpon>WorkerPayments.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Models\Database\Currencies.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Currencies.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\Database\Currencies.edmx.diagram">
+      <DependentUpon>Currencies.edmx</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\CC.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
@@ -1415,7 +1623,6 @@
     <Content Include="Views\Worker\WorkerDetail\WorkerPayment.cshtml" />
     <Content Include="Views\Worker\_GridViewWorkerPayment.cshtml" />
     <Content Include="Views\Worker\WorkerDetail\WorkerSpecialities.cshtml" />
-    <Content Include="Views\Home\_GridViewSpeciality.cshtml" />
     <Content Include="Views\Home\Specialities.cshtml" />
     <Content Include="Views\Worker\_GridViewWorkerSpecialityPartial.cshtml" />
     <Content Include="Views\Worker\_WorkerWorksPartial.cshtml" />
@@ -1431,7 +1638,7 @@
     <Content Include="Views\Report\_ReportSettingPartial.cshtml" />
     <Content Include="Views\Home\MaterialToBuy.cshtml" />
     <Content Include="Views\Home\_MaterialToBuyGVP.cshtml" />
-    <Content Include="Views\Home\Customer.cshtml" />
+    <Content Include="Views\Home\Customers.cshtml" />
     <Content Include="Views\Home\_CustomerPartial.cshtml" />
     <Content Include="Views\Home\CustomerDetail\CustomerTherapy.cshtml" />
     <Content Include="Views\Home\CustomerDetail\CustomerDetail.cshtml" />
@@ -1451,8 +1658,23 @@
     <Content Include="Views\Home\_LoanMoneyDetailsPartial.cshtml" />
     <Content Include="Views\Home\Filter.cshtml" />
     <Content Include="Views\Home\_GridViewFilterPartial.cshtml" />
+    <Content Include="Views\Users\Users.cshtml" />
+    <Content Include="Views\Users\_AspNetUserPartial.cshtml" />
+    <Content Include="Views\Users\Permissions.cshtml" />
+    <Content Include="Views\Users\_UserPermissionPartial.cshtml" />
+    <Content Include="Views\Home\TranslateWords.cshtml" />
+    <Content Include="Views\Home\_GridViewTranslateWordsPartial.cshtml" />
+    <Content Include="Views\Worker\WorkerSalaryContract.cshtml" />
+    <Content Include="Views\Worker\WorkDays.cshtml" />
+    <Content Include="Views\Users\ModulePermissions.cshtml" />
+    <Content Include="Views\Worker\WorkersActionResult.cshtml" />
+    <Content Include="Views\Worker\WorkersGroups.cshtml" />
+    <Content Include="Views\Worker\_GridViewWorkerGroupPartial.cshtml" />
+    <Content Include="Views\Worker\WorkersGroupDetail.cshtml" />
+    <Content Include="Views\Worker\_GridViewWorkersGroupDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Models\BusinessLogic\Account\" />
     <Folder Include="Reports\" />
   </ItemGroup>
   <ItemGroup>

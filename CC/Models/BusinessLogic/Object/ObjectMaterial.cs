@@ -1,10 +1,7 @@
 ﻿using CC.Models.Classes;
 using CC.Models.Classes.Object;
 using CC.Models.Enums;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace CC.Models.BusinessLogic.Object
 {
@@ -21,7 +18,9 @@ namespace CC.Models.BusinessLogic.Object
 
             //Find into filter table 
             var filterTable = new Database.FiltersEntities().Filters
-                .ToList().Where(x => x.table_name_id == (int)FilterTableName.ObjectMaterial).ToList();
+                .ToList()
+                .Where(x => x.user_id == MySession.Current.UserGuid)
+                .Where(x => x.table_name_id == (int)FilterTableName.ObjectMaterial).ToList();
                 
 
             foreach(var item in filterTable)
@@ -42,6 +41,8 @@ namespace CC.Models.BusinessLogic.Object
             }
 
             objectMaterialModel.ObjectMaterialList = objectMaterialList;
+
+            objectMaterialModel.UnitList = new Database.ExcelentConstructUnit().Units.ToList();
 
             return objectMaterialModel;
         }

@@ -12,9 +12,9 @@
 
         settings.CommandColumn.Visible = true;
         //settings.CommandColumn.CustomButtons.Add(new GridViewCommandColumnCustomButton() { ID = "btnGetKey", Text = "Details" });
-        settings.CommandColumn.ShowNewButton = true;
-        settings.CommandColumn.ShowDeleteButton = true;
-        settings.CommandColumn.ShowEditButton = true;
+        settings.CommandColumn.ShowNewButton = Model.UserPermission.can_add ?? false;
+        settings.CommandColumn.ShowDeleteButton = Model.UserPermission.can_delete ?? false;
+        settings.CommandColumn.ShowEditButton = Model.UserPermission.can_edit ?? false;
 
         settings.KeyFieldName = "Id";
 
@@ -59,7 +59,7 @@
                 p.TextField = "name";
                 p.ValueField = "Id";
                 p.ValueType = typeof(int);
-                p.DataSource = ViewBag.ContractTypes;
+                p.DataSource = Model.WorkerContractList;
             });
         });
 
@@ -93,10 +93,10 @@
                 }
             });
         });*/
-        
+
     });
     if (ViewData["EditError"] != null){
         grid.SetEditErrorText((string)ViewData["EditError"]);
     }
 }
-@grid.Bind(Model).GetHtml()
+@grid.Bind(Model.WorkerList).GetHtml()

@@ -1,78 +1,94 @@
-﻿using CC.Models.Classes;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using CC.Models.Classes;
+using CC.Models.Database;
+using CC.Models.Enums;
+using WorkerContractType = CC.Models.Enums.WorkerContractType;
 
 namespace CC.Models.BusinessLogic.Worker
 {
     public class WorkerPayment
     {
-
-        public static double GetSalary(int workerId)
+        public static decimal GetSalary(int workerId)
         {
-            double salary = 0.0;
+            decimal salary = 0;
 
-            Database.ExcelentConstructWorkers dbWorkers = new Database.ExcelentConstructWorkers();
-            Database.WorkerSalaryContractEntities dbWorkerSalaryContract = new Database.WorkerSalaryContractEntities();
-            Database.WorkDayEntities workDays = new Database.WorkDayEntities();
+            ExcelentConstructWorkers dbWorkers = new ExcelentConstructWorkers();
             var worker = dbWorkers.Workers.ToList().FirstOrDefault(x => x.Id == workerId);
-            var contractTypeId = worker.contract_type_id ?? 0;
 
+            var contractTypeId = worker?.contract_type_id ?? 0;
+            
             switch (contractTypeId)
             {
-                case (int)Enums.WorkerContractType.Lunar:
-                    var lastSalaryContract = dbWorkerSalaryContract.WorkerSalaryContracts.ToList()?.Where(x => x.worker_id == workerId)
-                                                                                        .OrderByDescending(x => x.new_contract_date).FirstOrDefault();
-                    if (lastSalaryContract != null)
-                        salary = lastSalaryContract.worker_sum ?? 0.0;
+                case (int)WorkerContractType.ByMonth:
+                    var currentWorkerContract =
+                        WorkerSalaryContract.GetCurrentWorkerContract(workerId, WorkerContractType.ByMonth);
+                    if (currentWorkerContract != null)
+                        salary = Convert.ToDecimal(currentWorkerContract.worker_sum);
+                    salary = salary - GetAdvancePayment(workerId) + Works.GetSalaryByWork(workerId);
                     break;
-                case (int)Enums.WorkerContractType.Zi:
-                    var workDayList = workDays.WorkDays.Where(x => x.worker_id == workerId && Convert.ToDateTime(x.work_date).Month == DateTime.Now.Month);
-                    lastSalaryContract = dbWorkerSalaryContract.WorkerSalaryContracts.ToList()?.Where(x => x.worker_id == workerId)
-                                                                                        .OrderByDescending(x => x.new_contract_date).FirstOrDefault();
-                    if (lastSalaryContract != null)
-                        salary = workDayList.Count() * (lastSalaryContract.worker_sum ?? 0.0); //Convert.ToDouble(workDayList.Count())
+                case (int)WorkerContractType.ByDay:
+                    currentWorkerContract =
+                        WorkerSalaryContract.GetCurrentWorkerContract(workerId, WorkerContractType.ByDay);
+                    if (currentWorkerContract != null)
+                        salary = WorkDays.GetWorksDay(workerId).Count * Convert.ToDecimal(currentWorkerContract.worker_sum);
+                    salary = salary - GetAdvancePayment(workerId) + Works.GetSalaryByWork(workerId);
                     break;
-                case (int)Enums.WorkerContractType.Ore:
-                    lastSalaryContract = dbWorkerSalaryContract.WorkerSalaryContracts.ToList()?.Where(x => x.worker_id == workerId)
-                                                                                        .OrderByDescending(x => x.new_contract_date).FirstOrDefault();
-                    workDayList = workDays.WorkDays.Where(x => x.worker_id == workerId && Convert.ToDateTime(x.work_date).Month == DateTime.Now.Month);
-                    if (lastSalaryContract != null)
-                        salary = (workDayList.Sum(x => x.work_hours) ?? 0) * (lastSalaryContract.worker_sum ?? 0.0);
+                case (int)WorkerContractType.ByHours:
+                    currentWorkerContract =
+                        WorkerSalaryContract.GetCurrentWorkerContract(workerId, WorkerContractType.ByHours);
+                    if (currentWorkerContract != null)
+                        salary = WorkDays.GetWorksDay(workerId).Sum(x => x.worked_hours ?? 0) *
+                                 Convert.ToDecimal(currentWorkerContract.worker_sum);
+                    salary = salary - GetAdvancePayment(workerId) + Works.GetSalaryByWork(workerId);
                     break;
-                case (int)Enums.WorkerContractType.Volum:
-                    Database.WorksEntities works = new Database.WorksEntities();
-                    var firstWorkFinished = works.Works.ToList().OrderBy(x => x.date_end).ToList().FirstOrDefault(x => x.worker_id == workerId && x.is_paid == 0);
-                    //foreach (var item in workList)
-                    //{
-                    //    salary = salary + (Convert.ToDouble(item.surface) * Convert.ToDouble(item.unit_price));
-                    //}
-                    if (firstWorkFinished != null)
-                    {
-                        salary = salary + (Convert.ToDouble(firstWorkFinished.surface) * Convert.ToDouble(firstWorkFinished.unit_price));
-                        MySession.Current.WorkId = firstWorkFinished.id;
-                    }
+                case (int)WorkerContractType.ByWork:
+                    salary = Works.GetSalaryByWork(workerId) - GetAdvancePayment(workerId);
                     break;
             }
 
             return salary;
-
-
         }
 
-        public static Classes.Worker.WorkerPayment GetWorkerPaymentModel(
-            Database.WorksEntities dbWorks, 
-            Database.ECWorkerPayment dbWorkerPayment)
+        public static Classes.Worker.WorkerPaymentModel GetWorkerPaymentModel(WorksEntities dbWorks, 
+            WorkerPaymentsEntities dbWorkerPayment)
         {
-            var model = new Classes.Worker.WorkerPayment();
+            var model = new Classes.Worker.WorkerPaymentModel
+            {
+                WorkId = MySession.Current.WorkId,
+                CurrentDate = DateTime.Today,
+                Amount = GetSalary(MySession.Current.WorkerId),
+                WorkerWorkList = dbWorks.Works.AsQueryable().Where(x => x.worker_id == MySession.Current.WorkerId).ToList(),
+                PaymentTypeList = GetPaymentTypeList(),
+                WorkerPayments = dbWorkerPayment.WorkerPayments.ToList()
+                    .Where(x => x.worker_id == MySession.Current.WorkerId).ToList()
+            };
             
-            model.WorkId = MySession.Current.WorkId;
-            model.CurrentDate = DateTime.Today;
-            model.Amount = GetSalary(MySession.Current.WorkerId);
-            model.WorkerWorkList = dbWorks.Works.AsQueryable().Where(x => x.worker_id == MySession.Current.WorkerId).ToList();
-
-            model.WorkerPayments = dbWorkerPayment.WorkerPayments.ToList().Where(x => x.worker_id == MySession.Current.WorkerId).ToList();
-
             return model;
+        }
+
+        public static decimal GetAdvancePayment(int workerId)
+        {
+            var advanceSum = new WorkerPaymentsEntities().WorkerPayments
+                                 .ToList().Where(x =>
+                                     x.worker_id == workerId &&
+                                     x.payment_type == (int) PaymentTypes.advance &&
+                                     (x.is_advance_excluded == false || x.is_advance_excluded == null))
+                                 .Sum(x => x.amount ?? 0);
+            
+            return advanceSum;
+        }
+
+        public static Dictionary<int, string> GetPaymentTypeList()
+        {
+            Dictionary<int, string> dict = new Dictionary<int, string>();
+            foreach (PaymentTypes item in Enum.GetValues(typeof(PaymentTypes)))
+            {
+                dict.Add((int)item, $"{Home.TranslateWord.GetWord(item.ToString(), "ro")}");
+            }
+
+            return dict;
         }
     }
 }

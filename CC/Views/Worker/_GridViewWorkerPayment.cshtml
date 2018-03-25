@@ -8,7 +8,7 @@
         settings.Name = "GridView";
         settings.CallbackRouteValues = new { Controller = "Worker", Action = "GridViewWorkerPayment" };
 
-        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkerPaymentAddNew", id = "addodata" };
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkerPaymentAddNew" };
         settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkerPaymentUpdate" };
         settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkerPaymentDelete" };
         settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
@@ -46,6 +46,7 @@
         {
             column.FieldName = "work_id";
             column.Caption = "Lucrare efectuată";
+            //column.c
             column.EditorProperties().ComboBox(p =>
             {
                 p.TextField = "name";
@@ -54,6 +55,19 @@
                 p.DataSource = Model.WorkerWorkList;
             });
         });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "payment_type";
+            c.Caption = "Tip Achitare";
+            c.EditorProperties().ComboBox(p =>
+            {
+                p.DataSource = Model.PaymentTypeList;
+                p.TextField = "Value";
+                p.ValueField = "Key";
+                p.ValueType = typeof(string);
+            });
+        });
+
         //settings.Columns.Add("userId");
         settings.Columns.Add(column =>
         {
@@ -65,6 +79,13 @@
         });
         settings.Columns.Add(c => { c.FieldName = "amount"; c.Caption = "Suma"; });
         settings.Columns.Add(c => { c.FieldName = "notice"; c.Caption = "Notițe"; });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "is_advance_excluded";
+            c.Caption = "avans exclus";
+            c.Width = 40;
+            c.ColumnType = MVCxGridViewColumnType.CheckBox;
+        });
 
         //settings.HtmlDataCellPrepared = (sender, e) =>
         //{

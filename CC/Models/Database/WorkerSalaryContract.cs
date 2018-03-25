@@ -28,6 +28,8 @@ public partial class WorkerSalaryContract
 
     public string worker_function { get; set; }
 
+    public int contract_type_id { get; set; }
+
 }
 
 }

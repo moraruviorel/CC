@@ -14,6 +14,7 @@
           <Property Name="new_contract_date" Type="datetime" />
           <Property Name="worker_sum" Type="float" />
           <Property Name="worker_function" Type="nvarchar" MaxLength="50" />
+          <Property Name="contract_type_id" Type="int" Nullable="false" />
         </EntityType>
         <EntityContainer Name="WorkerSalaryContractModelStoreContainer">
           <EntitySet Name="WorkerSalaryContract" EntityType="Self.WorkerSalaryContract" Schema="dbo" store:Type="Tables" />
@@ -31,6 +32,7 @@
           <Property Name="new_contract_date" Type="DateTime" Precision="3" />
           <Property Name="worker_sum" Type="Double" />
           <Property Name="worker_function" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="contract_type_id" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityContainer Name="WorkerSalaryContractEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="WorkerSalaryContracts" EntityType="Self.WorkerSalaryContract" />
@@ -44,6 +46,7 @@
           <EntitySetMapping Name="WorkerSalaryContracts">
             <EntityTypeMapping TypeName="WorkerSalaryContractModel.WorkerSalaryContract">
               <MappingFragment StoreEntitySet="WorkerSalaryContract">
+                <ScalarProperty Name="contract_type_id" ColumnName="contract_type_id" />
                 <ScalarProperty Name="worker_function" ColumnName="worker_function" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="worker_id" ColumnName="worker_id" />

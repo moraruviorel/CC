@@ -10,9 +10,9 @@
         settings.SettingsBehavior.ConfirmDelete = true;
 
         settings.CommandColumn.Visible = true;
-        settings.CommandColumn.ShowNewButton = true;
-        settings.CommandColumn.ShowDeleteButton = true;
-        settings.CommandColumn.ShowEditButton = true;
+        settings.CommandColumn.ShowNewButton = Model.UserPermission.can_add ?? false;
+        settings.CommandColumn.ShowDeleteButton = Model.UserPermission.can_delete ?? false;
+        settings.CommandColumn.ShowEditButton = Model.UserPermission.can_edit ?? false;
 
         settings.KeyFieldName = "id";
 
@@ -42,4 +42,4 @@
         grid.SetEditErrorText((string)ViewData["EditError"]);
     }
 }
-@grid.Bind(Model).GetHtml()
+@grid.Bind(Model.UnitList).GetHtml()

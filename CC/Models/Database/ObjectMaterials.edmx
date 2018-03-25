@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ExcelentConstructModelObjectMaterial.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ExcelentConstructModelObjectMaterial.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="ObjectMaterial">
           <Key>
             <PropertyRef Name="id" />
@@ -17,12 +17,13 @@
           <Property Name="total_price" Type="float" />
           <Property Name="material_description" Type="nvarchar(max)" />
           <Property Name="visible" Type="smallint" />
+          <Property Name="unit_price" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="unit_id" Type="int" />
         </EntityType>
         <EntityContainer Name="ExcelentConstructModelObjectMaterialStoreContainer">
           <EntitySet Name="ObjectMaterial" EntityType="Self.ObjectMaterial" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ExcelentConstructModelObjectMaterial" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -38,6 +39,8 @@
           <Property Name="total_price" Type="Double" />
           <Property Name="material_description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="visible" Type="Int16" />
+          <Property Name="unit_price" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="unit_id" Type="Int32" />
         </EntityType>
         <EntityContainer Name="ExcelentConstructObjectMaterial" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="ObjectMaterials" EntityType="Self.ObjectMaterial" />
@@ -51,6 +54,8 @@
           <EntitySetMapping Name="ObjectMaterials">
             <EntityTypeMapping TypeName="ExcelentConstructModelObjectMaterial.ObjectMaterial">
               <MappingFragment StoreEntitySet="ObjectMaterial">
+                <ScalarProperty Name="unit_id" ColumnName="unit_id" />
+                <ScalarProperty Name="unit_price" ColumnName="unit_price" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="object_id" ColumnName="object_id" />
                 <ScalarProperty Name="material_id" ColumnName="material_id" />

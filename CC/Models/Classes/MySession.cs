@@ -4,6 +4,7 @@ using DevExpress.Web.Mvc;
 using System.Collections.Generic;
 using System.Web;
 using CC.Models.Classes.Setting;
+using System;
 
 namespace CC.Models.Classes
 {
@@ -46,17 +47,23 @@ namespace CC.Models.Classes
 
         public List<Unit> Units { get; set; }
 
-        public UserRole UserRole { get; set; }
+        public UserRoleType UserRole { get; set; }
 
         public int CustomerId { get; set; }
 
         public int CustomerForm { get; set; }
 
-		public int WorkId { get; set; }
+        public int WorkId { get; set; }
 
         public Setting.Setting MySetting { get; set; }
 
         public int LoanMoneyId { get; set; }
+
+        public Guid UserPermissionGuid { get; set; }
+
+        public List<UserPermission> UserPermisionList { get; set; }
+
+        public string Language { get; set; }
 
     }
 }

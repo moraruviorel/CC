@@ -1,0 +1,61 @@
+﻿@{
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.Name = "GridView";
+        settings.CallbackRouteValues = new {Controller = "Worker", Action = "GridViewWorkersGroupDetail"};
+
+        settings.SettingsEditing.AddNewRowRouteValues = new {Controller = "Worker", Action = "GridViewWorkersGroupDetailAddNew"};
+        settings.SettingsEditing.UpdateRowRouteValues = new {Controller = "Worker", Action = "GridViewWorkersGroupDetailUpdate"};
+        settings.SettingsEditing.DeleteRowRouteValues = new {Controller = "Worker", Action = "GridViewWorkersGroupDetailDelete"};
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = true;
+        settings.CommandColumn.ShowDeleteButton = true;
+        settings.CommandColumn.ShowEditButton = true;
+
+        settings.KeyFieldName = "workers_groups_id";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.Off;
+        settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
+        settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
+        settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
+        settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "workers_groups_id";
+            c.Caption = "Grup";
+            c.Visible = false;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "worker_id";
+            column.Caption = "Nume lucrător";
+            column.Width = 20;
+            column.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "FullName";
+                p.ValueField = "Id";
+                p.ValueType = typeof(int);
+                p.DataSource = Model.WorkerList;
+            });
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "work_part";
+            c.Caption = "procent din lucru";
+        });
+    });
+		if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model.WorkersGroupDetailList).GetHtml()

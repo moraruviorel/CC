@@ -1,15 +1,12 @@
-﻿using CC.Models;
-using CC.Models.Classes;
+﻿using CC.Models.Classes;
 using CC.Models.Enums;
 using DevExpress.Web.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using static CC.Models.BusinessLogic.Functions;
+using CC.Models.BusinessLogic.Role;
 using Database = CC.Models.Database;
 using BLObject = CC.Models.BusinessLogic.Object;
-using BLWorker = CC.Models.BusinessLogic.Worker;
 
 namespace CC.Controllers
 {
@@ -72,68 +69,66 @@ namespace CC.Controllers
                 case "GridViewWorks":
                     MySession.Current.TabAction = name;
                     MySession.Current.Units = dbUnits.Units.ToList();
-                    var list = MySession.Current.GridReport;
+                    //var list = MySession.Current.GridReport;
                     return GridViewExtension.ExportToPdf(
-                        CC.Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), 
+                        Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), 
                         BLObject.ObjectWorks.GetObjectWorkModel().ObjectWorksList.ToList());
                 case "GridViewMaterial":
                     MySession.Current.TabAction = name;
-                    list = MySession.Current.GridReport;
+                    //list = MySession.Current.GridReport;
                     var materials = BLObject.ObjectMaterial.GetObjectMaterialModel().ObjectMaterialList;
                     return GridViewExtension.ExportToPdf(Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), materials);
                 case "GridViewExtra":
                     MySession.Current.TabAction = name;
-                    list = MySession.Current.GridReport;
+                    //list = MySession.Current.GridReport;
                     var extras = BLObject.ObjectExtra.GetObjectExtraModel().ObjectExtraList;
-                    return GridViewExtension.ExportToPdf(CC.Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), extras);
+                    return GridViewExtension.ExportToPdf(Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), extras);
                 case "GridViewPayment":
                     MySession.Current.TabAction = name;
-                    list = MySession.Current.GridReport;
+                    //list = MySession.Current.GridReport;
                     var payment = dbObjectPayments.ObjectPayments.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-                    return GridViewExtension.ExportToPdf(CC.Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), payment.ToList());
+                    return GridViewExtension.ExportToPdf(Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), payment.ToList());
                 case "GridViewInstrument":
                     MySession.Current.TabAction = name;
-                    list = MySession.Current.GridReport;
+                    //list = MySession.Current.GridReport;
                     var instruments = BLObject.ObjectInstrument.GetObjectInstrumentModel();
-                    return GridViewExtension.ExportToPdf(CC.Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), instruments);
+                    return GridViewExtension.ExportToPdf(Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), instruments);
                 default:
                     var modelToShow = dbWorks.Works.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-                    return GridViewExtension.ExportToPdf(CC.Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), modelToShow.ToList());
+                    return GridViewExtension.ExportToPdf(Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), modelToShow.ToList());
             }
 
         }
 
         #region Objects
 
-        [AuthorizeRoles(UserRole.Admin, UserRole.Manager)]
+        [AuthorizeRoles.AuthorizeRolesAttribute(UserRoleType.Admin, UserRoleType.Manager)]
         public ActionResult Objects(int? objectId)
         {
             objectId = objectId ?? 0;
-            MySession.Current.ObjectId = objectId ?? 0;
+            MySession.Current.ObjectId = (int)objectId;
 
             var model = new Models.Classes.Object.ObjectModel();
 
             if (objectId == 0)
             {
-                MySession.Current.ParentId = objectId ?? 0;
+                MySession.Current.ParentId = (int) objectId;
             }
-            else
-                MySession.Current.ParentId = dbObjects.Objects.ToList().FirstOrDefault(x => x.ID == objectId).Parent_Id ?? 0;
+            else if (dbObjects != null)
+                MySession.Current.ParentId =
+                    dbObjects.Objects.ToList().FirstOrDefault(x => x.ID == objectId)?.Parent_Id ?? 0;
+
             return View(model);
         }
 
         [ValidateInput(false)]
         public ActionResult GridViewObjects()
         {
-            var model = BLObject.Object.GetObjectsByParentId();
-            //
-            ViewBag.ObjectsParent = BLObject.Object.GetObjectsById(MySession.Current.ObjectId);
-            //
-            return PartialView("_GridViewObjects", model.ToList());
+            return PartialView("_GridViewObjects", BLObject.Object.GetObjectModel());
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewObjectsAddNew(Database.Object item)
+         public ActionResult GridViewObjectsAddNew(Database.Object item)
         {
             var model = dbObjects.Objects;
             if (ModelState.IsValid)
@@ -152,8 +147,8 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var modelToShow = BLObject.Object.GetObjectsByParentId();
-            return PartialView("_GridViewObjects", modelToShow.ToList());
+            
+            return PartialView("_GridViewObjects", BLObject.Object.GetObjectModel());
         }
 
         [HttpPost, ValidateInput(false)]
@@ -167,7 +162,7 @@ namespace CC.Controllers
                     var modelItem = model.FirstOrDefault(it => it.ID == item.ID);
                     if (modelItem != null)
                     {
-                        this.UpdateModel(modelItem);
+                        UpdateModel(modelItem);
                         dbObjects.SaveChanges();
                     }
                 }
@@ -178,19 +173,19 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var modelToShow = BLObject.Object.GetObjectsByParentId();
-            return PartialView("_GridViewObjects", modelToShow.ToList());
+            
+            return PartialView("_GridViewObjects", BLObject.Object.GetObjectModel());
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewObjectsDelete(System.Int32 ID)
+        public ActionResult GridViewObjectsDelete(Int32 id)
         {
             var model = dbObjects.Objects;
-            if (ID >= 0)
+            if (id >= 0)
             {
                 try
                 {
-                    var item = model.FirstOrDefault(it => it.ID == ID);
+                    var item = model.FirstOrDefault(it => it.ID == id);
                     if (item != null)
                         model.Remove(item);
                     dbObjects.SaveChanges();
@@ -200,8 +195,8 @@ namespace CC.Controllers
                     ViewData["EditError"] = e.Message;
                 }
             }
-            var modelToShow = BLObject.Object.GetObjectsByParentId();
-            return PartialView("_GridViewObjects", modelToShow.ToList());
+            
+            return PartialView("_GridViewObjects", BLObject.Object.GetObjectModel());
         }
 
 
@@ -209,7 +204,7 @@ namespace CC.Controllers
 
         #region ObjectPayments
 
-        [AuthorizeRoles(UserRole.Admin, UserRole.Manager)]
+        [AuthorizeRoles.AuthorizeRolesAttribute(UserRoleType.Admin, UserRoleType.Manager, UserRoleType.User)]
         public ActionResult ObjectPayments()
         {
             return View();
@@ -255,7 +250,7 @@ namespace CC.Controllers
                     var modelItem = model.FirstOrDefault(it => it.id == item.id);
                     if (modelItem != null)
                     {
-                        this.UpdateModel(modelItem);
+                        UpdateModel(modelItem);
                         dbObjectPayments.SaveChanges();
                     }
                 }
@@ -270,7 +265,7 @@ namespace CC.Controllers
             return PartialView("_GridViewObjectPayments", modelToShow.ToList());
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewObjectPaymentsDelete(System.Int32 id)
+        public ActionResult GridViewObjectPaymentsDelete(Int32 id)
         {
             var model = dbObjectPayments.ObjectPayments;
             if (id >= 0)
@@ -295,7 +290,7 @@ namespace CC.Controllers
 
         #region ObjectWorks
 
-        [AuthorizeRoles(UserRole.Admin, UserRole.Manager)]
+        [AuthorizeRoles.AuthorizeRolesAttribute(UserRoleType.Admin, UserRoleType.Manager)]
         public ActionResult ObjectWorks()
         {
             return View();
@@ -328,8 +323,8 @@ namespace CC.Controllers
                         item.date_start = DateTime.Now;
                         item.date_end = DateTime.Now;
                     }
-                    if (item.surface == null)
-                        item.surface = "0";
+                    if (item.surface_work == null)
+                        item.surface_work = 0;
                     if (item.unit_price == null)
                         item.unit_price = 0;
 
@@ -357,7 +352,7 @@ namespace CC.Controllers
                     var modelItem = model.FirstOrDefault(it => it.id == item.id);
                     if (modelItem != null)
                     {
-                        this.UpdateModel(modelItem);
+                        UpdateModel(modelItem);
                         dbWorks.SaveChanges();
                     }
                 }
@@ -373,7 +368,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewWorksDelete(System.Int32 id)
+        public ActionResult GridViewWorksDelete(Int32 id)
         {
             var model = dbWorks.Works;
             if (id >= 0)
@@ -398,7 +393,7 @@ namespace CC.Controllers
 
         #region ObjectMaterial
 
-        [AuthorizeRoles(UserRole.Admin, UserRole.Manager)]
+        [AuthorizeRoles.AuthorizeRolesAttribute(UserRoleType.Admin, UserRoleType.Manager)]
         public ActionResult ObjectMaterials()
         {
             return View();
@@ -486,7 +481,7 @@ namespace CC.Controllers
 
         #region ObjectInstruments
 
-        [AuthorizeRoles(UserRole.Admin, UserRole.Manager)]
+        [AuthorizeRoles.AuthorizeRolesAttribute(UserRoleType.Admin, UserRoleType.Manager)]
         public ActionResult ObjectInstruments()
         {
             return View();
@@ -532,7 +527,7 @@ namespace CC.Controllers
                     var modelItem = model.FirstOrDefault(it => it.id == item.id);
                     if (modelItem != null)
                     {
-                        this.UpdateModel(modelItem);
+                        UpdateModel(modelItem);
                         dbInstruments.SaveChanges();
                     }
                 }
@@ -548,7 +543,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewObjectInstrumentDelete(System.Int32 id)
+        public ActionResult GridViewObjectInstrumentDelete(Int32 id)
         {
             var model = dbInstruments.ObjectInstruments;
             if (id >= 0)
@@ -618,7 +613,7 @@ namespace CC.Controllers
                     var modelItem = model.FirstOrDefault(it => it.id == item.id);
                     if (modelItem != null)
                     {
-                        this.UpdateModel(modelItem);
+                        UpdateModel(modelItem);
                         dbObjectExtras.SaveChanges();
                     }
                 }
@@ -634,7 +629,7 @@ namespace CC.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewObjectExtraDelete(System.Int32 id)
+        public ActionResult GridViewObjectExtraDelete(Int32 id)
         {
             var model = dbObjectExtras.ObjectExtras;
             if (id >= 0)
@@ -673,6 +668,6 @@ namespace CC.Controllers
 
         Database.ObjectPaymentEntities dbObjectPayments = new Database.ObjectPaymentEntities();
 
-        Database.ExcelentConstructWorkers dbWorkers = new Database.ExcelentConstructWorkers();
+        //Database.ExcelentConstructWorkers dbWorkers = new Database.ExcelentConstructWorkers();
     }
 }

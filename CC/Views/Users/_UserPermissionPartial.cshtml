@@ -1,0 +1,92 @@
+@using CC.Models.BusinessLogic.Home
+@using CC.Models.Classes
+@using CC.Models.Enums
+@{
+    var grid = Html.DevExpress().GridView(settings => {
+        settings.Name = "UserPermission";
+        settings.CallbackRouteValues = new { Controller = "Users", Action = "UserPermissionPartial" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Users", Action = "UserPermissionPartialAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Users", Action = "UserPermissionPartialUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Users", Action = "UserPermissionPartialDelete" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = true;
+        settings.CommandColumn.ShowDeleteButton = true;
+        settings.CommandColumn.ShowEditButton = true;
+
+        settings.KeyFieldName = "id";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.Off;
+        settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
+        settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
+        settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
+        settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "module_id";
+            c.Caption = "Nume Modul";
+            c.EditorProperties().ComboBox(p =>
+            {
+                p.DataSource = Model.ModuleList;
+                p.TextField = "Value";
+                p.ValueField = "Key";
+                p.ValueType = typeof(string);
+            });
+        });
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "can_view";
+            column.Caption = "vizibil";
+            column.ColumnType = MVCxGridViewColumnType.CheckBox;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "can_add";
+            column.Caption = "adaugare";
+            column.ColumnType = MVCxGridViewColumnType.CheckBox;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "can_edit";
+            column.Caption = "editare";
+            column.ColumnType = MVCxGridViewColumnType.CheckBox;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "can_delete";
+            column.Caption = "stergere";
+            column.ColumnType = MVCxGridViewColumnType.CheckBox;
+        });
+
+        //UserPermissionsModules
+        settings.Columns.Add(column =>
+        {
+            column.SetDataItemTemplateContent(c =>
+                ViewContext.Writer.Write(
+                    Html.ActionLink(TranslateWord.GetWord("Permissions", MySession.Current.Language), 
+                        "ModulePermissions", 
+                        Controllers.Users.ToString(),
+                        new {moduleId = (int)DataBinder.Eval(c.DataItem, "module_id") },
+                        new {}).ToHtmlString()
+                    )
+                );
+
+        });
+
+
+    });
+    if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model.UserPermissionList).GetHtml()

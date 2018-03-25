@@ -1,0 +1,23 @@
+﻿@Html.DevExpress().GetStyleSheets(
+    new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+    new StyleSheet { ExtensionSuite = ExtensionSuite.Editors }
+    )
+@Html.DevExpress().GetScripts(
+    new Script { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+    new Script { ExtensionSuite = ExtensionSuite.Editors }
+    )
+
+@Html.DevExpress().PageControl(
+    settings =>
+    {
+        settings.Name = "WorkerCallbacks";
+        settings.CallbackRouteValues = new { Controller = "Worker", Action = "WorkersTabControl" };
+        settings.TabAlign = TabAlign.Justify;
+        settings.TabPosition = TabPosition.Top;
+        settings.TabPages.Add("");
+        settings.TabPages.Add("Lucrători");
+        settings.TabPages.Add("Echipe");
+
+
+        settings.ClientSideEvents.BeginCallback = "function(s,e){e.customArgs['tabIndex'] = s.GetActiveTabIndex();}";
+    }).GetHtml()

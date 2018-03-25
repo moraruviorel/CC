@@ -35,6 +35,11 @@
         });
         settings.Columns.Add(c =>
         {
+            c.FieldName = "description";
+            c.Caption = "Detalii împrumut";
+        });
+        settings.Columns.Add(c =>
+        {
             c.FieldName = "loan_date";
             c.Caption = "Data împrumutului";
             c.ColumnType = MVCxGridViewColumnType.DateEdit;
@@ -52,6 +57,19 @@
         {
             c.FieldName = "loan_sum";
             c.Caption = "Suma împrumutului";
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "currency_id";
+            column.Caption = "Valuta";
+            column.Width = 20;
+            column.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "name";
+                p.ValueField = "id";
+                p.ValueType = typeof(int);
+                p.DataSource = Model.CurrencyList;
+            });
         });
         settings.Columns.Add(c =>
         {
@@ -82,4 +100,4 @@
         grid.SetEditErrorText((string)ViewData["EditError"]);
     }
 }
-@grid.Bind(Model).GetHtml()
+@grid.Bind(Model.LoanMoneyList).GetHtml()

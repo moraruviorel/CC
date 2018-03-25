@@ -13,7 +13,6 @@
           <Property Name="object_id" Type="int" />
           <Property Name="worker_id" Type="int" />
           <Property Name="name" Type="nvarchar" MaxLength="250" />
-          <Property Name="surface" Type="nvarchar" MaxLength="50" />
           <Property Name="unit_price" Type="numeric" Precision="15" Scale="2" />
           <Property Name="date_start" Type="datetime" />
           <Property Name="date_end" Type="datetime" />
@@ -22,6 +21,7 @@
           <Property Name="unit_id" Type="int" />
           <Property Name="surface_work" Type="numeric" Precision="15" Scale="2" />
           <Property Name="unit_price_worker" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="workers_group_id" Type="int" />
         </EntityType>
         <EntityContainer Name="WorksModelStoreContainer">
           <EntitySet Name="Works" EntityType="Self.Works" Schema="dbo" store:Type="Tables" />
@@ -38,7 +38,6 @@
           <Property Name="object_id" Type="Int32" />
           <Property Name="worker_id" Type="Int32" />
           <Property Name="name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="surface" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="unit_price" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="date_start" Type="DateTime" Precision="3" />
           <Property Name="date_end" Type="DateTime" Precision="3" />
@@ -47,6 +46,7 @@
           <Property Name="unit_id" Type="Int32" />
           <Property Name="surface_work" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="unit_price_worker" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="workers_group_id" Type="Int32" />
         </EntityType>
         <EntityContainer Name="WorksEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Works" EntityType="Self.Work" />
@@ -60,13 +60,13 @@
           <EntitySetMapping Name="Works">
             <EntityTypeMapping TypeName="WorksModel.Work">
               <MappingFragment StoreEntitySet="Works">
+                <ScalarProperty Name="workers_group_id" ColumnName="workers_group_id" />
                 <ScalarProperty Name="unit_price_worker" ColumnName="unit_price_worker" />
                 <ScalarProperty Name="surface_work" ColumnName="surface_work" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="object_id" ColumnName="object_id" />
                 <ScalarProperty Name="worker_id" ColumnName="worker_id" />
                 <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="surface" ColumnName="surface" />
                 <ScalarProperty Name="unit_price" ColumnName="unit_price" />
                 <ScalarProperty Name="date_start" ColumnName="date_start" />
                 <ScalarProperty Name="date_end" ColumnName="date_end" />

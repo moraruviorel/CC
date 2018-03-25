@@ -36,7 +36,7 @@ namespace CC.Models.ExportDataGridView
                     settings.Columns.Add("name", "Denumire");
                     settings.Columns.Add("date_start", "Data început").PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
                     settings.Columns.Add("date_end", "Data finisării").PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
-                    settings.Columns.Add("surface", "Cantitatea");
+                    settings.Columns.Add("surface_work", "Cantitatea");
                     settings.Columns.Add(c=>
                     {
                         c.FieldName = "unit_id";
@@ -56,7 +56,7 @@ namespace CC.Models.ExportDataGridView
                         if (e.Column.FieldName == "Total")
                         {
                             decimal price = MyConvert.ToDecimal(e.GetListSourceFieldValue("unit_price").ToString());
-                            decimal surface = MyConvert.ToDecimal(e.GetListSourceFieldValue("surface").ToString());
+                            decimal surface = MyConvert.ToDecimal(e.GetListSourceFieldValue("surface_work").ToString());
                             e.Value = price * surface;
                         }
                     };                    

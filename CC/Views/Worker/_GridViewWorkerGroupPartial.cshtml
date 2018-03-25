@@ -1,0 +1,78 @@
+﻿@using CC.Models.BusinessLogic.Home
+@using CC.Models.Classes
+@using CC.Models.Enums
+@{
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.Name = "GridViewWorkerGroup";
+        settings.CallbackRouteValues = new {Controller = "Worker", Action = "GridViewWorkerGroupPartial"};
+
+        settings.SettingsEditing.AddNewRowRouteValues = new {Controller = "Worker", Action = "GridViewWorkerGroupPartialAddNew"};
+        settings.SettingsEditing.UpdateRowRouteValues = new {Controller = "Worker", Action = "GridViewWorkerGroupPartialUpdate"};
+        settings.SettingsEditing.DeleteRowRouteValues = new {Controller = "Worker", Action = "GridViewWorkerGroupPartialDelete"};
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = true;
+        settings.CommandColumn.ShowDeleteButton = true;
+        settings.CommandColumn.ShowEditButton = true;
+
+        settings.KeyFieldName = "id";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.Off;
+        settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
+        settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
+        settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
+        settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "id";
+            c.Caption = "id";
+            c.Visible = false;
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "description";
+            c.Caption = "Descriere";
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "create_date";
+            c.Caption = "Data adăugării";
+            c.ColumnType = MVCxGridViewColumnType.DateEdit;
+            c.PropertiesEdit.DisplayFormatString = "dd/mm/yyyy";
+        });
+
+        //Detalii
+        settings.Columns.Add(column =>
+        {
+            column.SetDataItemTemplateContent(delegate(GridViewDataItemTemplateContainer c)
+            {
+                int documentId = (int) DataBinder.Eval(c.DataItem, "Id");
+
+                if (documentId != -1)
+                {
+                    ViewContext.Writer.Write(
+                        Html.ActionLink(
+                            TranslateWord.GetWord("Detalils", MySession.Current.Language),
+                            ActionResultTypes.WorkersGroupDetail.ToString(),
+                            Controllers.Worker.ToString(),
+                            new {workersGroupId = (int) DataBinder.Eval(c.DataItem, "id") },
+                            new {}).ToHtmlString()
+                        );
+                }
+            });
+        });
+    });
+    if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model.WorkersGroupList).GetHtml()

@@ -20,7 +20,9 @@ namespace CC.Models.BusinessLogic.Object
                 .Where(x => x.object_id == MySession.Current.ObjectId).ToList();
             //
             var filterTable = new Database.FiltersEntities().Filters
-                .ToList().Where(x => x.table_name_id == (int)FilterTableName.ObjectInstruments).ToList();
+                .ToList()
+                .Where(x => x.user_id == MySession.Current.UserGuid)
+                .Where(x => x.table_name_id == (int)FilterTableName.ObjectInstruments).ToList();
             //
             foreach (var item in filterTable)
             {

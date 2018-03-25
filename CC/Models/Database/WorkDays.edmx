@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="WorkDaysModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="WorkDaysModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="WorkDays">
           <Key>
             <PropertyRef Name="id" />
@@ -12,13 +12,13 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="worker_id" Type="int" />
           <Property Name="work_date" Type="datetime" />
-          <Property Name="work_hours" Type="float" />
+          <Property Name="is_paid" Type="bit" />
+          <Property Name="worked_hours" Type="numeric" Precision="15" Scale="2" />
         </EntityType>
         <EntityContainer Name="WorkDaysModelStoreContainer">
           <EntitySet Name="WorkDays" EntityType="Self.WorkDays" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="WorkDaysModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -29,7 +29,8 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="worker_id" Type="Int32" />
           <Property Name="work_date" Type="DateTime" Precision="3" />
-          <Property Name="work_hours" Type="Double" />
+          <Property Name="is_paid" Type="Boolean" />
+          <Property Name="worked_hours" Type="Decimal" Precision="15" Scale="2" />
         </EntityType>
         <EntityContainer Name="WorkDayEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="WorkDays" EntityType="Self.WorkDay" />
@@ -43,10 +44,11 @@
           <EntitySetMapping Name="WorkDays">
             <EntityTypeMapping TypeName="WorkDaysModel.WorkDay">
               <MappingFragment StoreEntitySet="WorkDays">
+                <ScalarProperty Name="worked_hours" ColumnName="worked_hours" />
+                <ScalarProperty Name="is_paid" ColumnName="is_paid" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="worker_id" ColumnName="worker_id" />
                 <ScalarProperty Name="work_date" ColumnName="work_date" />
-                <ScalarProperty Name="work_hours" ColumnName="work_hours" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

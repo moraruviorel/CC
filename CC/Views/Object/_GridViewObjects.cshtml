@@ -1,5 +1,7 @@
-﻿@{
-    
+﻿@using CC.Models.BusinessLogic.Home
+@using CC.Models.Classes
+@using CC.Models.Enums
+@{
     var grid = Html.DevExpress().GridView(settings =>
     {
         settings.Name = "GridView1";
@@ -8,14 +10,14 @@
         settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Object", Action = "GridViewObjectsAddNew" };
         settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Object", Action = "GridViewObjectsUpdate" };
         settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Object", Action = "GridViewObjectsDelete" };
-        settings.SettingsPager.PageSize = CC.Models.Classes.MySession.Current.MySetting.GridRows;
+        settings.SettingsPager.PageSize = MySession.Current.MySetting.GridRows;
         settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
         settings.SettingsBehavior.ConfirmDelete = true;
 
         settings.CommandColumn.Visible = true;
-        settings.CommandColumn.ShowNewButton = true;
-        settings.CommandColumn.ShowDeleteButton = true;
-        settings.CommandColumn.ShowEditButton = true;
+        settings.CommandColumn.ShowNewButton = Model.UserPermissionObject.can_add ?? false;
+        settings.CommandColumn.ShowDeleteButton = Model.UserPermissionObject.can_delete ?? false;
+        settings.CommandColumn.ShowEditButton = Model.UserPermissionObject.can_edit ?? false;
 
         settings.KeyFieldName = "ID";
 
@@ -57,7 +59,7 @@
             c.Visible = false;
         });
 
-        if (CC.Models.Classes.MySession.Current.ObjectId != 0)
+        if (MySession.Current.ObjectId != 0)
         {
             settings.Columns.Add(column =>
             {
@@ -69,7 +71,7 @@
                     p.TextField = "Address";
                     p.ValueField = "ID";
                     p.ValueType = typeof(int);
-                    p.DataSource = ViewBag.ObjectsParent;
+                    p.DataSource = Model.ObjectParentList;
                 });
             });
         }
@@ -83,7 +85,11 @@
                 if (documentId != -1)
                 {
                     ViewContext.Writer.Write(
-                        Html.ActionLink("Detalii", "ObjectDetail", "Object", new { objectId = (int)DataBinder.Eval(c.DataItem, "Id") }, new { }).ToHtmlString()
+                        Html.ActionLink(
+                            TranslateWord.GetWord("Details", MySession.Current.Language), 
+                            "ObjectDetail", 
+                            Controllers.Object.ToString(), 
+                            new { objectId = (int)DataBinder.Eval(c.DataItem, "Id") }, new { }).ToHtmlString()
                     );
                 }
             });
@@ -93,7 +99,13 @@
         {
             column.SetDataItemTemplateContent(c =>
                 ViewContext.Writer.Write(
-                    Html.ActionLink("Obiecte", "Objects", "Object", new { objectId = (int)DataBinder.Eval(c.DataItem, "Id") }, new { }).ToHtmlString()));
+                    Html.ActionLink(
+                        TranslateWord.GetWord(ModuleTypes.Objects.ToString(), MySession.Current.Language),
+                        ModuleTypes.Objects.ToString(),
+                        Controllers.Object.ToString(),
+                        new {objectId = (int) DataBinder.Eval(c.DataItem, "Id")}, new {}).ToHtmlString()
+                    )
+            );
 
         });
 
@@ -105,4 +117,4 @@
         grid.SetEditErrorText((string)ViewData["EditError"]);
     }
 }
-@grid.Bind(Model).GetHtml()
+@grid.Bind(Model.ObjectList).GetHtml()

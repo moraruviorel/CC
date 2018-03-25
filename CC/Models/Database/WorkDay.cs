@@ -24,7 +24,9 @@ public partial class WorkDay
 
     public Nullable<System.DateTime> work_date { get; set; }
 
-    public Nullable<double> work_hours { get; set; }
+    public Nullable<bool> is_paid { get; set; }
+
+    public Nullable<decimal> worked_hours { get; set; }
 
 }
 

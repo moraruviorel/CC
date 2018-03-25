@@ -12,7 +12,7 @@
         settings.CommandColumn.Visible = true;
         settings.CommandColumn.ShowNewButton = true;
         settings.CommandColumn.ShowDeleteButton = false;
-        settings.CommandColumn.ShowEditButton = false;
+        settings.CommandColumn.ShowEditButton = true;
 
         settings.KeyFieldName = "id";
         
@@ -44,10 +44,23 @@
             c.FieldName = "worker_function";
             c.Caption = "Postul ocupat";
         });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "contract_type_id";
+            column.Caption = "Tip Contract";
+            column.Width = 20;
+            column.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "Name";
+                p.ValueField = "Id";
+                p.ValueType = typeof(int);
+                p.DataSource = Model.WorkerContractTypeList;
+            });
+        });
 
     });
     if (ViewData["EditError"] != null){
         grid.SetEditErrorText((string)ViewData["EditError"]);
     }
 }
-@grid.Bind(Model).GetHtml()
+@grid.Bind(Model.WorkerSalaryContractList).GetHtml()

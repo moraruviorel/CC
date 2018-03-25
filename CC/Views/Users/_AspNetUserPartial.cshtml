@@ -1,0 +1,89 @@
+﻿@{
+    var grid = Html.DevExpress().GridView(settings => {
+        settings.Name = "AspNetUser";
+        settings.CallbackRouteValues = new { Controller = "Users", Action = "AspNetUserPartial" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Users", Action = "AspNetUserPartialAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Users", Action = "AspNetUserPartialUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Users", Action = "AspNetUserPartialDelete" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = false;
+        settings.CommandColumn.ShowDeleteButton = false;
+        settings.CommandColumn.ShowEditButton = CC.Models.Classes.MySession.Current.IsUserAdmin;
+
+        settings.KeyFieldName = "Id";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.Off;
+        settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
+        settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
+        settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
+        settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "UserName";
+            c.Caption = "nume utilizator";
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Email";
+            c.Caption = "poșta elec.";
+            //settings.CallbackRouteValues = new { Controller = "Home", Action = "ListGridCallback" };
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "PasswordHash";
+            c.Visible = CC.Models.Classes.MySession.Current.IsUserAdmin;
+            c.Caption = "parolă";
+
+        });
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "UserParentId";
+            column.Caption = "Părinte";
+            column.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "UserName";
+                p.ValueField = "Id";
+                p.ValueType = typeof(string);
+                p.DataSource = Model.AspNetUserList;
+            });
+        });
+
+        var col = settings.Columns.Add("Tip user");
+        //col.PropertiesEdit.DisplayFormatString = "c"; //pune dolar la început
+        col.UnboundType = DevExpress.Data.UnboundColumnType.String;
+
+        settings.CustomUnboundColumnData = (sender, e) =>
+        {
+            e.Value = CC.Models.BusinessLogic.User.AspNetUser.GetUserRoleName(e.GetListSourceFieldValue("Id").ToString());
+        };
+
+        //UserPermissions
+        settings.Columns.Add(column =>
+        {
+            column.SetDataItemTemplateContent(c =>
+                ViewContext.Writer.Write(
+                    Html.ActionLink("Permisiuni", "Permissions", "Users",
+                                    new { UserGuid = (string)DataBinder.Eval(c.DataItem, "Id") },
+                                    new { }).ToHtmlString()));
+
+        });
+
+    });
+    if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model.AspNetUserList).GetHtml()

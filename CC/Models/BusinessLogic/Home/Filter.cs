@@ -23,6 +23,8 @@ namespace CC.Models.BusinessLogic.Home
 
             filterModel.FilterList = new Database.FiltersEntities().Filters.AsQueryable()
                 .Where(x => x.user_id == MySession.Current.UserGuid).ToList();
+
+            filterModel.UserPermission = User.UserPermissions.GetUserPermissionByModuleType(Enums.ModuleTypes.Filters);
             
             return filterModel;
         }

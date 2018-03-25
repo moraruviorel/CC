@@ -5,7 +5,7 @@ using System.Web;
 
 namespace CC.Models.Classes.Home
 {
-    public class FilterModel
+    public class FilterModel : Common
     {
         public List<Database.Operation> OperationList { get; set; }
 

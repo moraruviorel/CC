@@ -44,11 +44,6 @@ namespace CC.Models.BusinessLogic.Setting
                 MySession.Current.MySetting.IsPageLandscape = false;
                 MySession.Current.MySetting.ShowWorkerPrice = true;
             }
-
-
-
-
-            //return setting;
         }
 
         public static Classes.Setting.SettingModel GetSettingModel(
@@ -64,6 +59,7 @@ namespace CC.Models.BusinessLogic.Setting
             var settingStatuses = new SettingStatusEntities();
             settingModel.SettingStatuses = settingStatuses.SettingStatuses.ToList();
             settingModel.AspNetUsers = aspNetUsersEntities.AspNetUsers.ToList();
+            settingModel.UserPermission = User.UserPermissions.GetUserPermissionByModuleType(ModuleTypes.Settings);
 
             return settingModel;
         }

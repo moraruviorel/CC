@@ -7,6 +7,15 @@ namespace CC.Models.Enums
 {
     public enum Controllers
     {
-        Object = 1
+        Account,
+        Error,
+        Home,
+        Manager,
+        Object,
+        Report,
+        Role,
+        Setting,
+        Users,
+        Worker
     }
 }

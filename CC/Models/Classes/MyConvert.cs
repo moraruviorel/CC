@@ -8,15 +8,15 @@ namespace CC.Models.Classes
 {
     public class MyConvert
     {
-        public static decimal ToDecimal(string _value)
+        public static decimal ToDecimal(string value)
         {
-            if (!string.IsNullOrEmpty(_value) && _value.Contains(","))
-                _value = _value.Replace(",", ".");
-            if (_value == string.Empty)
-                _value = null;
+            if (!string.IsNullOrEmpty(value) && value.Contains(","))
+                value = value.Replace(",", ".");
+            if (value == string.Empty)
+                value = null;
             //_value = _value == string.Empty ? null : _value;
 
-            return Convert.ToDecimal(_value, new CultureInfo("en-US"));
+            return Convert.ToDecimal(value, new CultureInfo("en-US"));
         }
 
         public static DateTime? ToDateTime(string _value)
@@ -32,6 +32,16 @@ namespace CC.Models.Classes
 
         }
 
-       
+
+        public static double ToDouble(string value)
+        {
+            if (!string.IsNullOrEmpty(value) && value.Contains(","))
+                value = value.Replace(",", ".");
+            if (value == string.Empty)
+                value = null;
+            //_value = _value == string.Empty ? null : _value;
+
+            return Convert.ToDouble(value, new CultureInfo("en-US"));
+        }
     }
 }

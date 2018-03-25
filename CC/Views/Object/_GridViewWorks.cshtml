@@ -36,6 +36,13 @@
             c.Width = 250;
         });
 
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "surface_work";
+            c.Caption = "Cantitate";
+            c.Width = 40;
+        });
+
         settings.Columns.Add(column =>
         {
             column.FieldName = "worker_id";
@@ -49,13 +56,19 @@
             });
         });
 
-        settings.Columns.Add(c =>
+        settings.Columns.Add(column =>
         {
-            c.FieldName = "surface";
-            c.Caption = "Cantitate";
-            c.Width = 40;
+            column.FieldName = "workers_group_id";
+            column.Caption = "Grup lucrători";
+            column.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "description";
+                p.ValueField = "id";
+                p.ValueType = typeof(int);
+                p.DataSource = Model.WorkersGroupList;
+            });
         });
-
+        
         settings.Columns.Add(column =>
         {
             column.FieldName = "unit_id";
@@ -81,8 +94,8 @@
         //totalurile in dependenta de pretul unitate pentru Lucrator
         if (CC.Models.Classes.MySession.Current.MySetting.ShowWorkerPrice)
         {
-            var col_luc = settings.Columns.Add("Total Lucrator");
-            col_luc.UnboundType = DevExpress.Data.UnboundColumnType.Decimal;
+            var colLuc = settings.Columns.Add("Total Lucrator");
+            colLuc.UnboundType = DevExpress.Data.UnboundColumnType.Decimal;
         }
         //pret unitate pentru client
         settings.Columns.Add(c =>
@@ -96,10 +109,10 @@
         //col.PropertiesEdit.DisplayFormatString = "c"; //pune dolar la început
         col.UnboundType = DevExpress.Data.UnboundColumnType.Decimal;
 
-        //aceasta parte de cod se execut a o singur a data si trebuie completata concomitent pentru ambele coloane
+        //aceasta parte de cod se executa o singura data si trebuie completata concomitent pentru ambele coloane
         settings.CustomUnboundColumnData = (sender, e) =>
         {
-            decimal surface = CC.Models.Classes.MyConvert.ToDecimal(e.GetListSourceFieldValue("surface")?.ToString());
+            decimal surface = CC.Models.Classes.MyConvert.ToDecimal(e.GetListSourceFieldValue("surface_work")?.ToString());
 
             if (e.Column.FieldName == "Total Client")
             {
@@ -129,7 +142,7 @@
             column.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
         });
 
-        settings.TotalSummary.Add(DevExpress.Data.SummaryItemType.Sum, "Total");
+        settings.TotalSummary.Add(DevExpress.Data.SummaryItemType.Sum, "Total Client");
         settings.Settings.ShowFooter = true;
     });
     if (ViewData["EditError"] != null)

@@ -10,5 +10,7 @@ namespace CC.Models.Classes.Object
         public List<Database.Object> ObjectList { get; set; }
 
         public List<Database.ObjectMaterial> ObjectMaterialList { get; set; }
+
+        public List<Database.Unit> UnitList { get; set; }
     }
 }

@@ -16,6 +16,8 @@
           <Property Name="loan_status" Type="bit" />
           <Property Name="loan_sum" Type="decimal" Precision="18" Scale="2" />
           <Property Name="user_id" Type="varchar" MaxLength="50" />
+          <Property Name="description" Type="nvarchar" MaxLength="200" />
+          <Property Name="currency_id" Type="int" Nullable="false" />
         </EntityType>
         <EntityContainer Name="LoanMoneyModelStoreContainer">
           <EntitySet Name="LoanMoney" EntityType="Self.LoanMoney" Schema="dbo" store:Type="Tables" />
@@ -35,6 +37,8 @@
           <Property Name="loan_sum" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="return_date" Type="DateTime" Precision="3" />
           <Property Name="loan_status" Type="Boolean" />
+          <Property Name="description" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="currency_id" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityContainer Name="LoanMoneyEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="LoanMoney" EntityType="Self.LoanMoney" />
@@ -48,6 +52,8 @@
           <EntitySetMapping Name="LoanMoney">
             <EntityTypeMapping TypeName="LoanMoneyModel.LoanMoney">
               <MappingFragment StoreEntitySet="LoanMoney">
+                <ScalarProperty Name="currency_id" ColumnName="currency_id" />
+                <ScalarProperty Name="description" ColumnName="description" />
                 <ScalarProperty Name="loan_status" ColumnName="loan_status" />
                 <ScalarProperty Name="return_date" ColumnName="return_date" />
                 <ScalarProperty Name="id" ColumnName="id" />

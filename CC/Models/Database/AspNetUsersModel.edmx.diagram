@@ -7,6 +7,7 @@
       <Diagram DiagramId="30b09e28897b42e084b8ddcab8cbb701" Name="Diagram1">
         <EntityTypeShape EntityType="AspNetUsersModel.AspNetUser" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="AspNetUsersModel.AspNetRole" Width="1.5" PointX="3.375" PointY="0.75" />
+        <AssociationConnector Association="AspNetUsersModel.AspNetUserRoles" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

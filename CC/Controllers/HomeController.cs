@@ -1,84 +1,42 @@
-﻿using DevExpress.Web.Mvc;
-using CC.Models;
-using CC.Models.Classes;
-using CC.Models.Enums;
-using CC.Models.BusinessLogic;
+﻿using CC.Models.Enums;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using static CC.Models.BusinessLogic.Functions;
+using CC.Models.BusinessLogic.Role;
 using BusinessLogic = CC.Models.BusinessLogic;
-using static CC.Models.Classes.Enums;
 using Database = CC.Models.Database;
-using CC.Models.Classes.Account;
+using CC.Models.Classes;
+using static CC.Models.BusinessLogic.Role.AuthorizeRoles;
 
 namespace CC.Controllers
 {
     [Authorize]
     public class HomeController : Controller
-    {
-                
+    {                
         public ActionResult Index()
         {
-            MySession.Current.IsUserAdmin = false;
-
+            MySession.Current.Language = "ro";
             //var res = UserManager.GetRoles(user.GetUserId());
             if (User.Identity.IsAuthenticated)
             {
-                var user = User.Identity;
-                ApplicationDbContext context = new ApplicationDbContext();
-                var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
-                var role = UserManager.GetRoles(user.GetUserId());
-                MySession.Current.UserGuid = user.GetUserId();
-                switch (role[0])
-                {
-                    case "Admin":
-                        MySession.Current.UserRole = UserRole.Admin;
-                        break;
-                    case "Manager":
-                        MySession.Current.UserRole = UserRole.Manager;
-                        break;
-                    case "Driver":
-                        MySession.Current.UserRole = UserRole.Driver;
-                        break;
-                    case "Worker":
-                        MySession.Current.UserRole = UserRole.Worker;
-                        break;
-                    case "Dentistry":
-                        MySession.Current.UserRole = UserRole.Dentistry;
-                        break;
-                    default:
-                        MySession.Current.UserRole = UserRole.Worker;
-                        break;
-                }
-                if (MySession.Current.UserRole == UserRole.Admin)
-                {
-                    MySession.Current.IsUserAdmin = true;
-                }
+                MySession.Current.UserGuid = User.Identity.GetUserId();
 
-                try
+                BusinessLogic.User.UserRole.SetUserRole(MySession.Current.UserGuid);
+                BusinessLogic.User.UserPermissions.SetUserPermissions();
+
+                if(MySession.Current.MySetting == null)
                 {
                     var dbSetting = BusinessLogic.Setting.Setting.GetSettingForCurrentUserList(dbSettings);
                     BusinessLogic.Setting.Setting.SetSetting(dbSetting);
-                }
-                catch (Exception ex)
-                {
-                    MySession.Current.MySetting = new Models.Classes.Setting.Setting();
-
-                    MySession.Current.MySetting.GridRows = 20;
-                    MySession.Current.MySetting.IsPageLandscape = false;
-                    //throw;
-                }
-                
-
-            }     
+                }                
+            }
+            var model = BusinessLogic.Home.Index.GetIndexModel();
             
-            return View();
+            return View(model);
         }
 
-        [AuthorizeRoles(UserRole.Admin, UserRole.Manager)]
+        [AuthorizeRoles.AuthorizeRolesAttribute(UserRoleType.Admin, UserRoleType.Manager)]
         public ActionResult Users()
         {
             return View();
@@ -95,8 +53,7 @@ namespace CC.Controllers
         [ValidateInput(false)]
         public ActionResult GridViewUnit()
         {
-            var model = dbUnits.Units;
-            return PartialView("_GridViewUnit", model.ToList());
+            return PartialView("_GridViewUnit", BusinessLogic.Home.Unit.GetUnitModel());
         }
 
         [HttpPost, ValidateInput(false)]
@@ -117,7 +74,7 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            return PartialView("_GridViewUnit", model.ToList());
+            return PartialView("_GridViewUnit", BusinessLogic.Home.Unit.GetUnitModel());
         }
         [HttpPost, ValidateInput(false)]
         public ActionResult GridViewUnitUpdate(Database.Unit item)
@@ -141,7 +98,7 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            return PartialView("_GridViewUnit", model.ToList());
+            return PartialView("_GridViewUnit", BusinessLogic.Home.Unit.GetUnitModel());
         }
         [HttpPost, ValidateInput(false)]
         public ActionResult GridViewUnitDelete(System.Int32 id)
@@ -161,14 +118,14 @@ namespace CC.Controllers
                     ViewData["EditError"] = e.Message;
                 }
             }
-            return PartialView("_GridViewUnit", model.ToList());
+            return PartialView("_GridViewUnit", BusinessLogic.Home.Unit.GetUnitModel());
         }
 
         #endregion
                 
         #region Speciality
 
-        [AuthorizeRoles(UserRole.Admin, UserRole.Manager)]
+        [AuthorizeRoles.AuthorizeRolesAttribute(UserRoleType.Admin, UserRoleType.Manager)]
         public ActionResult Speciality()
         {
             return View();
@@ -333,7 +290,7 @@ namespace CC.Controllers
 
         #region LoanMoney
 
-        [AuthorizeRoles(UserRole.Admin, UserRole.Manager)]
+        [AuthorizeRoles(UserRoleType.Admin, UserRoleType.Manager)]
         public ActionResult LoanMoney()
         {
             return View();
@@ -342,14 +299,13 @@ namespace CC.Controllers
         [ValidateInput(false)]
         public ActionResult GridViewLoanMoneyPartial()
         {
-            var model = dbLoanMoney.LoanMoney.AsQueryable().Where(x => x.user_id == MySession.Current.UserGuid).ToList();
-            return PartialView("_GridViewLoanMoneyPartial", model.ToList());
+            return PartialView("_GridViewLoanMoneyPartial", BusinessLogic.Home.LoanMoney.GetLoanMoneyModel());
         }
 
         [HttpPost, ValidateInput(false)]
         public ActionResult GridViewLoanMoneyPartialAddNew(Database.LoanMoney item)
         {
-            var model = dbLoanMoney.LoanMoney;//.AsQueryable().Where(x => x.user_id == MySession.Current.UserGuid).ToList();
+            var model = dbLoanMoney.LoanMoney;
             if (ModelState.IsValid)
             {
                 try
@@ -365,8 +321,8 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            var modelShow = dbLoanMoney.LoanMoney.AsQueryable().Where(x => x.user_id == MySession.Current.UserGuid);
-            return PartialView("_GridViewLoanMoneyPartial", modelShow.ToList());
+            
+            return PartialView("_GridViewLoanMoneyPartial", BusinessLogic.Home.LoanMoney.GetLoanMoneyModel());
         }
 
         [HttpPost, ValidateInput(false)]
@@ -389,10 +345,9 @@ namespace CC.Controllers
                     ViewData["EditError"] = e.Message;
                 }
             }
-            else
-                ViewData["EditError"] = "Please, correct all errors.";
-            var modelShow = dbLoanMoney.LoanMoney.AsQueryable().Where(x => x.user_id == MySession.Current.UserGuid);
-            return PartialView("_GridViewLoanMoneyPartial", modelShow.ToList());
+            else ViewData["EditError"] = "Please, correct all errors.";
+            
+            return PartialView("_GridViewLoanMoneyPartial", BusinessLogic.Home.LoanMoney.GetLoanMoneyModel());
         }
 
         [HttpPost, ValidateInput(false)]
@@ -413,16 +368,16 @@ namespace CC.Controllers
                     ViewData["EditError"] = e.Message;
                 }
             }
-            var modelShow = dbLoanMoney.LoanMoney.AsQueryable().Where(x => x.user_id == MySession.Current.UserGuid);
-            return PartialView("_GridViewLoanMoneyPartial", modelShow.ToList());
+            
+            return PartialView("_GridViewLoanMoneyPartial", BusinessLogic.Home.LoanMoney.GetLoanMoneyModel());
         }
 
         #endregion
 
         #region Customers
 
-        [AuthorizeRoles(UserRole.Admin, UserRole.Dentistry)]
-        public ActionResult Customer()
+        [AuthorizeRoles(UserRoleType.Admin, UserRoleType.Dentistry)]
+        public ActionResult Customers()
         {
             return View();
         }
@@ -886,7 +841,7 @@ namespace CC.Controllers
 
         #region Filter
 
-        [AuthorizeRoles(UserRole.Admin, UserRole.Manager)]
+        [AuthorizeRoles(UserRoleType.Admin, UserRoleType.Manager)]
         public ActionResult Filter()
         {
             return View();
@@ -970,6 +925,87 @@ namespace CC.Controllers
 
         #endregion
 
+        #region TranslateWords
+
+        public ActionResult TranslateWords()
+        {
+            return View();
+        }
+    
+        [ValidateInput(false)]
+        public ActionResult GridViewTranslateWordsPartial()
+        {
+            var model = dbTranslateWords.TranslateWords;
+            return PartialView("_GridViewTranslateWordsPartial", model.ToList());
+        }
+
+        [HttpPost, ValidateInput(false)]
+        public ActionResult GridViewTranslateWordsPartialAddNew(CC.Models.Database.TranslateWord item)
+        {
+            var model = dbTranslateWords.TranslateWords;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    model.Add(item);
+                    dbTranslateWords.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    ViewData["EditError"] = e.Message;
+                }
+            }
+            else
+                ViewData["EditError"] = "Please, correct all errors.";
+            return PartialView("_GridViewTranslateWordsPartial", model.ToList());
+        }
+        [HttpPost, ValidateInput(false)]
+        public ActionResult GridViewTranslateWordsPartialUpdate(CC.Models.Database.TranslateWord item)
+        {
+            var model = dbTranslateWords.TranslateWords;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var modelItem = model.FirstOrDefault(it => it.word == item.word);
+                    if (modelItem != null)
+                    {
+                        this.UpdateModel(modelItem);
+                        dbTranslateWords.SaveChanges();
+                    }
+                }
+                catch (Exception e)
+                {
+                    ViewData["EditError"] = e.Message;
+                }
+            }
+            else
+                ViewData["EditError"] = "Please, correct all errors.";
+            return PartialView("_GridViewTranslateWordsPartial", model.ToList());
+        }
+        [HttpPost, ValidateInput(false)]
+        public ActionResult GridViewTranslateWordsPartialDelete(string word)
+        {
+            var model = dbTranslateWords.TranslateWords;
+            if (word != string.Empty)
+            {
+                try
+                {
+                    var item = model.FirstOrDefault(it => it.word== word);
+                    if (item != null)
+                        model.Remove(item);
+                    dbTranslateWords.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    ViewData["EditError"] = e.Message;
+                }
+            }
+            return PartialView("_GridViewTranslateWordsPartial", model.ToList());
+        }
+
+        #endregion
+
         #region DB
 
         Database.WorksEntities dbWorks = new Database.WorksEntities();
@@ -994,11 +1030,11 @@ namespace CC.Controllers
 
         Database.FiltersEntities dbFilter = new Database.FiltersEntities();
 
+        Database.TranslateWordEntities dbTranslateWords = new Database.TranslateWordEntities();
+
         #endregion
 
 
 
-
-        
     }
 }

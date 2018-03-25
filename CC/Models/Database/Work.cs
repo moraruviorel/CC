@@ -18,7 +18,6 @@ namespace CC.Models.Database
         public Nullable<int> object_id { get; set; }
         public Nullable<int> worker_id { get; set; }
         public string name { get; set; }
-        public string surface { get; set; }
         public Nullable<decimal> unit_price { get; set; }
         public Nullable<System.DateTime> date_start { get; set; }
         public Nullable<System.DateTime> date_end { get; set; }
@@ -27,5 +26,6 @@ namespace CC.Models.Database
         public Nullable<int> unit_id { get; set; }
         public Nullable<decimal> surface_work { get; set; }
         public Nullable<decimal> unit_price_worker { get; set; }
+        public Nullable<int> workers_group_id { get; set; }
     }
 }

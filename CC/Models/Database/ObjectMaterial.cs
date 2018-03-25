@@ -34,6 +34,10 @@ public partial class ObjectMaterial
 
     public Nullable<short> visible { get; set; }
 
+    public Nullable<decimal> unit_price { get; set; }
+
+    public Nullable<int> unit_id { get; set; }
+
 }
 
 }

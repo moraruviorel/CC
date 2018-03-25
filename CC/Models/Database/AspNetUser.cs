@@ -18,6 +18,15 @@ using System;
 public partial class AspNetUser
 {
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public AspNetUser()
+    {
+
+        this.AspNetRoles = new HashSet<AspNetRole>();
+
+    }
+
+
     public string Id { get; set; }
 
     public string Email { get; set; }
@@ -41,6 +50,14 @@ public partial class AspNetUser
     public int AccessFailedCount { get; set; }
 
     public string UserName { get; set; }
+
+    public Nullable<System.Guid> UserParentId { get; set; }
+
+
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<AspNetRole> AspNetRoles { get; set; }
 
 }
 

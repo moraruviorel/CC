@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using DevExpress.ClipboardSource.SpreadsheetML;
 
 namespace CC.Models.Classes.Object
 {
@@ -14,5 +15,7 @@ namespace CC.Models.Classes.Object
         public List<Database.Object> ObjectList { get; set; }
 
         public List<Database.Work> ObjectWorksList { get; set; }
+
+        public List<Database.WorkersGroup> WorkersGroupList { get; set; }
     }
 }

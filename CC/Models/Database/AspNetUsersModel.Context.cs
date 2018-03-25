@@ -13,28 +13,30 @@
 namespace CC.Models.Database
 {
 
-    using System;
-    using System.Data.Entity;
-    using System.Data.Entity.Infrastructure;
+using System;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 
 
-    public partial class AspNetUsersEntities : DbContext
+public partial class AspNetUsersEntities : DbContext
+{
+    public AspNetUsersEntities()
+        : base("name=AspNetUsersEntities")
     {
-        public AspNetUsersEntities()
-            : base("name=AspNetUsersEntities")
-        {
-
-        }
-
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            throw new UnintentionalCodeFirstException();
-        }
-
-
-        public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
 
     }
+
+    protected override void OnModelCreating(DbModelBuilder modelBuilder)
+    {
+        throw new UnintentionalCodeFirstException();
+    }
+
+
+    public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+
+    public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
+
+}
 
 }
 
