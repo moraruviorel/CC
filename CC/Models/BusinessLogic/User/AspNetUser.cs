@@ -42,6 +42,11 @@ namespace CC.Models.BusinessLogic.User
             return users.FirstOrDefault(x => x.Id == userId)?.AspNetRoles.FirstOrDefault()?.Name;
         }
 
+        public static Database.AspNetUser GetUserById(string userId)
+        {
+            return new Database.AspNetUsersEntities().AspNetUsers.ToList().FirstOrDefault(x=>x.Id.Equals(userId));
+        }
+        
         //private static List<LocalUserRoles> GetUserRoleList()
         //{
         //    var dbRoles = new Database.AspNetUserRoleEntities().AspNetRoles.ToList();

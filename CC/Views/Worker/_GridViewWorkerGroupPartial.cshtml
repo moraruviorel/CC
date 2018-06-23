@@ -47,7 +47,7 @@
             c.FieldName = "create_date";
             c.Caption = "Data adăugării";
             c.ColumnType = MVCxGridViewColumnType.DateEdit;
-            c.PropertiesEdit.DisplayFormatString = "dd/mm/yyyy";
+            c.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
         });
 
         //Detalii
@@ -61,7 +61,7 @@
                 {
                     ViewContext.Writer.Write(
                         Html.ActionLink(
-                            TranslateWord.GetWord("Detalils", MySession.Current.Language),
+                            TranslateWord.GetWord(CC.Resources.Resource.Details),
                             ActionResultTypes.WorkersGroupDetail.ToString(),
                             Controllers.Worker.ToString(),
                             new {workersGroupId = (int) DataBinder.Eval(c.DataItem, "id") },

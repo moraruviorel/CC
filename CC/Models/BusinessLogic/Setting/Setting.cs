@@ -4,6 +4,7 @@ using CC.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DevExpress.XtraEditors.Internal;
 
 namespace CC.Models.BusinessLogic.Setting
 {
@@ -28,15 +29,18 @@ namespace CC.Models.BusinessLogic.Setting
             MySession.Current.MySetting = new Classes.Setting.Setting();
             try
             {
-                MySession.Current.MySetting.GridRows =
-                    short.Parse(dbSetting.FirstOrDefault(x => x.SettingStatus == (int)Enums.SettingStatus.GridRows)?.Value);
-                MySession.Current.MySetting.IsPageLandscape = dbSetting
-                    .FirstOrDefault(x => x.SettingStatus == (int)Enums.SettingStatus.IsPageLandscape)
-                    ?.Value.ToLower() == "da" ? true : false;
-                MySession.Current.MySetting.ShowWorkerPrice = dbSetting
-                    .FirstOrDefault(x => x.SettingStatus == (int)Enums.SettingStatus.ShowWorkerPrice)
-                    ?.Value.ToLower() == "da" ? true : false;
-                
+                var setting = dbSetting.FirstOrDefault(x =>x.UserId == MySession.Current.UserGuid &&
+                                                           x.SettingStatus == (int)Enums.SettingStatus.GridRows);
+                MySession.Current.MySetting.GridRows = setting == null ? 20 : Int32.Parse(setting.Value);
+                //
+                setting = dbSetting.FirstOrDefault(x => x.SettingStatus == (int)Enums.SettingStatus.IsPageLandscape);
+                MySession.Current.MySetting.IsPageLandscape = GetBoolFromString(setting?.Value);
+                //
+                setting = dbSetting.FirstOrDefault(x => x.SettingStatus == (int)Enums.SettingStatus.ShowWorkerPrice);
+                MySession.Current.MySetting.ShowWorkerPrice = GetBoolFromString(setting?.Value);
+                //
+                setting = dbSetting.FirstOrDefault(x => x.SettingStatus == (int)Enums.SettingStatus.Language);
+                MySession.Current.Language = setting == null ? LanguageTypes.Romanian : GetLanguageType(setting.Value);
             }
             catch (Exception ex)
             {
@@ -63,5 +67,29 @@ namespace CC.Models.BusinessLogic.Setting
 
             return settingModel;
         }
+
+        public static LanguageTypes GetLanguageType(string lang)
+        {
+            LanguageTypes languageType = LanguageTypes.Romanian;
+            switch (lang)
+            {
+                case "ru":
+                    languageType = LanguageTypes.Russian;
+                    break;
+                case "en":
+                    languageType = LanguageTypes.English;
+                    break;
+            }
+
+            return languageType;
+        }
+
+        public static bool GetBoolFromString(string value)
+        {
+            if (value == null)
+                return false;
+            return  value.ToLower() == "da" ? true : false;
+        }
+
     }
 }

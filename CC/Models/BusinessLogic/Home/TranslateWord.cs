@@ -1,36 +1,33 @@
 ﻿using System.Linq;
+using CC.Models.Classes;
+using CC.Models.Enums;
 
 namespace CC.Models.BusinessLogic.Home
 {
     public class TranslateWord
     {
-        public static string GetWord(string word, string language)
+        public static string GetWord(string word)
         {
-            var returnWord = word;
-
+            
             var translateWordRow = new Database.TranslateWordEntities().TranslateWords.AsQueryable()
                 .FirstOrDefault(x => x.word == word);
 
-            if (translateWordRow == null) return returnWord;
+            if (translateWordRow == null) return word;
 
-            switch (language)
+            switch (MySession.Current.Language)
             {
-                case "ro":
-                    returnWord = translateWordRow.ro;
+                case LanguageTypes.Romanian:
+                    word = translateWordRow.ro;
                     break;
-                case "ru":
-                    returnWord = translateWordRow.ru;
+                case LanguageTypes.Russian:
+                    word = translateWordRow.ru;
                     break;
-                case "en":
-                    returnWord = translateWordRow.en;
+                case LanguageTypes.English:
+                    word = translateWordRow.en;
                     break;
-                default:
-                    returnWord = word;
-                    break;
-
             }
 
-            return returnWord;
+            return word;
         }
     }
 }

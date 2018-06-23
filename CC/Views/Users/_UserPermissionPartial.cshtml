@@ -43,6 +43,20 @@
             });
         });
 
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "item_id";
+            c.Caption = "Element";
+            c.EditorProperties().ComboBox(p =>
+            {
+                p.DataSource = Model.ItemList;
+                p.TextField = "Value";
+                p.ValueField = "Key";
+                p.ValueType = typeof(int);
+            });
+        });
+        //ItemList
+
         settings.Columns.Add(column =>
         {
             column.FieldName = "can_view";
@@ -73,8 +87,8 @@
         {
             column.SetDataItemTemplateContent(c =>
                 ViewContext.Writer.Write(
-                    Html.ActionLink(TranslateWord.GetWord("Permissions", MySession.Current.Language), 
-                        "ModulePermissions", 
+                    Html.ActionLink(TranslateWord.GetWord("Elemente modul"),
+                        "ModulePermissions",
                         Controllers.Users.ToString(),
                         new {moduleId = (int)DataBinder.Eval(c.DataItem, "module_id") },
                         new {}).ToHtmlString()

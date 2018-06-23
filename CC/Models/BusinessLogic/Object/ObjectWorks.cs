@@ -58,8 +58,6 @@ namespace CC.Models.BusinessLogic.Object
                 WorkersGroupList = Worker.WorkersGroups.GetWorkersGroupsModel().WorkersGroupList
             };
             
-
-
             return objectWorksModel;
         }
 

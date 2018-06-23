@@ -13,8 +13,21 @@ namespace CC.Models.BusinessLogic.Object
         {
             var user_id = MySession.Current.UserGuid;
             var parent_id = MySession.Current.ObjectId;
-            return new Database.ExcelentConstructEntitiesObjects().Objects
-                .Where(x => x.UserId == user_id && x.Parent_Id == parent_id).ToList();
+
+            var currentUser = User.AspNetUser.GetUserById(user_id);
+            var isUserSubuser = string.IsNullOrEmpty(currentUser.UserParentId.ToString()) ? false : true;
+
+            if (isUserSubuser)
+            {
+                return new Database.ExcelentConstructEntitiesObjects().Objects.ToList()
+                    .Where(x => (x.UserId == user_id || x.UserId.Equals(currentUser.UserParentId.ToString())) 
+                        && x.Parent_Id == parent_id).ToList();
+            }
+            else
+            {
+                return new Database.ExcelentConstructEntitiesObjects().Objects.ToList()
+                    .Where(x => x.UserId == user_id && x.Parent_Id == parent_id).ToList();
+            }
         }
 
         public static List<Database.Object> GetObjectsByParentId(int parentId)
@@ -34,11 +47,18 @@ namespace CC.Models.BusinessLogic.Object
 
         public static ObjectModel GetObjectModel()
         {
-            var objectModel = new ObjectModel();
+            var objects = GetObjectsByParentId();
+            var moduleItemIds = User.UserPermissions.GetModuleItemIds(Enums.ModuleTypes.Objects);
 
-            objectModel.ObjectList = GetObjectsByParentId();
-            objectModel.UserPermissionObject = User.UserPermissions.GetUserPermissionByModuleType(Enums.ModuleTypes.Objects);
-            objectModel.ObjectParentList = GetObjectsById(MySession.Current.ObjectId);
+            if (moduleItemIds.Count() > 0)
+                objects = objects.Where(x => moduleItemIds.Contains(x.ID)).ToList();
+
+            var objectModel = new ObjectModel
+            {
+                ObjectList = objects,
+                UserPermissionObject = User.UserPermissions.GetUserPermissionByModuleType(Enums.ModuleTypes.Objects),
+                ObjectParentList = GetObjectsById(MySession.Current.ObjectId)
+            };
 
             return objectModel;
         }

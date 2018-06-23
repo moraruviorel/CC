@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity;
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Web.Mvc;
 using CC.Models.BusinessLogic.Role;
 using BusinessLogic = CC.Models.BusinessLogic;
@@ -16,8 +17,7 @@ namespace CC.Controllers
     {                
         public ActionResult Index()
         {
-            MySession.Current.Language = "ro";
-            //var res = UserManager.GetRoles(user.GetUserId());
+            
             if (User.Identity.IsAuthenticated)
             {
                 MySession.Current.UserGuid = User.Identity.GetUserId();

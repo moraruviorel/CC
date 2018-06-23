@@ -86,7 +86,7 @@
                 {
                     ViewContext.Writer.Write(
                         Html.ActionLink(
-                            TranslateWord.GetWord("Details", MySession.Current.Language), 
+                            TranslateWord.GetWord(CC.Resources.Resource.Details), 
                             "ObjectDetail", 
                             Controllers.Object.ToString(), 
                             new { objectId = (int)DataBinder.Eval(c.DataItem, "Id") }, new { }).ToHtmlString()
@@ -100,7 +100,7 @@
             column.SetDataItemTemplateContent(c =>
                 ViewContext.Writer.Write(
                     Html.ActionLink(
-                        TranslateWord.GetWord(ModuleTypes.Objects.ToString(), MySession.Current.Language),
+                        TranslateWord.GetWord(ModuleTypes.Objects.ToString()),
                         ModuleTypes.Objects.ToString(),
                         Controllers.Object.ToString(),
                         new {objectId = (int) DataBinder.Eval(c.DataItem, "Id")}, new {}).ToHtmlString()

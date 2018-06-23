@@ -1,6 +1,6 @@
-﻿
-@using CC.Models.Classes
+﻿@using CC.Models.Classes
 @using CC.Models.Enums 
+@using CC.Resources
 @using BL = CC.Models.BusinessLogic
 @using Permission = CC.Models.BusinessLogic.User.UserPermissions
 @using Translate = CC.Models.BusinessLogic.Home.TranslateWord
@@ -35,47 +35,59 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                   
-                    <li>@Html.ActionLink(
-                            Translate.GetWord("Home", MySession.Current.Language), 
-                            "Index", 
-                            Controllers.Home.ToString())</li>
-                    @*Workers*@
-                    @if (Permission.GetUserPermissionByModuleType(ModuleTypes.Workers).can_view ?? false)
-                    {
-                        <li>@Html.ActionLink(
-                                Translate.GetWord(ModuleTypes.Workers.ToString(), MySession.Current.Language),
-                                "WorkersActionResult", 
-                                Controllers.Worker.ToString())</li>
-                    }
-                    @*Objects*@
-                    @if (Permission.GetUserPermissionByModuleType(ModuleTypes.Objects).can_view ?? false)
-                    {
-                        <li>@Html.ActionLink(
-                                Translate.GetWord(ModuleTypes.Objects.ToString(), MySession.Current.Language),
-                                ModuleTypes.Objects.ToString(), 
-                                Controllers.Object.ToString())</li>
-                    }       
-                    @* Customers *@
-                    @if (Permission.GetUserPermissionByModuleType(ModuleTypes.Customers).can_view ?? false)
-                    {
-                        <li>@Html.ActionLink(
-                                BL.Home.TranslateWord.GetWord(ModuleTypes.Customers.ToString(), MySession.Current.Language),
-                                ModuleTypes.Customers.ToString(), 
-                                Controllers.Home.ToString())</li>
-                    }
-                    @* Users && Translate *@
-                    @if (MySession.Current.IsUserAdmin)
-                    {
-                        <li>@Html.ActionLink(
-                                BL.Home.TranslateWord.GetWord(ModuleTypes.Users.ToString(), MySession.Current.Language),
-                                "Index", 
-                                Controllers.Users.ToString())</li>
-                        <li>@Html.ActionLink(
-                                BL.Home.TranslateWord.GetWord("Translates", MySession.Current.Language),
-                                "TranslateWords", 
-                                Controllers.Home.ToString())</li>
-                    }
+
+                    <li>
+                        @Html.ActionLink(
+                 Translate.GetWord(CC.Resources.Resource.Home),
+                 "Index",
+                 Controllers.Home.ToString())
+                </li>
+                @*Workers Translate.GetWord(ModuleTypes.Workers.ToString(), MySession.Current.Language)*@
+                @if (Permission.GetUserPermissionByModuleType(ModuleTypes.Workers).can_view ?? false)
+                {
+                    <li>
+                        @Html.ActionLink(
+                            Translate.GetWord(Resource.Workers),
+                            "WorkersActionResult",
+                            Controllers.Worker.ToString())
+                    </li>
+                }
+                @*Objects*@
+                @if (Permission.GetUserPermissionByModuleType(ModuleTypes.Objects).can_view ?? false)
+{
+                <li>
+                    @Html.ActionLink(
+             Translate.GetWord(ModuleTypes.Objects.ToString()),
+             ModuleTypes.Objects.ToString(),
+             Controllers.Object.ToString())
+                </li>
+}
+                @* Customers *@
+                @if (Permission.GetUserPermissionByModuleType(ModuleTypes.Customers).can_view ?? false)
+{
+                <li>
+                    @Html.ActionLink(
+             BL.Home.TranslateWord.GetWord(ModuleTypes.Customers.ToString()),
+             ModuleTypes.Customers.ToString(),
+             Controllers.Home.ToString())
+                </li>
+}
+                @* Users && Translate *@
+                @if (MySession.Current.IsUserAdmin)
+{
+                <li>
+                    @Html.ActionLink(
+             BL.Home.TranslateWord.GetWord(ModuleTypes.Users.ToString()),
+             "Index",
+             Controllers.Users.ToString())
+                </li>
+                <li>
+                    @Html.ActionLink(
+             BL.Home.TranslateWord.GetWord("Translates"),
+             "TranslateWords",
+             Controllers.Home.ToString())
+                </li>
+}
 
                 </ul>
                 @Html.Partial("_LoginPartial")

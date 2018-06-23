@@ -85,7 +85,7 @@ namespace CC.Models.BusinessLogic.Worker
             Dictionary<int, string> dict = new Dictionary<int, string>();
             foreach (PaymentTypes item in Enum.GetValues(typeof(PaymentTypes)))
             {
-                dict.Add((int)item, $"{Home.TranslateWord.GetWord(item.ToString(), "ro")}");
+                dict.Add((int)item, $"{Home.TranslateWord.GetWord(item.ToString())}");
             }
 
             return dict;

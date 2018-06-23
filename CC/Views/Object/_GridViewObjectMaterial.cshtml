@@ -73,6 +73,7 @@
         {
             c.FieldName = "quantity";
             c.Caption = "Cantitatea";
+            c.Width = 30;
         });
         settings.Columns.Add(column =>
         {
@@ -97,11 +98,11 @@
         col.UnboundType = DevExpress.Data.UnboundColumnType.Decimal;
         settings.CustomUnboundColumnData = (sender, e) =>
         {
-            decimal surface = CC.Models.Classes.MyConvert.ToDecimal(e.GetListSourceFieldValue("quantity")?.ToString());
+            decimal surface = Convert.ToDecimal(e.GetListSourceFieldValue("quantity").ToString());
 
             if (e.Column.FieldName == "Preț Total")
             {
-                decimal unitPrice = CC.Models.Classes.MyConvert.ToDecimal(e.GetListSourceFieldValue("unit_price")?.ToString());
+                decimal unitPrice = CC.Models.Classes.MyConvert.ToDecimal(e.GetListSourceFieldValue("unit_price").ToString());
                 e.Value = unitPrice * surface;
             }
             

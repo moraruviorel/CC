@@ -10,7 +10,7 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="item_id" Type="int" />
+          <Property Name="item_id" Type="int" Nullable="false" />
           <Property Name="can_view" Type="bit" />
           <Property Name="can_add" Type="bit" />
           <Property Name="can_edit" Type="bit" />
@@ -30,7 +30,7 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="item_id" Type="Int32" />
+          <Property Name="item_id" Type="Int32" Nullable="false" />
           <Property Name="can_view" Type="Boolean" />
           <Property Name="can_add" Type="Boolean" />
           <Property Name="can_edit" Type="Boolean" />

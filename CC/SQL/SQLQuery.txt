@@ -1,4 +1,16 @@
-﻿create table Currencies
+﻿SET IDENTITY_INSERT SettingStatuses on;
+insert into SettingStatuses(id, Name, Description) values(4, 'Language', 'Limba')
+insert into SettingStatuses(id, Name, Description) values(5, 'ShowUpperWords', 'Afiseaza toate cuvintele cu Litere de tipar')
+SET IDENTITY_INSERT SettingStatuses off;
+
+--updated on 31.03.2018
+
+update UserPermissions
+set item_id = 0
+where item_id is null
+
+--updated on 25.03.2018
+create table Currencies
 (
 	id int primary key not null identity(1,1),
 	name varchar(5),

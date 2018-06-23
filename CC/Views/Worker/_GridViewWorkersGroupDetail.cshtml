@@ -1,12 +1,16 @@
-﻿@{
+﻿
+@using CC.Models.BusinessLogic.Home
+@using CC.Models.Classes
+@using CC.Models.Enums
+@{
     var grid = Html.DevExpress().GridView(settings =>
     {
         settings.Name = "GridView";
-        settings.CallbackRouteValues = new {Controller = "Worker", Action = "GridViewWorkersGroupDetail"};
+        settings.CallbackRouteValues = new { Controller = "Worker", Action = "GridViewWorkersGroupDetail" };
 
-        settings.SettingsEditing.AddNewRowRouteValues = new {Controller = "Worker", Action = "GridViewWorkersGroupDetailAddNew"};
-        settings.SettingsEditing.UpdateRowRouteValues = new {Controller = "Worker", Action = "GridViewWorkersGroupDetailUpdate"};
-        settings.SettingsEditing.DeleteRowRouteValues = new {Controller = "Worker", Action = "GridViewWorkersGroupDetailDelete"};
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkersGroupDetailAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkersGroupDetailUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkersGroupDetailDelete" };
         settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
         settings.SettingsBehavior.ConfirmDelete = true;
 
@@ -15,7 +19,7 @@
         settings.CommandColumn.ShowDeleteButton = true;
         settings.CommandColumn.ShowEditButton = true;
 
-        settings.KeyFieldName = "workers_groups_id";
+        settings.KeyFieldName = "worker_id";
 
         settings.SettingsPager.Visible = true;
         settings.Settings.ShowGroupPanel = true;
@@ -53,8 +57,13 @@
             c.FieldName = "work_part";
             c.Caption = "procent din lucru";
         });
+
+
+        
+
     });
-		if (ViewData["EditError"] != null){
+    if (ViewData["EditError"] != null)
+    {
         grid.SetEditErrorText((string)ViewData["EditError"]);
     }
 }

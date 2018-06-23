@@ -9,9 +9,6 @@ namespace CC.Models.BusinessLogic.Object
     {        
         public static ObjectMaterialModel GetObjectMaterialModel()
         {
-            var objectMaterialModel = new ObjectMaterialModel();
-
-            objectMaterialModel.ObjectList = Object.GetObjectsByParentId();
             var objectMaterialList = new Database.ExcelentConstructObjectMaterial().ObjectMaterials
                 .AsQueryable()
                 .Where(x => x.object_id == MySession.Current.ObjectId).ToList();
@@ -40,9 +37,12 @@ namespace CC.Models.BusinessLogic.Object
                 }
             }
 
-            objectMaterialModel.ObjectMaterialList = objectMaterialList;
-
-            objectMaterialModel.UnitList = new Database.ExcelentConstructUnit().Units.ToList();
+            var objectMaterialModel = new ObjectMaterialModel
+            {
+                ObjectList = Object.GetObjectsByParentId(),
+                ObjectMaterialList = objectMaterialList,
+                UnitList = new Database.ExcelentConstructUnit().Units.ToList()
+            };
 
             return objectMaterialModel;
         }

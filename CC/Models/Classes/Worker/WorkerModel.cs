@@ -13,5 +13,7 @@ namespace CC.Models.Classes.Worker
 
         public List<Database.WorkerContractType> WorkerContractList { get; set; }
 
+        public List<Database.Object> ObjectList { get; set; }
+
     }
 }

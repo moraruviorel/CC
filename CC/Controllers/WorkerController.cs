@@ -1,7 +1,6 @@
 ﻿using CC.Models.Classes;
 using CC.Models.Enums;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using CC.Models.BusinessLogic.Role;
@@ -462,6 +461,9 @@ namespace CC.Controllers
             {
                 try
                 {
+                    if (item.unit_price_worker == null)
+                        item.unit_price_worker = item.unit_price;
+
                     model.Add(item);
                     dbWorks.SaveChanges();
                 }
@@ -481,7 +483,7 @@ namespace CC.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {
+                {                   
                     if (item.is_paid == 1)
                     {
                         var modelPayments = dbWorkerPayment.WorkerPayments;
@@ -804,16 +806,16 @@ namespace CC.Controllers
 
         #region WorkersGroupDetail
 
-        public ActionResult WorkersGroupDetail(int? workersGroupId)
+        public ActionResult WorkersGroupDetail(int workersGroupId)
         {
-            TempData["workerGroupId"] = workersGroupId;
+            MySession.Current.WorkerGroupId = workersGroupId;
             return View();
         }
 
         [ValidateInput(false)]
         public ActionResult GridViewWorkersGroupDetail()
         {
-            int wgId = (int)TempData["workerGroupId"];
+            int wgId = MySession.Current.WorkerGroupId;
             return PartialView("_GridViewWorkersGroupDetail", BLWorkers.WorkersGroupDetail.GetWorkersGroupDetailModel(wgId));
         }
 
@@ -825,6 +827,8 @@ namespace CC.Controllers
             {
                 try
                 {
+                    item.workers_groups_id = MySession.Current.WorkerGroupId;
+
                     model.Add(item);
                     dbWorkersGroupDetail.SaveChanges();
                 }
@@ -835,7 +839,8 @@ namespace CC.Controllers
             }
             else
                 ViewData["EditError"] = "Please, correct all errors.";
-            return PartialView("_GridViewWorkersGroupDetail", BLWorkers.WorkersGroupDetail.GetWorkersGroupDetailModel((int)TempData["workerGroupId"]));
+            return PartialView("_GridViewWorkersGroupDetail", 
+                BLWorkers.WorkersGroupDetail.GetWorkersGroupDetailModel(MySession.Current.WorkerGroupId));
         }
         [HttpPost, ValidateInput(false)]
         public ActionResult GridViewWorkersGroupDetailUpdate(Database.WorkersGroupDetail item)
@@ -860,17 +865,18 @@ namespace CC.Controllers
             else
                 ViewData["EditError"] = "Please, correct all errors.";
             return PartialView("_GridViewWorkersGroupDetail", 
-                BLWorkers.WorkersGroupDetail.GetWorkersGroupDetailModel((int)TempData["workerGroupId"]));
+                BLWorkers.WorkersGroupDetail.GetWorkersGroupDetailModel(MySession.Current.WorkerGroupId));
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult GridViewWorkersGroupDetailDelete(Int32 workersGroupsId)
+        public ActionResult GridViewWorkersGroupDetailDelete(int worker_id)
         {
             var model = dbWorkersGroupDetail.WorkersGroupDetails;
-            if (workersGroupsId >= 0)
+            if (worker_id >= 0)
             {
                 try
                 {
-                    var item = model.FirstOrDefault(it => it.workers_groups_id == workersGroupsId);
+                    var item = model.FirstOrDefault(it => it.workers_groups_id == MySession.Current.WorkerGroupId 
+                                && it.worker_id == worker_id);
                     if (item != null)
                         model.Remove(item);
                     dbWorkersGroupDetail.SaveChanges();
@@ -881,7 +887,7 @@ namespace CC.Controllers
                 }
             }
             return PartialView("_GridViewWorkersGroupDetail", 
-                BLWorkers.WorkersGroupDetail.GetWorkersGroupDetailModel((int)TempData["workerGroupId"]));
+                BLWorkers.WorkersGroupDetail.GetWorkersGroupDetailModel(MySession.Current.WorkerGroupId));
         }
 
 
@@ -904,11 +910,7 @@ namespace CC.Controllers
 
         Database.SpecialityEntities dbSpecialities = new Database.SpecialityEntities();
 
-        Database.ExcelentConstructUnit dbUnits = new Database.ExcelentConstructUnit();
-
         Database.WorkerSalaryContractEntities dbWorkerSalaryContract = new Database.WorkerSalaryContractEntities();
-
-        Database.ExcelentConstructEntitiesObjects dbObjects = new Database.ExcelentConstructEntitiesObjects();
 
         public Database.WorkerContractEntities DbWorkerContract { get => _dbWorkerContract; set => _dbWorkerContract = value; }
 

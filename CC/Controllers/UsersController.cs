@@ -147,9 +147,10 @@ namespace CC.Controllers
         [ValidateInput(false)]
         public ActionResult UserPermissionPartial()
         {
-            int moduleId = (int)TempData["module_id"];
+            int moduleId = MySession.Current.ModuleId;
+            
             return PartialView("_UserPermissionPartial", 
-                UserPermissions.GetUserPermissionModel(MySession.Current.UserPermissionGuid));//, moduleId
+                UserPermissions.GetUserPermissionModel(MySession.Current.UserPermissionGuid, moduleId));
         }
 
         [HttpPost, ValidateInput(false)]
@@ -172,7 +173,8 @@ namespace CC.Controllers
             else
                 ViewData["EditError"] = "Please, correct all errors.";
 
-            return PartialView("_UserPermissionPartial", UserPermissions.GetUserPermissionModel(MySession.Current.UserPermissionGuid));
+            return PartialView("_UserPermissionPartial",
+                UserPermissions.GetUserPermissionModel(MySession.Current.UserPermissionGuid, item.module_id));
         }
         [HttpPost, ValidateInput(false)]
         public ActionResult UserPermissionPartialUpdate(Models.Database.UserPermission item)
@@ -197,17 +199,19 @@ namespace CC.Controllers
             else
                 ViewData["EditError"] = "Please, correct all errors.";
 
-            return PartialView("_UserPermissionPartial", UserPermissions.GetUserPermissionModel(MySession.Current.UserPermissionGuid));
+            return PartialView("_UserPermissionPartial", 
+                UserPermissions.GetUserPermissionModel(MySession.Current.UserPermissionGuid, item.module_id));
         }
         [HttpPost, ValidateInput(false)]
         public ActionResult UserPermissionPartialDelete(Int32 id)
         {
             var model = dbUserPermission.UserPermissions;
+            var item = model.FirstOrDefault(it => it.id == id);
             if (id >= 0)
             {
                 try
                 {
-                    var item = model.FirstOrDefault(it => it.id == id);
+                    
                     if (item != null)
                         model.Remove(item);
                     dbUserPermission.SaveChanges();
@@ -217,7 +221,8 @@ namespace CC.Controllers
                     ViewData["EditError"] = e.Message;
                 }
             }
-            return PartialView("_UserPermissionPartial", UserPermissions.GetUserPermissionModel(MySession.Current.UserPermissionGuid));
+            return PartialView("_UserPermissionPartial", 
+                UserPermissions.GetUserPermissionModel(MySession.Current.UserPermissionGuid, item.module_id));
         }
 
         #endregion
@@ -226,7 +231,7 @@ namespace CC.Controllers
 
         public ActionResult ModulePermissions(int moduleId)
         {
-            TempData["module_id"] = moduleId;
+            MySession.Current.ModuleId = moduleId;
             return View();
         }
 

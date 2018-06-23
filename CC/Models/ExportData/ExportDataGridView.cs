@@ -1,15 +1,12 @@
 ﻿using CC.Models.Classes;
 using DevExpress.Web.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
-namespace CC.Models.ExportDataGridView
+namespace CC.Models.ExportData
 {
     public class ExportDataGridView
     {
-        public static GridViewSettings GetGridSettings(string action)
+        public static GridViewSettings GetGridSettings(string action, string reportName)
         {
             var settings = new GridViewSettings();
             settings.Name = "GridView";
@@ -19,7 +16,8 @@ namespace CC.Models.ExportDataGridView
             settings.SettingsExport.ExportSelectedRowsOnly = false;
             //settings.SettingsExport. = "Report.pdf";
             //settings.SettingsExport.PageHeader = new DevExpress.Web.GridViewExporterHeaderFooter;
-            settings.SettingsExport.PageHeader.Center = "Excelent Construct";
+            settings.SettingsExport.PageHeader.Center = BusinessLogic.Home.TranslateWord.GetWord(reportName);
+
             settings.SettingsExport.PageHeader.Font.Name = "segoe ui";
             settings.SettingsExport.PageHeader.Font.Size = 14;
             //
@@ -67,9 +65,18 @@ namespace CC.Models.ExportDataGridView
                     settings.KeyFieldName = "id";
                     settings.Columns.Add("material_description", "Denumire material");
                     settings.Columns.Add("buyed_date", "Data procurării").PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";                    
-                    settings.Columns.Add("quantity", "Cantitatea");                    
-                    settings.Columns.Add("total_price", "Preț total");                    
-                    settings.TotalSummary.Add(DevExpress.Data.SummaryItemType.Sum, "total_price");
+                    settings.Columns.Add("quantity", "Cantitatea");
+                    MVCxGridViewColumn col = settings.Columns.Add("Preț total");
+                    col.UnboundType = DevExpress.Data.UnboundColumnType.Decimal;
+                    settings.CustomUnboundColumnData = (sender, e) => {
+                        if (e.Column.FieldName == "Preț total")
+                        {
+                            decimal price = MyConvert.ToDecimal(e.GetListSourceFieldValue("unit_price").ToString());
+                            decimal quantity = MyConvert.ToDecimal(e.GetListSourceFieldValue("quantity").ToString());
+                            e.Value = price * quantity;
+                        }
+                    };
+                    settings.TotalSummary.Add(DevExpress.Data.SummaryItemType.Sum, "Preț total");
                     settings.Settings.ShowFooter = true;
                     break;
                 case "GridViewExtra":

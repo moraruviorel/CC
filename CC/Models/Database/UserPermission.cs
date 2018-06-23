@@ -15,7 +15,7 @@ namespace CC.Models.Database
     public partial class UserPermission
     {
         public int id { get; set; }
-        public Nullable<int> item_id { get; set; }
+        public int item_id { get; set; }
         public Nullable<bool> can_view { get; set; }
         public Nullable<bool> can_add { get; set; }
         public Nullable<bool> can_edit { get; set; }

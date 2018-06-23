@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using CC.Models.BusinessLogic.Role;
+using CC.Models.ExportData;
 using Database = CC.Models.Database;
 using BLObject = CC.Models.BusinessLogic.Object;
 
@@ -14,6 +15,7 @@ namespace CC.Controllers
     {
         public ActionResult ObjectDetail(int objectId)
         {
+            //string s = WordsEN.;
             MySession.Current.WorksForm = (int)FormName.ObjectForm;
             MySession.Current.ObjectId = objectId;
             return RedirectToAction("ObjectDetailValidation");
@@ -51,10 +53,11 @@ namespace CC.Controllers
                 case "6":                    
                     ViewBag.Works = BLObject.ObjectWorks.GetObjectWorkModel().ObjectWorksList;
                     ViewBag.MaterialSum = BLObject.ObjectMaterial.GetObjectMaterialModel()
-                        .ObjectMaterialList.Sum(x => x.total_price);
+                        .ObjectMaterialList.Sum(x => Convert.ToDecimal(x.unit_price) * Convert.ToDecimal(x.quantity));
                     ViewBag.InstrumentSum = BLObject.ObjectInstrument.GetObjectInstrumentModel()
                         .ObjectInstrumentList.Sum(x => x.total_price);                        
                     ViewBag.ExtraSum = BLObject.ObjectExtra.GetObjectExtraModel().ObjectExtraList.Sum(x => x.price);
+                    ViewBag.ObjectPaymentSum = BLObject.ObjectPayment.GetObjectPaymentList().Sum(x => x.amount);
                     partialView = "ObjectDetail/ObjectTotal";
                     break;
             }
@@ -69,33 +72,39 @@ namespace CC.Controllers
                 case "GridViewWorks":
                     MySession.Current.TabAction = name;
                     MySession.Current.Units = dbUnits.Units.ToList();
-                    //var list = MySession.Current.GridReport;
+
                     return GridViewExtension.ExportToPdf(
-                        Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), 
+                        ExportDataGridView.GetGridSettings(name, Resources.Resource.Works),
                         BLObject.ObjectWorks.GetObjectWorkModel().ObjectWorksList.ToList());
                 case "GridViewMaterial":
                     MySession.Current.TabAction = name;
-                    //list = MySession.Current.GridReport;
                     var materials = BLObject.ObjectMaterial.GetObjectMaterialModel().ObjectMaterialList;
-                    return GridViewExtension.ExportToPdf(Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), materials);
+
+                    return GridViewExtension.ExportToPdf(
+                        ExportDataGridView.GetGridSettings(name, Resources.Resource.Materials), materials);
                 case "GridViewExtra":
                     MySession.Current.TabAction = name;
-                    //list = MySession.Current.GridReport;
                     var extras = BLObject.ObjectExtra.GetObjectExtraModel().ObjectExtraList;
-                    return GridViewExtension.ExportToPdf(Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), extras);
+
+                    return GridViewExtension.ExportToPdf(
+                        ExportDataGridView.GetGridSettings(name, Resources.Resource.Extras), extras);
                 case "GridViewPayment":
                     MySession.Current.TabAction = name;
-                    //list = MySession.Current.GridReport;
                     var payment = dbObjectPayments.ObjectPayments.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-                    return GridViewExtension.ExportToPdf(Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), payment.ToList());
+
+                    return GridViewExtension.ExportToPdf(
+                        ExportDataGridView.GetGridSettings(name, Resources.Resource.Payments), payment.ToList());
                 case "GridViewInstrument":
                     MySession.Current.TabAction = name;
-                    //list = MySession.Current.GridReport;
                     var instruments = BLObject.ObjectInstrument.GetObjectInstrumentModel();
-                    return GridViewExtension.ExportToPdf(Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), instruments);
+
+                    return GridViewExtension.ExportToPdf(
+                        ExportDataGridView.GetGridSettings(name, Resources.Resource.Instruments), instruments);
+
                 default:
                     var modelToShow = dbWorks.Works.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
-                    return GridViewExtension.ExportToPdf(Models.ExportDataGridView.ExportDataGridView.GetGridSettings(name), modelToShow.ToList());
+                    return GridViewExtension.ExportToPdf(
+                        ExportDataGridView.GetGridSettings(name, string.Empty), modelToShow.ToList());
             }
 
         }
@@ -668,6 +677,8 @@ namespace CC.Controllers
 
         Database.ObjectPaymentEntities dbObjectPayments = new Database.ObjectPaymentEntities();
 
-        //Database.ExcelentConstructWorkers dbWorkers = new Database.ExcelentConstructWorkers();
+        public object Resource1 { get; private set; }
+        public object StringResource { get; private set; }
+        public object WordsEN { get; private set; }
     }
 }

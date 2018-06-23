@@ -5,31 +5,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CC.Models.Database;
+using DevExpress.Office.Utils;
 
 namespace CC.Models.BusinessLogic.User
 {
     public class UserPermissions
     {
-        public static UserPermissionsModel GetUserPermissionModel(Guid guid) //, int moduleId
+        public static UserPermissionsModel GetUserPermissionModel(Guid guid, int moduleId)
         {
-            
-            //
             var userPermissionList = new UserPermissionsEntities().UserPermissions.
                                                         AsQueryable().Where(x => x.user_id == guid).ToList();
 
-            //if(moduleId > 0)
-            //    userPermissionList.Where(x=>x.)
+            if (moduleId == 0)
+                userPermissionList = userPermissionList.Where(x => x.item_id == 0).ToList();
+            else userPermissionList = userPermissionList.Where(x => x.module_id == moduleId && x.item_id != 0).ToList();
             //
             Dictionary<int, string> dict = new Dictionary<int, string>();
             foreach (ModuleTypes item in Enum.GetValues(typeof(ModuleTypes)))
             {
-                dict.Add((int)item, string.Format("{0}", Home.TranslateWord.GetWord(item.ToString(), "ro")));
+                var text = string.Format("{0}", Home.TranslateWord.GetWord(item.ToString()));
+                dict.Add((int)item, text);
             }
 
             var userPermissionModel = new UserPermissionsModel
             {
                 ModuleList = dict,
-                UserPermissionList = userPermissionList
+                UserPermissionList = userPermissionList,
+                ItemList = GetItemList(moduleId)
             };
 
             return userPermissionModel;
@@ -108,6 +110,34 @@ namespace CC.Models.BusinessLogic.User
             return up;
         }
 
-      
+        public static Dictionary<int, string> GetItemList(int moduleId)
+        {
+            var itemList = new Dictionary<int, string>();
+            
+            switch (moduleId)
+            {
+                case (int)ModuleTypes.Objects:
+                    itemList = Object.Object.GetObjectModel().ObjectList.ToList()
+                        .Where(x => x.UserId == MySession.Current.UserGuid)
+                        .Select(x => new {id = x.ID, name = x.Address})
+                        .AsEnumerable()
+                        .ToDictionary(dic => dic.id, dic => dic.name);
+                    break;
+            }
+
+            return itemList;
+        }
+
+        public static List<int> GetModuleItemIds(ModuleTypes moduleType)
+        {
+            var result = new UserPermissionsEntities().UserPermissions.AsQueryable()
+                .Where(x => x.user_id == new Guid(MySession.Current.UserGuid)
+                            && x.module_id == (int)moduleType
+                            && x.item_id != 0).AsEnumerable()
+                .Select(x => x.item_id).ToList();
+
+            return result;
+        }
     }
+
 }

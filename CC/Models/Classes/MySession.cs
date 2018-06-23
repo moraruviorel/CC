@@ -63,7 +63,11 @@ namespace CC.Models.Classes
 
         public List<UserPermission> UserPermisionList { get; set; }
 
-        public string Language { get; set; }
+        public LanguageTypes Language { get; set; }
+
+        public int ModuleId { get; set; }
+
+        public int WorkerGroupId { get; set; }
 
     }
 }

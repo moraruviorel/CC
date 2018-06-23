@@ -23,7 +23,7 @@ new Script { ExtensionSuite = ExtensionSuite.Editors }
 @if (parentId > 0)
 {
     <h3>@Html.ActionLink(
-            TranslateWord.GetWord("back", MySession.Current.Language), 
+            TranslateWord.GetWord(CC.Resources.Resource.back), 
             ModuleTypes.Objects.ToString(), 
             Controllers.Object.ToString(), new { objectId = MySession.Current.ParentId }, null)</h3>
 }

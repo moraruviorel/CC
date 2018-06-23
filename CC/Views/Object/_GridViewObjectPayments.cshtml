@@ -9,7 +9,7 @@
         settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Object", Action = "GridViewObjectPaymentsDelete" };
         settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
         settings.SettingsBehavior.ConfirmDelete = true;
-
+        settings.SettingsPager.PageSize = CC.Models.Classes.MySession.Current.MySetting.GridRows;
         settings.CommandColumn.Visible = true;
         settings.CommandColumn.ShowNewButton = true;
         settings.CommandColumn.ShowDeleteButton = true;

@@ -10,13 +10,7 @@ namespace CC.Models.BusinessLogic.Object
 
         public static ObjectInstrumentModel GetObjectInstrumentModel()
         {
-            var objectInstrumentModel = new ObjectInstrumentModel();
-
-            objectInstrumentModel.ObjectList = Object.GetObjectsByParentId();
-            //
-            objectInstrumentModel.WorkerList = BusinessLogic.Worker.Worker.GetWorkerList();
-            //
-            var objectInstrumentList = new Database.ExcelentConstructObjectInstruments().ObjectInstruments.ToList()
+           var objectInstrumentList = new Database.ExcelentConstructObjectInstruments().ObjectInstruments.ToList()
                 .Where(x => x.object_id == MySession.Current.ObjectId).ToList();
             //
             var filterTable = new Database.FiltersEntities().Filters
@@ -42,8 +36,13 @@ namespace CC.Models.BusinessLogic.Object
                         break;
                 }
             }
-            objectInstrumentModel.ObjectInstrumentList = objectInstrumentList;
-            //
+
+            var objectInstrumentModel = new ObjectInstrumentModel
+            {
+                ObjectList = Object.GetObjectsByParentId(),
+                WorkerList = Worker.Worker.GetWorkerList(),
+                ObjectInstrumentList = objectInstrumentList
+            };
 
             return objectInstrumentModel;
         }

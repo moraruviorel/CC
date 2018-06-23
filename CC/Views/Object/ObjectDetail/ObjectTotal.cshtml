@@ -6,41 +6,42 @@ new StyleSheet { ExtensionSuite = ExtensionSuite.Editors }
 new Script { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
 new Script { ExtensionSuite = ExtensionSuite.Editors }
 )
-
 @{
     ViewBag.Title = "ObjectTotal";
     decimal workSum = 0;
     foreach (var item in ViewBag.Works)
     {
-        //workSum += Convert.ToDouble(item.surface) * Convert.ToDouble(item.unit_price);
-        decimal surface = CC.Models.Classes.MyConvert.ToDecimal(item.surface_work);
-        decimal unit_price = CC.Models.Classes.MyConvert.ToDecimal(Convert.ToString(item.unit_price));
+        decimal surface = Convert.ToDecimal(item.surface_work);
+        decimal unitPrice = Convert.ToDecimal(item.unit_price);
 
-        workSum += surface * unit_price;
+        workSum += surface * unitPrice;
     }
-    double total_sum = ViewBag.ExtraSum + ViewBag.InstrumentSum + ViewBag.MaterialSum + Convert.ToDouble(workSum);
-    double material_sum = ViewBag.MaterialSum;
-    double instrumente_sum = ViewBag.InstrumentSum;
-    double extra_sum = ViewBag.ExtraSum;
+    decimal materialSum = ViewBag.MaterialSum;
+    decimal instrumenteSum = Convert.ToDecimal(ViewBag.InstrumentSum);
+    decimal extraSum = Convert.ToDecimal(ViewBag.ExtraSum);
+    decimal paymentSum = Convert.ToDecimal(ViewBag.ObjectPaymentSum * -1);
 
+    decimal totalSum = extraSum + instrumenteSum + materialSum + workSum + paymentSum;
+
+   
 }
-
 <h2>Cheltuieli Totale</h2>
 <br><br>
-@Html.Label("Lucrări efectuate:", new { style = "width: 200px; font-size: 16px;"}) 
+@Html.Label("Lucrări efectuate:", new { style = "width: 200px; font-size: 16px;" })
 @Html.TextBox("Work", @workSum.ToString("N2"), new { style = "text-align: right;" }) <br>
 
-@Html.Label("Materiale utilizate:", new { style = "width: 200px; font-size: 16px;" }) 
-@Html.TextBox("MaterialSum", @material_sum.ToString("N2"), new { style = "text-align: right;" }) <br>
+@Html.Label("Materiale utilizate:", new { style = "width: 200px; font-size: 16px;" })
+@Html.TextBox("MaterialSum", materialSum.ToString("N2"), new { style = "text-align: right;" }) <br>
 
-@Html.Label("Instrumente utilizate:", new { style = "width: 200px; font-size: 16px;" }) 
-@Html.TextBox("Instrument", @instrumente_sum.ToString("N2"), new { style = "text-align: right;" }) <br>
+@Html.Label("Instrumente utilizate:", new { style = "width: 200px; font-size: 16px;" })
+@Html.TextBox("Instrument", @instrumenteSum.ToString("N2"), new { style = "text-align: right;" }) <br>
 
-@Html.Label("Cheltuieli extra:", new { style = "width: 200px; font-size: 16px;" }) 
-@Html.TextBox("Extra", @extra_sum.ToString("N2"), new { style = "text-align: right;" }) <br>
+@Html.Label("Cheltuieli extra:", new { style = "width: 200px; font-size: 16px;" })
+@Html.TextBox("Extra", @extraSum.ToString("N2"), new { style = "text-align: right;" }) <br>
+
+@Html.Label("Achitări:", new { style = "width: 200px; font-size: 16px;" })
+@Html.TextBox("Payment", @paymentSum.ToString("N2"), new { style = "text-align: right;" }) <br>
 <hr>
 @Html.Label("Total:", new { style = "width: 200px; font-size: 16px;" })
-@Html.TextBox("Total", @total_sum.ToString("N2"), new { style = "text-align: right;" }) <br>
-
-
+@Html.TextBox("Total", @totalSum.ToString("N2"), new { style = "text-align: right;" }) <br>
 

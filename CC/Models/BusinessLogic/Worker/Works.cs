@@ -28,13 +28,18 @@ namespace CC.Models.BusinessLogic.Worker
         {
             List<int> workerGroupsIds = WorkersGroupDetail.GetWorkerGroupIds(MySession.Current.WorkerId);
 
+            var works = new WorksEntities().Works.ToList().Where(x => x.worker_id == MySession.Current.WorkerId).ToList();
+            
+            foreach(int id in workerGroupsIds)
+            {
+                works.AddRange(new WorksEntities().Works.AsQueryable().Where(x => x.workers_group_id == id).ToList());                
+            }
+           
             return new WorkerWorksModel
             {
                 ObjectList = Object.Object.GetObjectModel().ObjectList,
                 UnitList = Home.Unit.GetUnitModel().UnitList,
-                WorksList = new WorksEntities().Works.ToList().
-                    Where(x=>x.worker_id == MySession.Current.WorkerId || workerGroupsIds.Contains(x.workers_group_id ?? 0)).
-                    ToList()
+                WorksList = works
             };
         }
     }

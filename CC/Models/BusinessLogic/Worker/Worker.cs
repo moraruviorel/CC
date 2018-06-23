@@ -26,7 +26,8 @@ namespace CC.Models.BusinessLogic.Worker
             {
                 WorkerList = GetWorkerList(),
                 UserPermission = User.UserPermissions.GetUserPermissionByModuleType(Enums.ModuleTypes.Workers),
-                WorkerContractList = WorkerContract.GetWorkerContractTypes().WorkerContractList
+                WorkerContractList = WorkerContract.GetWorkerContractTypes().WorkerContractList,
+                ObjectList = Object.Object.GetObjectModel().ObjectList
             };
 
             return workerModel;

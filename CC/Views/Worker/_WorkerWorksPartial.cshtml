@@ -1,4 +1,6 @@
-﻿@{
+﻿@using TranslateWord = CC.Models.BusinessLogic.Home.TranslateWord;
+
+@{
     var grid = Html.DevExpress().GridView(settings =>
     {
         settings.Name = "GridViewWorkerWorks";
@@ -7,88 +9,88 @@
             Controller = "Worker",
             Action = "WorkerWorksPartial" };
 
-            settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Worker", Action = "WorkerWorksPartialAddNew" };
-            settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Worker", Action = "WorkerWorksPartialUpdate" };
-            settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Worker", Action = "WorkerWorksPartialDelete" };
-            settings.SettingsPager.PageSize = CC.Models.Classes.MySession.Current.MySetting.GridRows;
-            settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
-            settings.SettingsBehavior.ConfirmDelete = true;
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Worker", Action = "WorkerWorksPartialAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Worker", Action = "WorkerWorksPartialUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Worker", Action = "WorkerWorksPartialDelete" };
+        settings.SettingsPager.PageSize = CC.Models.Classes.MySession.Current.MySetting.GridRows;
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
 
-            settings.CommandColumn.Visible = true;
-            settings.CommandColumn.ShowNewButton = false;
-            settings.CommandColumn.ShowDeleteButton = false;
-            settings.CommandColumn.ShowEditButton = true;
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = false;
+        settings.CommandColumn.ShowDeleteButton = false;
+        settings.CommandColumn.ShowEditButton = true;
 
-            settings.KeyFieldName = "id";
+        settings.KeyFieldName = "id";
 
-            settings.SettingsPager.Visible = true;
-            settings.Settings.ShowGroupPanel = true;
-            settings.Settings.ShowFilterRow = true;
-            settings.SettingsBehavior.AllowSelectByRowClick = true;
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
 
-            settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.Off;
-            settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
-            settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
-            settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
-            settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
+        settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.Off;
+        settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
+        settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
+        settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
+        settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
 
-            settings.Columns.Add(c =>
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "name";
+            c.Caption = TranslateWord.GetWord(CC.Resources.DBWords.Name);
+            c.Width = 250;
+        });
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "object_id";
+            column.Caption = TranslateWord.GetWord(CC.Resources.DBWords.Objects);
+            column.EditorProperties().ComboBox(p =>
             {
-                c.FieldName = "name";
-                c.Caption = "Denumire";
-                c.Width = 250;
+                p.TextField = "Address";
+                p.ValueField = "Id";
+                p.ValueType = typeof(int);
+                p.DataSource = Model.ObjectList;
             });
+        });
 
-            settings.Columns.Add(column =>
-            {
-                column.FieldName = "object_id";
-                column.Caption = "Adresa Obiect";
-                column.EditorProperties().ComboBox(p =>
-                {
-                    p.TextField = "Address";
-                    p.ValueField = "Id";
-                    p.ValueType = typeof(int);
-                    p.DataSource = ViewBag.ObjectList;
-                });
-            });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "surface_work";
+            c.Caption = TranslateWord.GetWord(CC.Resources.DBWords.Quantity);
+            c.Width = 40;
+        });
 
-            settings.Columns.Add(c =>
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "unit_id";
+            column.Caption = TranslateWord.GetWord(CC.Resources.DBWords.Quantity);
+            column.Width = 20;
+            column.EditorProperties().ComboBox(p =>
             {
-                c.FieldName = "surface_work";
-                c.Caption = "Cantitate";
-                c.Width = 40;
+                p.TextField = "name";
+                p.ValueField = "Id";
+                p.ValueType = typeof(int);
+                p.DataSource = ViewBag.UniteList;
             });
+        });
 
-            settings.Columns.Add(column =>
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "unit_price_worker";
+            c.Caption = TranslateWord.GetWord(CC.Resources.DBWords.UnitPrice);
+            c.Width = 40;
+        });
+        //
+        var col = settings.Columns.Add(TranslateWord.GetWord(CC.Resources.DBWords.Total));
+        //col.PropertiesEdit.DisplayFormatString = "c"; //pune dolar la început
+        col.UnboundType = DevExpress.Data.UnboundColumnType.Decimal;
+        settings.CustomUnboundColumnData = (sender, e) =>
+        {
+            if (e.Column.FieldName == TranslateWord.GetWord(CC.Resources.DBWords.Total))
             {
-                column.FieldName = "unit_id";
-                column.Caption = "Unitate";
-                column.Width = 20;
-                column.EditorProperties().ComboBox(p =>
-                {
-                    p.TextField = "name";
-                    p.ValueField = "Id";
-                    p.ValueType = typeof(int);
-                    p.DataSource = ViewBag.UniteList;
-                });
-            });
-
-            settings.Columns.Add(c =>
-            {
-                c.FieldName = "unit_price_worker";
-                c.Caption = "Preț unitate";
-                c.Width = 40;
-            });
-            //
-            var col = settings.Columns.Add("Total");
-            //col.PropertiesEdit.DisplayFormatString = "c"; //pune dolar la început
-            col.UnboundType = DevExpress.Data.UnboundColumnType.Decimal;
-            settings.CustomUnboundColumnData = (sender, e) =>
-            {
-            if (e.Column.FieldName == "Total")
-            {
-                decimal unitPrice = CC.Models.Classes.MyConvert.ToDecimal(Convert.ToString(e.GetListSourceFieldValue("unit_price_worker")));
-                decimal surface = CC.Models.Classes.MyConvert.ToDecimal(Convert.ToString(e.GetListSourceFieldValue("surface_work")));
+                decimal unitPrice = Convert.ToDecimal(Convert.ToString(e.GetListSourceFieldValue("unit_price_worker")));
+                decimal surface = Convert.ToDecimal(Convert.ToString(e.GetListSourceFieldValue("surface_work")));
                 e.Value = unitPrice * surface;
             }
         };
@@ -96,7 +98,7 @@
         settings.Columns.Add(column =>
         {
             column.FieldName = "date_start";
-            column.Caption = "Data începerii";
+            column.Caption = TranslateWord.GetWord(CC.Resources.DBWords.StartDate);
             column.ColumnType = MVCxGridViewColumnType.DateEdit;
             column.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
         });
@@ -104,12 +106,17 @@
         settings.Columns.Add(column =>
         {
             column.FieldName = "date_end";
-            column.Caption = "Data finisării";
+            column.Caption = TranslateWord.GetWord(CC.Resources.DBWords.EndDate);
             column.ColumnType = MVCxGridViewColumnType.DateEdit;
             column.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
         });
 
-        settings.Columns.Add( c=> { c.FieldName = "is_paid"; c.Caption = "Achitat"; c.ColumnType = MVCxGridViewColumnType.CheckBox; });
+        settings.Columns.Add( c=>
+        {
+            c.FieldName = "is_paid";
+            c.Caption = TranslateWord.GetWord(CC.Resources.DBWords.Paid);
+            c.ColumnType = MVCxGridViewColumnType.CheckBox;
+        });
     });
     if (ViewData["EditError"] != null){
         grid.SetEditErrorText((string)ViewData["EditError"]);
