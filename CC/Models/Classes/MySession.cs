@@ -69,5 +69,9 @@ namespace CC.Models.Classes
 
         public int WorkerGroupId { get; set; }
 
+        public List<Work> Works { get; set; }
+
+        public Dictionary<int, string> PaymentTypes { get; set; }
+
     }
 }

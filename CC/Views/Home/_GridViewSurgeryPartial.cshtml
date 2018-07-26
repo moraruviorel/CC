@@ -37,7 +37,7 @@
             column.FieldName = "current_date";
             column.Caption = "Data curentă";
             column.ColumnType = MVCxGridViewColumnType.DateEdit;
-            column.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+            column.PropertiesEdit.DisplayFormatString = CC.Models.Const.DateTimeFormat;
         });
         settings.Columns.Add(column =>
         {
@@ -49,7 +49,7 @@
             column.FieldName = "next_date";
             column.Caption = "Data finisării";
             column.ColumnType = MVCxGridViewColumnType.DateEdit;
-            column.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+            column.PropertiesEdit.DisplayFormatString = CC.Models.Const.DateTimeFormat;
         });
     });
     if (ViewData["EditError"] != null){

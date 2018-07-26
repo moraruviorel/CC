@@ -43,14 +43,14 @@
             c.FieldName = "loan_date";
             c.Caption = "Data împrumutului";
             c.ColumnType = MVCxGridViewColumnType.DateEdit;
-            c.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+            c.PropertiesEdit.DisplayFormatString = CC.Models.Const.DateTimeFormat;
         });
         settings.Columns.Add(c =>
         {
             c.FieldName = "return_date";
             c.Caption = "Data returnării";
             c.ColumnType = MVCxGridViewColumnType.DateEdit;
-            c.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+            c.PropertiesEdit.DisplayFormatString = CC.Models.Const.DateTimeFormat;
         });
         //settings.Columns.Add("user_id");
         settings.Columns.Add(c =>

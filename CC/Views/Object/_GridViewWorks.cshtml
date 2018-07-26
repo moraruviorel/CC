@@ -131,7 +131,7 @@
             column.FieldName = "date_start";
             column.Caption = "Data începerii";
             column.ColumnType = MVCxGridViewColumnType.DateEdit;
-            column.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+            column.PropertiesEdit.DisplayFormatString = CC.Models.Const.DateTimeFormat;
         });
         //
         settings.Columns.Add(column =>
@@ -139,7 +139,7 @@
             column.FieldName = "date_end";
             column.Caption = "Data finisării";
             column.ColumnType = MVCxGridViewColumnType.DateEdit;
-            column.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+            column.PropertiesEdit.DisplayFormatString = CC.Models.Const.DateTimeFormat;
         });
 
         settings.TotalSummary.Add(DevExpress.Data.SummaryItemType.Sum, "Total Client");

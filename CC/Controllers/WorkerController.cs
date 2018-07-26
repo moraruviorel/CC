@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using CC.Models.BusinessLogic.Role;
 using Database = CC.Models.Database;
 using BLWorkers = CC.Models.BusinessLogic.Worker;
+using DevExpress.Web.Mvc;
+using CC.Models.ExportData;
 
 namespace CC.Controllers
 {
@@ -74,6 +76,36 @@ namespace CC.Controllers
             }
 
             return PartialView(partialView);
+        }
+
+        public ActionResult ExportTo(string name)
+        {
+            switch (name)
+            {
+                case "GridViewWorks":
+                    MySession.Current.TabAction = name;
+                    //MySession.Current.Units = dbWUnits.Units.ToList();
+
+                    return GridViewExtension.ExportToPdf(
+                        ExportDataGridView.GetGridSettings(name, Resources.Resource.Works),
+                        BLWorkers.Works.GetWorkerWorksModel().WorksList.ToList());
+
+                case "GridViewPayments":
+                    MySession.Current.TabAction = name;
+                    MySession.Current.Works = BLWorkers.Works.GetWorkerWorksModel().WorksList.ToList();
+                    MySession.Current.PaymentTypes = BLWorkers.WorkerPayment.GetPaymentTypeList();
+
+                    return GridViewExtension.ExportToPdf(
+                        ExportDataGridView.GetGridSettings(name, Resources.Resource.Payments),
+                        BLWorkers.WorkerPayment.GetWorkerPaymentModel(dbWorks, dbWorkerPayment).WorkerPayments.ToList());
+
+
+                default:
+                    var modelToShow = dbWorks.Works.ToList().Where(x => x.object_id == MySession.Current.ObjectId);
+                    return GridViewExtension.ExportToPdf(
+                        ExportDataGridView.GetGridSettings(name, string.Empty), modelToShow.ToList());
+            }
+
         }
 
         #region Workers

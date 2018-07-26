@@ -7,7 +7,8 @@
         settings.CallbackRouteValues = new
         {
             Controller = "Worker",
-            Action = "WorkerWorksPartial" };
+            Action = "WorkerWorksPartial"
+        };
 
         settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Worker", Action = "WorkerWorksPartialAddNew" };
         settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Worker", Action = "WorkerWorksPartialUpdate" };
@@ -81,10 +82,10 @@
             c.Caption = TranslateWord.GetWord(CC.Resources.DBWords.UnitPrice);
             c.Width = 40;
         });
-        //
-        var col = settings.Columns.Add(TranslateWord.GetWord(CC.Resources.DBWords.Total));
-        //col.PropertiesEdit.DisplayFormatString = "c"; //pune dolar la început
-        col.UnboundType = DevExpress.Data.UnboundColumnType.Decimal;
+//
+var col = settings.Columns.Add(TranslateWord.GetWord(CC.Resources.DBWords.Total));
+//col.PropertiesEdit.DisplayFormatString = "c"; //pune dolar la început
+col.UnboundType = DevExpress.Data.UnboundColumnType.Decimal;
         settings.CustomUnboundColumnData = (sender, e) =>
         {
             if (e.Column.FieldName == TranslateWord.GetWord(CC.Resources.DBWords.Total))
@@ -94,32 +95,44 @@
                 e.Value = unitPrice * surface;
             }
         };
-        //
-        settings.Columns.Add(column =>
+//
+settings.Columns.Add(column =>
         {
             column.FieldName = "date_start";
             column.Caption = TranslateWord.GetWord(CC.Resources.DBWords.StartDate);
             column.ColumnType = MVCxGridViewColumnType.DateEdit;
-            column.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+            column.PropertiesEdit.DisplayFormatString = CC.Models.Const.DateTimeFormat;
         });
-        //
-        settings.Columns.Add(column =>
+//
+settings.Columns.Add(column =>
         {
             column.FieldName = "date_end";
             column.Caption = TranslateWord.GetWord(CC.Resources.DBWords.EndDate);
             column.ColumnType = MVCxGridViewColumnType.DateEdit;
-            column.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+            column.PropertiesEdit.DisplayFormatString = CC.Models.Const.DateTimeFormat;
         });
 
-        settings.Columns.Add( c=>
-        {
+        settings.Columns.Add(c =>
+{
             c.FieldName = "is_paid";
             c.Caption = TranslateWord.GetWord(CC.Resources.DBWords.Paid);
             c.ColumnType = MVCxGridViewColumnType.CheckBox;
         });
+
+        settings.TotalSummary.Add(DevExpress.Data.SummaryItemType.Sum, TranslateWord.GetWord(CC.Resources.DBWords.Total));
     });
-    if (ViewData["EditError"] != null){
+    if (ViewData["EditError"] != null)
+    {
         grid.SetEditErrorText((string)ViewData["EditError"]);
     }
 }
 @grid.Bind(Model.WorksList).GetHtml()
+
+@Html.DevExpress().Button(settings =>
+{
+    settings.Name = "ButtonExtra";
+    settings.UseSubmitBehavior = true;
+    settings.Text = "ExportTo PDF";
+    CC.Models.Classes.MySession.Current.GridReport = grid;
+    settings.RouteValues = new { Controller = "Worker", Action = "ExportTo", name = "GridViewWorks" };
+}).GetHtml()

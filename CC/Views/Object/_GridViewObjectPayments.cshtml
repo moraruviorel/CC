@@ -41,7 +41,7 @@
             column.FieldName = "payment_date";
             column.Caption = "Data achitării";
             column.ColumnType = MVCxGridViewColumnType.DateEdit;
-            column.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+            column.PropertiesEdit.DisplayFormatString = CC.Models.Const.DateTimeFormat;
     //column.Visible = false;
 });
         settings.Columns.Add(column =>

@@ -1,4 +1,5 @@
-﻿@{
+﻿@using ObjectExtra = CC.Models.Database.ObjectExtra;
+@{
     var grid = Html.DevExpress().GridView(settings => {
         settings.Name = "GridViewOE";
         settings.CallbackRouteValues = new { Controller = "Object", Action = "GridViewObjectExtra" };
@@ -30,7 +31,7 @@
         //settings.Columns.Add("id");
         settings.Columns.Add(c =>
         {
-            c.FieldName = "object_id";
+            c.FieldName = nameof(ObjectExtra.object_id);
             c.Caption = "Denumire Obiect";
             c.Visible = false;
             c.EditorProperties().ComboBox(p =>
@@ -43,22 +44,22 @@
         });
         settings.Columns.Add(c =>
         {
-            c.FieldName = "description";
+            c.FieldName = nameof(ObjectExtra.description);
             c.Caption = "Descrierea";
         });
         settings.Columns.Add(column =>
         {
-            column.FieldName = "create_date";
+            column.FieldName = nameof(ObjectExtra.create_date);
             column.Caption = "Data achitarii";
             column.ColumnType = MVCxGridViewColumnType.DateEdit;
-            column.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
-        });        
+            column.PropertiesEdit.DisplayFormatString = CC.Models.Const.DateTimeFormat;
+        });
         settings.Columns.Add(c =>
         {
-            c.FieldName = "price";
+            c.FieldName = nameof(ObjectExtra.price);
             c.Caption = "Preț";
         });
-        settings.TotalSummary.Add(DevExpress.Data.SummaryItemType.Sum, "price");
+        settings.TotalSummary.Add(DevExpress.Data.SummaryItemType.Sum, nameof(ObjectExtra.price));
         settings.Settings.ShowFooter = true;
     });
     if (ViewData["EditError"] != null){

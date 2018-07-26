@@ -65,14 +65,14 @@
             column.FieldName = "first_day";
             column.Caption = "Data împrumut";
             column.ColumnType = MVCxGridViewColumnType.DateEdit;
-            column.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+            column.PropertiesEdit.DisplayFormatString = CC.Models.Const.DateTimeFormat;
         });
         settings.Columns.Add(column =>
         {
             column.FieldName = "last_day";
             column.Caption = "Data returnării";
             column.ColumnType = MVCxGridViewColumnType.DateEdit;
-            column.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+            column.PropertiesEdit.DisplayFormatString = CC.Models.Const.DateTimeFormat;
         });
         /*settings.Columns.Add(column =>
         {

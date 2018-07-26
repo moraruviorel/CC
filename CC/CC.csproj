@@ -301,6 +301,7 @@
     <Compile Include="Models\Classes\Worker\WorkersGroupDetailModel.cs" />
     <Compile Include="Models\Classes\Worker\WorkersGroupsModel.cs" />
     <Compile Include="Models\Classes\Worker\WorkerWorksModel.cs" />
+    <Compile Include="Models\Const.cs" />
     <Compile Include="Models\Database\AspNetRole.cs">
       <DependentUpon>AspNetUsersModel.tt</DependentUpon>
     </Compile>

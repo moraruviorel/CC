@@ -1,6 +1,6 @@
 ﻿@*function OnCellClick(visibleIndex, fieldName) {
-    alert(visibleIndex + " " + fieldName);
-}*@
+        alert(visibleIndex + " " + fieldName);
+    }*@
 
 @{
     var grid = Html.DevExpress().GridView(settings =>
@@ -11,6 +11,7 @@
         settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkerPaymentAddNew" };
         settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkerPaymentUpdate" };
         settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Worker", Action = "GridViewWorkerPaymentDelete" };
+        settings.SettingsPager.PageSize = CC.Models.Classes.MySession.Current.MySetting.GridRows;
         settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
         settings.SettingsBehavior.ConfirmDelete = true;
 
@@ -41,13 +42,13 @@
         };
 
 
-        //
-        settings.Columns.Add(column =>
+//
+settings.Columns.Add(column =>
         {
             column.FieldName = "work_id";
             column.Caption = "Lucrare efectuată";
-            //column.c
-            column.EditorProperties().ComboBox(p =>
+    //column.c
+    column.EditorProperties().ComboBox(p =>
             {
                 p.TextField = "name";
                 p.ValueField = "id";
@@ -68,13 +69,13 @@
             });
         });
 
-        //settings.Columns.Add("userId");
-        settings.Columns.Add(column =>
+//settings.Columns.Add("userId");
+settings.Columns.Add(column =>
         {
             column.FieldName = "payment_date";
             column.Caption = "Data achitării";
             column.ColumnType = MVCxGridViewColumnType.DateEdit;
-            column.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+            column.PropertiesEdit.DisplayFormatString = CC.Models.Const.DateTimeFormat;
 
         });
         settings.Columns.Add(c => { c.FieldName = "amount"; c.Caption = "Suma"; });
@@ -87,17 +88,27 @@
             c.ColumnType = MVCxGridViewColumnType.CheckBox;
         });
 
-        //settings.HtmlDataCellPrepared = (sender, e) =>
-        //{
-        //    e.Cell.Attributes.Add(
-        //        "onclick",
-        //        string.Format("OnCellClick('{0}', '{1}');", e.VisibleIndex, e.DataColumn.FieldName)
-        //    );
-        //};
-    });
+//settings.HtmlDataCellPrepared = (sender, e) =>
+//{
+//    e.Cell.Attributes.Add(
+//        "onclick",
+//        string.Format("OnCellClick('{0}', '{1}');", e.VisibleIndex, e.DataColumn.FieldName)
+//    );
+//};
+});
     if (ViewData["EditError"] != null)
     {
         grid.SetEditErrorText((string)ViewData["EditError"]);
     }
 }
 @grid.Bind(Model.WorkerPayments).GetHtml()
+
+
+@Html.DevExpress().Button(settings =>
+{
+    settings.Name = "ButtonExtra";
+    settings.UseSubmitBehavior = true;
+    settings.Text = "ExportTo PDF";
+    CC.Models.Classes.MySession.Current.GridReport = grid;
+    settings.RouteValues = new { Controller = "Worker", Action = "ExportTo", name = "GridViewPayments" };
+}).GetHtml()

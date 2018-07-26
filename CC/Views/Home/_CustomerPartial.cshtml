@@ -51,7 +51,7 @@
             c.FieldName = "birthday";
             c.Caption = "Data nasterii";
             c.ColumnType = MVCxGridViewColumnType.DateEdit;
-            c.PropertiesEdit.DisplayFormatString = "dd/MMM/yyyy";
+            c.PropertiesEdit.DisplayFormatString = CC.Models.Const.DateTimeFormat;
         });
         settings.Columns.Add(c =>
         {
